@@ -1,7 +1,7 @@
 package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
-import ban_dien_thoai_nhiem_vu.view.ThongKeFrame;
+import ban_dien_thoai_nhiem_vu.view.ThongKePanel;
 // --- IMPORT THƯ VIỆN BIỂU ĐỒ ---
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -23,10 +23,10 @@ import java.util.Locale;
 import java.util.Vector;
 
 public class ThongKeController {
-    private ThongKeFrame view;
+    private ThongKePanel view;
     private NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-    public ThongKeController(ThongKeFrame view) {
+    public ThongKeController(ThongKePanel view) {
         this.view = view;
         loadThongKe(); // Load số liệu và bảng
         veBieuDo();    // Load biểu đồ
@@ -137,6 +137,7 @@ public class ThongKeController {
         renderer.setSeriesPaint(0, new Color(41, 98, 255)); // Màu Royal Blue theo theme mới
         renderer.setBarPainter(new org.jfree.chart.renderer.category.StandardBarPainter()); // Bỏ gradient bóng bẩy cũ kĩ
         renderer.setShadowVisible(false); // Bỏ bóng
+        renderer.setMaximumBarWidth(0.1); // Giới hạn chiều rộng của cột (10% của trục) để tránh bị méo khi ít dữ liệu
 
         // Đưa biểu đồ vào Panel
         ChartPanel chartPanel = new ChartPanel(barChart);

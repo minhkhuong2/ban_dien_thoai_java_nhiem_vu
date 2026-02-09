@@ -2,8 +2,8 @@ package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
 import ban_dien_thoai_nhiem_vu.model.KhachHang;
-import ban_dien_thoai_nhiem_vu.view.QuanLyKhachHangFrame;
-import ban_dien_thoai_nhiem_vu.view.QuanLyKhachHangFrame.TableActionEvent;
+import ban_dien_thoai_nhiem_vu.view.QuanLyKhachHangPanel;
+import ban_dien_thoai_nhiem_vu.view.QuanLyKhachHangPanel.TableActionEvent;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,11 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 public class KhachHangController {
-    private QuanLyKhachHangFrame view;
+    private QuanLyKhachHangPanel view;
     private List<KhachHang> listKH = new ArrayList<>();
     private int idDangChon = -1; // -1 là thêm mới, >0 là đang sửa
 
-    public KhachHangController(QuanLyKhachHangFrame view) {
+    public KhachHangController(QuanLyKhachHangPanel view) {
         this.view = view;
         loadData();
 

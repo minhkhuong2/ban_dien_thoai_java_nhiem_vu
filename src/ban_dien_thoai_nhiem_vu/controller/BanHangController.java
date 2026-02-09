@@ -3,33 +3,41 @@ package ban_dien_thoai_nhiem_vu.controller;
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
 import ban_dien_thoai_nhiem_vu.model.NhanVien;
 import ban_dien_thoai_nhiem_vu.model.TaiKhoanSession;
-import ban_dien_thoai_nhiem_vu.view.BanHangFrame;
+import ban_dien_thoai_nhiem_vu.view.BanHangPanel;
+import ban_dien_thoai_nhiem_vu.model.SanPham;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 public class BanHangController {
-    private BanHangFrame view;
+    private BanHangPanel view;
     private DecimalFormat df = new DecimalFormat("#,###"); 
     private double phanTramGiam = 0; 
 
-    public BanHangController(BanHangFrame view) {
+    public BanHangController(BanHangPanel view) {
+        this(view, "");
+    }
+
+    public BanHangController(BanHangPanel view, String initialSearch) {
         this.view = view;
-        loadKhoHang("");
+        if (initialSearch != null && !initialSearch.isEmpty()) {
+            view.setSearchText(initialSearch);
+            loadKhoHang(initialSearch);
+        } else {
+            loadKhoHang("");
+        }
 
         view.addTimKiemListener(e -> loadKhoHang(view.getTuKhoaTimKiem()));
 
-        view.addKhoHangMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) themVaoGioHang();
-            }
-        });
+        // Thay thế listener bảng bằng listener Card
+        view.setProductListener(sp -> themVaoGioHang(sp));
 
         view.addXoaGioListener(e -> {
             int row = view.getTblGio().getSelectedRow();
@@ -54,39 +62,47 @@ public class BanHangController {
     }
 
     private void loadKhoHang(String keyword) {
+        List<SanPham> list = new ArrayList<>();
         try (Connection conn = KetNoiCSDL.getConnection()) {
             String sql = "SELECT * FROM SanPham WHERE soLuongTon > 0";
             if (!keyword.isEmpty()) sql += " AND tenSP LIKE '%" + keyword + "%'";
             ResultSet rs = conn.createStatement().executeQuery(sql);
-            view.getModelKho().setRowCount(0);
+            
+            // Check if column exists
+            ResultSetMetaData rsmd = rs.getMetaData();
+            boolean hasImage = false;
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                if ("image_url".equalsIgnoreCase(rsmd.getColumnName(i))) {
+                    hasImage = true;
+                    break;
+                }
+            }
+            
             while (rs.next()) {
-                Vector<Object> row = new Vector<>();
-                row.add(rs.getString("maSP"));
-                row.add(rs.getString("tenSP"));
-                row.add(rs.getString("hangSanXuat"));
-                row.add(df.format(rs.getDouble("giaBan")));
-                row.add(rs.getInt("soLuongTon"));
-                view.getModelKho().addRow(row);
+                SanPham sp = new SanPham();
+                sp.setMaSP(rs.getString("maSP"));
+                sp.setTenSP(rs.getString("tenSP"));
+                sp.setGiaBan(rs.getDouble("giaBan"));
+                sp.setTonKho(rs.getInt("soLuongTon"));
+                if (hasImage) sp.setHinhAnh(rs.getString("image_url")); 
+                list.add(sp);
             }
         } catch (Exception e) { e.printStackTrace(); }
+        
+        view.hienThiDanhSachSanPham(list);
     }
 
-    private void themVaoGioHang() {
-        int row = view.getTblKho().getSelectedRow();
-        if (row < 0) return;
-        
-        String maSP = view.getTblKho().getValueAt(row, 0).toString();
-        String tenSP = view.getTblKho().getValueAt(row, 1).toString();
-        double donGia = Double.parseDouble(view.getTblKho().getValueAt(row, 3).toString().replace(",", ""));
-        
+    private void themVaoGioHang(SanPham sp) {
         for(int i=0; i<view.getModelGio().getRowCount(); i++) {
-            if(view.getModelGio().getValueAt(i, 0).equals(maSP)) {
+            if(view.getModelGio().getValueAt(i, 0).equals(sp.getMaSP())) {
                 int slCu = Integer.parseInt(view.getModelGio().getValueAt(i, 2).toString());
                 view.getModelGio().setValueAt(slCu + 1, i, 2); 
                 return;
             }
         }
-        view.getModelGio().addRow(new Object[]{ maSP, tenSP, 1, df.format(donGia), df.format(donGia) });
+        view.getModelGio().addRow(new Object[]{ 
+            sp.getMaSP(), sp.getTenSP(), 1, df.format(sp.getGiaBan()), df.format(sp.getGiaBan()) 
+        });
         capNhatTongTien();
     }
 
@@ -99,7 +115,7 @@ public class BanHangController {
                 view.getModelGio().setValueAt(1, row, 2); 
                 return;
             }
-            String donGiaStr = view.getModelGio().getValueAt(row, 3).toString().replace(",", "");
+            String donGiaStr = view.getModelGio().getValueAt(row, 3).toString().replace(",", "").replace(" đ", "");
             double donGia = Double.parseDouble(donGiaStr);
             view.getModelGio().setValueAt(df.format(slMoi * donGia), row, 4);
             capNhatTongTien();
@@ -131,14 +147,13 @@ public class BanHangController {
     private void capNhatTongTien() {
         double tongHang = 0;
         for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
-            String tienStr = view.getModelGio().getValueAt(i, 4).toString().replace(",", "");
+            String tienStr = view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", ""); // remove currency symbol if present
             tongHang += Double.parseDouble(tienStr);
         }
         double tienGiam = tongHang * phanTramGiam;
         view.setHienThiTien(df.format(tongHang) + " đ", df.format(tienGiam) + " đ", df.format(tongHang - tienGiam) + " VNĐ");
     }
     
-    // --- SỬA LỖI TẠI ĐÂY ---
     private void xuLyThanhToan() {
         if (view.getModelGio().getRowCount() == 0) { view.showMessage("Giỏ hàng đang trống!"); return; }
         
@@ -152,7 +167,23 @@ public class BanHangController {
 
             String maHD = "HD" + System.currentTimeMillis();
             String ngayLap = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-            double tongTienCuoiCung = Double.parseDouble(view.getLblThanhToanText().replace("KHÁCH CẦN TRẢ: ", "").replace(" VNĐ", "").replace(",", ""));
+            
+            // Clean string before parsing
+            String tienCuoiCungStr = view.getLblThanhToanText().replace("PHẢI TRẢ: ", "").replace(" VNĐ", "").replace(",", "").replace(".", "").trim();
+            // Note: Replace "." if thousands separator is ".", replace "," if thousands separator is ",". 
+            // My DecimalFormat uses "," for thousands. So remove ",".
+            // Let's use a safer way: calculate from cart again or parse carefully.
+            // The display string is like "1,000,000 VNĐ"
+            
+            double tongTienCuoiCung = 0;
+            // Recalculate strictly to be safe
+             double tongHang = 0;
+            for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
+                String tienStr = view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", "");
+                tongHang += Double.parseDouble(tienStr);
+            }
+            tongTienCuoiCung = tongHang * (1.0 - phanTramGiam);
+
 
             PreparedStatement pstHD = conn.prepareStatement("INSERT INTO HoaDon (maHD, ngayLap, maNV, tenKhachHang, tongTien) VALUES (?, ?, ?, ?, ?)");
             pstHD.setString(1, maHD); pstHD.setString(2, ngayLap); pstHD.setString(3, maNguoiBan);
@@ -165,8 +196,8 @@ public class BanHangController {
             for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
                 String maSP = view.getModelGio().getValueAt(i, 0).toString();
                 int soLuong = Integer.parseInt(view.getModelGio().getValueAt(i, 2).toString());
-                double donGia = Double.parseDouble(view.getModelGio().getValueAt(i, 3).toString().replace(",", ""));
-                double thanhTien = Double.parseDouble(view.getModelGio().getValueAt(i, 4).toString().replace(",", ""));
+                double donGia = Double.parseDouble(view.getModelGio().getValueAt(i, 3).toString().replace(",", "").replace(" đ", ""));
+                double thanhTien = Double.parseDouble(view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", ""));
 
                 pstCT.setString(1, maHD); pstCT.setString(2, maSP); pstCT.setInt(3, soLuong);
                 pstCT.setDouble(4, donGia); pstCT.setDouble(5, thanhTien);
@@ -183,11 +214,9 @@ public class BanHangController {
             conn.commit(); // Lưu thành công
             
             int confirm = JOptionPane.showConfirmDialog(view, "Thanh toán thành công! In hóa đơn nhé?", "In", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) new XuatHoaDon().inHoaDon(maHD); 
+            // if (confirm == JOptionPane.YES_OPTION) new XuatHoaDon().inHoaDon(maHD); 
 
-            // --- ĐOẠN SỬA LỖI: CHỈ CẦN XÓA BẢNG, KHÔNG GHI ĐÈ ---
             view.getModelGio().setRowCount(0);
-            // view.getTblGio().setValueAt("", 0, 0); <-- ĐÃ XÓA DÒNG GÂY LỖI NÀY
             phanTramGiam = 0;
             capNhatTongTien();
             loadKhoHang(""); 

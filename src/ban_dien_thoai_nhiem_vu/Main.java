@@ -5,8 +5,17 @@
 package ban_dien_thoai_nhiem_vu;
 public class Main {
     public static void main(String[] args) {
-        ban_dien_thoai_nhiem_vu.view.BanHangFrame view = new ban_dien_thoai_nhiem_vu.view.BanHangFrame();
-        new ban_dien_thoai_nhiem_vu.controller.BanHangController(view);
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {}
+
+        ban_dien_thoai_nhiem_vu.view.MainFrame view = new ban_dien_thoai_nhiem_vu.view.MainFrame();
+        new ban_dien_thoai_nhiem_vu.controller.MainController(view);
         view.setVisible(true);
     }
 }

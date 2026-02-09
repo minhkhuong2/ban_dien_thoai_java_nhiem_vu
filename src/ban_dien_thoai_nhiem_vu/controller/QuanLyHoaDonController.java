@@ -1,7 +1,7 @@
 package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
-import ban_dien_thoai_nhiem_vu.view.QuanLyHoaDonFrame;
+import ban_dien_thoai_nhiem_vu.view.QuanLyHoaDonPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
@@ -10,10 +10,10 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class QuanLyHoaDonController {
-    private QuanLyHoaDonFrame view;
+    private QuanLyHoaDonPanel view;
     private NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-    public QuanLyHoaDonController(QuanLyHoaDonFrame view) {
+    public QuanLyHoaDonController(QuanLyHoaDonPanel view) {
         this.view = view;
         loadDanhSachHoaDon();
 

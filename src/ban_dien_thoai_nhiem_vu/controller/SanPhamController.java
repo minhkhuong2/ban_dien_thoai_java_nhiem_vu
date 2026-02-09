@@ -2,8 +2,8 @@ package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
 import ban_dien_thoai_nhiem_vu.model.SanPham;
-import ban_dien_thoai_nhiem_vu.view.QuanLySanPhamFrame;
-import ban_dien_thoai_nhiem_vu.view.QuanLySanPhamFrame.TableActionEvent;
+import ban_dien_thoai_nhiem_vu.view.QuanLySanPhamPanel;
+import ban_dien_thoai_nhiem_vu.view.QuanLySanPhamPanel.TableActionEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,10 +15,10 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SanPhamController {
-    private QuanLySanPhamFrame view;
+    private QuanLySanPhamPanel view;
     private List<SanPham> listSanPham = new ArrayList<>();
 
-    public SanPhamController(QuanLySanPhamFrame view) {
+    public SanPhamController(QuanLySanPhamPanel view) {
         this.view = view;
         loadData();
 

@@ -2,19 +2,19 @@ package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
 import ban_dien_thoai_nhiem_vu.model.GiamGia;
-import ban_dien_thoai_nhiem_vu.view.QuanLyGiamGiaFrame;
-import ban_dien_thoai_nhiem_vu.view.QuanLyGiamGiaFrame.TableActionEvent;
+import ban_dien_thoai_nhiem_vu.view.QuanLyGiamGiaPanel;
+import ban_dien_thoai_nhiem_vu.view.QuanLyGiamGiaPanel.TableActionEvent;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
 public class GiamGiaController {
-    private QuanLyGiamGiaFrame view;
+    private QuanLyGiamGiaPanel view;
     private List<GiamGia> listGG = new ArrayList<>();
     private boolean isEdit = false;
 
-    public GiamGiaController(QuanLyGiamGiaFrame view) {
+    public GiamGiaController(QuanLyGiamGiaPanel view) {
         this.view = view;
         loadData();
 
