@@ -1,37 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ban_dien_thoai_nhiem_vu.model;
 
-/**
- *
- * @author ADMIN
- */
+import java.sql.Date;
+
 public class NhanVien {
+    private String maNV;
+    private String hoTen;
+    private Date ngaySinh;
+    private String sdt;
+    private String email;
     private String taiKhoan;
     private String matKhau;
-    private String hoTen;
-    private String email;
+    private String vaiTro; // "ADMIN" hoặc "STAFF"
 
-    public NhanVien() { }
+    public NhanVien() {}
 
-    public NhanVien(String taiKhoan, String matKhau, String hoTen, String email) {
-        this.taiKhoan = taiKhoan;
-        this.matKhau = matKhau;
+    public NhanVien(String maNV, String hoTen, String taiKhoan, String vaiTro) {
+        this.maNV = maNV;
         this.hoTen = hoTen;
-        this.email = email;
+        this.taiKhoan = taiKhoan;
+        this.vaiTro = vaiTro;
     }
 
-    public String getTaiKhoan() { return taiKhoan; }
-    public void setTaiKhoan(String taiKhoan) { this.taiKhoan = taiKhoan; }
-
-    public String getMatKhau() { return matKhau; }
-    public void setMatKhau(String matKhau) { this.matKhau = matKhau; }
-
+    // Getter & Setter (Bạn tự thêm đầy đủ nếu cần, ở đây mình tạo cái chính)
+    public String getMaNV() { return maNV; }
+    public void setMaNV(String maNV) { this.maNV = maNV; }
     public String getHoTen() { return hoTen; }
     public void setHoTen(String hoTen) { this.hoTen = hoTen; }
-    
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getTaiKhoan() { return taiKhoan; }
+    public void setTaiKhoan(String taiKhoan) { this.taiKhoan = taiKhoan; }
+    public String getMatKhau() { return matKhau; }
+    public void setMatKhau(String matKhau) { this.matKhau = matKhau; }
+    public String getVaiTro() { return vaiTro; }
+    public void setVaiTro(String vaiTro) { this.vaiTro = vaiTro; }
 }

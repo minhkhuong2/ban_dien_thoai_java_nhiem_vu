@@ -1,107 +1,76 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
-import ban_dien_thoai_nhiem_vu.model.NhanVien;
+import ban_dien_thoai_nhiem_vu.view.DangKyFrame;
 import ban_dien_thoai_nhiem_vu.view.DangNhapFrame;
 import ban_dien_thoai_nhiem_vu.view.MainFrame;
-// Import thêm 2 cái này
-import ban_dien_thoai_nhiem_vu.view.DangKyFrame;
-import ban_dien_thoai_nhiem_vu.controller.DangKyController;
-
+// --- CÁC DÒNG IMPORT QUAN TRỌNG MỚI THÊM ---
+import ban_dien_thoai_nhiem_vu.model.NhanVien;
+import ban_dien_thoai_nhiem_vu.model.TaiKhoanSession;
+// --------------------------------------------
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+
 public class DangNhapController {
     private DangNhapFrame view;
 
     public DangNhapController(DangNhapFrame view) {
         this.view = view;
 
-        this.view.addDangNhapListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                xuLyDangNhap();
-            }
-        });
+        // 1. Sự kiện Đăng nhập
+        view.addDangNhapListener(e -> xuLyDangNhap());
 
-        // Sự kiện nút Đăng Ký -> Mở Form Đăng Ký
-        this.view.addDangKyListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moFormDangKy();
-            }
+        // 2. Sự kiện chuyển sang Đăng Ký
+        view.addChuyenSangDangKyListener(e -> {
+            view.dispose(); 
+            DangKyFrame dkFrame = new DangKyFrame();
+            new DangKyController(dkFrame);
+            dkFrame.setVisible(true);
         });
     }
 
     private void xuLyDangNhap() {
-        NhanVien nv = view.getNhanVienInput();
-        try {
-            Connection conn = KetNoiCSDL.getConnection();
-            String sql = "SELECT * FROM NhanVien WHERE taiKhoan = ? AND matKhau = ?";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, nv.getTaiKhoan());
-            pst.setString(2, nv.getMatKhau());
-            
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                view.showMessage("Đăng nhập thành công!");
-                view.dispose(); // Tắt form đăng nhập đi
-                
-                // === [SỬA ĐOẠN NÀY] ===
-                // Thay vì mở QuanLySanPhamFrame, ta mở MainFrame (Dashboard)
-                
-                MainFrame mainView = new MainFrame(); // Tạo màn hình chính
-                new MainController(mainView);         // Kích hoạt điều khiển màn hình chính
-                mainView.setVisible(true);            // Hiện lên
-                
-                // ======================
-                
-            } else {
-                view.showMessage("Sai tài khoản hoặc mật khẩu!");
-            }
-            conn.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            view.showMessage("Lỗi hệ thống: " + ex.getMessage());
-        }
-    }
+        String tk = view.getTaiKhoan();
+        String mk = view.getMatKhau();
 
-    private void xuLyDangKy() {
-        NhanVien nv = view.getNhanVienInput();
-        try {
-            Connection conn = KetNoiCSDL.getConnection();
-            String sql = "SELECT * FROM NhanVien WHERE taiKhoan = ? AND matKhau = ?";
+        if (tk.isEmpty() || mk.isEmpty()) {
+            view.showMessage("Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            String sql = "SELECT * FROM NhanVien WHERE taiKhoan = ? AND matKhau = ? AND trangThai = 1";
             PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, nv.getTaiKhoan());
-            pst.setString(2, nv.getMatKhau());
-            
+            pst.setString(1, tk);
+            pst.setString(2, mk);
+
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                view.showMessage("Đăng nhập thành công!");
-                view.dispose();
+                // 1. Tạo đối tượng Nhân viên
+                NhanVien nv = new NhanVien();
+                nv.setMaNV(rs.getString("maNV"));
+                nv.setHoTen(rs.getString("hoTen"));
+                nv.setTaiKhoan(rs.getString("taiKhoan"));
+                nv.setVaiTro(rs.getString("vaiTro")); 
                 
-                // Mở Dashboard
-                MainFrame mainView = new MainFrame(); 
-                new MainController(mainView);         
-                mainView.setVisible(true);            
+                // 2. LƯU VÀO SESSION (Hết báo lỗi đỏ)
+                TaiKhoanSession.taiKhoanHienTai = nv;
+                
+                view.showMessage("Xin chào, " + nv.getHoTen() + " (" + nv.getVaiTro() + ")");
+                view.dispose(); 
+                
+                // 3. Mở màn hình chính
+                MainFrame mainView = new MainFrame();
+                new MainController(mainView);
+                mainView.setVisible(true);
                 
             } else {
                 view.showMessage("Sai tài khoản hoặc mật khẩu!");
             }
-            conn.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+            view.showMessage("Lỗi kết nối: " + ex.getMessage());
         }
-    }
-    private void moFormDangKy() {
-        DangKyFrame dkView = new DangKyFrame(); // Tạo View
-        new DangKyController(dkView);           // Gắn Controller
-        dkView.setVisible(true);                // Hiện lên
     }
 }
