@@ -129,7 +129,13 @@ public class XuatHoaDon {
             // 3. TỰ ĐỘNG MỞ FILE PDF LÊN
             File file = new File(path);
             if (file.exists()) {
-                Desktop.getDesktop().open(file);
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(file);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Đã lưu hóa đơn tại: " + file.getAbsolutePath());
+                }
+            } else {
+                 javax.swing.JOptionPane.showMessageDialog(null, "Không tìm thấy file hóa đơn!");
             }
 
         } catch (Exception e) {

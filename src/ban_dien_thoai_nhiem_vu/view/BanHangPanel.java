@@ -212,14 +212,30 @@ public class BanHangPanel extends JPanel {
             card.setCursor(new Cursor(Cursor.HAND_CURSOR));
             
             // Image Placeholder (or real image if path exists)
+            // Image Loading Logic
             JLabel lblImg = new JLabel();
-            lblImg.setPreferredSize(new Dimension(100, 100)); // Fixed size
+            lblImg.setPreferredSize(new Dimension(100, 100)); 
             lblImg.setAlignmentX(Component.CENTER_ALIGNMENT);
             lblImg.setHorizontalAlignment(SwingConstants.CENTER);
-            lblImg.setText("IMG");
             lblImg.setOpaque(true);
             lblImg.setBackground(new Color(240, 245, 250));
-            // TODO: Load real image
+
+            try {
+                String imagePath = sp.getHinhAnh();
+                if (imagePath != null && !imagePath.isEmpty()) {
+                    ImageIcon icon = new ImageIcon(imagePath);
+                    Image img = icon.getImage();
+                    // Scale image to fit 100x100 smoothly
+                    Image newImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                    lblImg.setIcon(new ImageIcon(newImg));
+                    lblImg.setText(""); // Clear placeholder text
+                } else {
+                    lblImg.setText("IMG"); // Fallback text
+                }
+            } catch (Exception ex) {
+                lblImg.setText("Err");
+                ex.printStackTrace();
+            }
             
             JLabel lblName = new JLabel(sp.getTenSP());
             lblName.setFont(new Font("SansSerif", Font.BOLD, 14));

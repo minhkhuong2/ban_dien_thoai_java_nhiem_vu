@@ -68,23 +68,14 @@ public class BanHangController {
             if (!keyword.isEmpty()) sql += " AND tenSP LIKE '%" + keyword + "%'";
             ResultSet rs = conn.createStatement().executeQuery(sql);
             
-            // Check if column exists
-            ResultSetMetaData rsmd = rs.getMetaData();
-            boolean hasImage = false;
-            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                if ("image_url".equalsIgnoreCase(rsmd.getColumnName(i))) {
-                    hasImage = true;
-                    break;
-                }
-            }
-            
             while (rs.next()) {
                 SanPham sp = new SanPham();
                 sp.setMaSP(rs.getString("maSP"));
                 sp.setTenSP(rs.getString("tenSP"));
                 sp.setGiaBan(rs.getDouble("giaBan"));
                 sp.setTonKho(rs.getInt("soLuongTon"));
-                if (hasImage) sp.setHinhAnh(rs.getString("image_url")); 
+                // Sử dụng đúng tên cột "hinhAnh" trong CSDL
+                sp.setHinhAnh(rs.getString("hinhAnh")); 
                 list.add(sp);
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -214,7 +205,9 @@ public class BanHangController {
             conn.commit(); // Lưu thành công
             
             int confirm = JOptionPane.showConfirmDialog(view, "Thanh toán thành công! In hóa đơn nhé?", "In", JOptionPane.YES_NO_OPTION);
-            // if (confirm == JOptionPane.YES_OPTION) new XuatHoaDon().inHoaDon(maHD); 
+            if (confirm == JOptionPane.YES_OPTION) {
+                new XuatHoaDon().inHoaDon(maHD); 
+            } 
 
             view.getModelGio().setRowCount(0);
             phanTramGiam = 0;

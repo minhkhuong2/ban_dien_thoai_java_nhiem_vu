@@ -74,7 +74,12 @@ public class MainController {
 
         view.addDangXuatListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn thoát?", "Đăng xuất", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) System.exit(0); 
+            if (confirm == JOptionPane.YES_OPTION) {
+                view.dispose();
+                DangNhapFrame loginFrame = new DangNhapFrame();
+                new DangNhapController(loginFrame);
+                loginFrame.setVisible(true);
+            } 
         });
     }
 
