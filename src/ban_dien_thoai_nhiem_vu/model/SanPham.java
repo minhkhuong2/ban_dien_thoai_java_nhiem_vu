@@ -21,6 +21,8 @@ public class SanPham {
     private String rom;
     private String pin;
     private String heDieuHanh;
+    private int maDM;
+    private int maTH;
 
     public SanPham() { }
 
@@ -87,4 +89,9 @@ public class SanPham {
 
     public String getHeDieuHanh() { return heDieuHanh; }
     public void setHeDieuHanh(String heDieuHanh) { this.heDieuHanh = heDieuHanh; }
+    public int getMaDM() { return maDM; }
+    public void setMaDM(int maDM) { this.maDM = maDM; }
+    
+    public int getMaTH() { return maTH; }
+    public void setMaTH(int maTH) { this.maTH = maTH; }
 }

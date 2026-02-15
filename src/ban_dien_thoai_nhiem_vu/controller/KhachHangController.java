@@ -3,109 +3,118 @@ package ban_dien_thoai_nhiem_vu.controller;
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
 import ban_dien_thoai_nhiem_vu.model.KhachHang;
 import ban_dien_thoai_nhiem_vu.view.QuanLyKhachHangPanel;
-import ban_dien_thoai_nhiem_vu.view.QuanLyKhachHangPanel.TableActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
 public class KhachHangController {
+    
     private QuanLyKhachHangPanel view;
-    private List<KhachHang> listKH = new ArrayList<>();
-    private int idDangChon = -1; // -1 là thêm mới, >0 là đang sửa
 
     public KhachHangController(QuanLyKhachHangPanel view) {
         this.view = view;
-        loadData();
-
-        // Sự kiện Lưu (Thêm/Sửa)
-        view.addLuuListener(e -> xuLyLuu());
+        loadDanhSach(""); // Load all
         
-        // Sự kiện Làm mới
-        view.addLamMoiListener(e -> {
-            view.clearForm();
-            idDangChon = -1;
-        });
-
-        // Sự kiện Bảng (Sửa/Xóa)
-        view.setTableActionEvent(new TableActionEvent() {
+        // 1. Click bảng -> Đổ lên form
+        view.addTableClickListener(new MouseAdapter() {
             @Override
-            public void onEdit(int row) {
-                if (row >= 0 && row < listKH.size()) {
-                    KhachHang kh = listKH.get(row);
-                    idDangChon = kh.getMaKH(); // Đánh dấu là đang sửa ID này
-                    view.txtTenKH.setText(kh.getTenKH());
-                    view.txtSDT.setText(kh.getSdt());
-                    view.txtEmail.setText(kh.getEmail());
-                    view.txtDiaChi.setText(kh.getDiaChi());
-                }
-            }
-
-            @Override
-            public void onDelete(int row) {
-                if (row >= 0 && row < listKH.size()) {
-                    int confirm = JOptionPane.showConfirmDialog(view, "Xóa khách hàng này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-                    if (confirm == JOptionPane.YES_OPTION) {
-                        xuLyXoa(listKH.get(row).getMaKH());
-                    }
+            public void mouseClicked(MouseEvent e) {
+                int row = view.getTable().getSelectedRow();
+                if (row >= 0) {
+                    KhachHang kh = new KhachHang();
+                    kh.setMaKH(Integer.parseInt(view.getModel().getValueAt(row, 0).toString()));
+                    kh.setTenKH(view.getModel().getValueAt(row, 1).toString());
+                    kh.setSdt(view.getModel().getValueAt(row, 2).toString());
+                    kh.setDiaChi(view.getModel().getValueAt(row, 3).toString());
+                    view.setForm(kh);
                 }
             }
         });
+        
+        // 2. Thêm
+        view.addThemListener(e -> {
+            KhachHang kh = view.getKhachHangInput();
+            if(kh == null || kh.getTenKH().isEmpty() || kh.getSdt().isEmpty()) {
+                view.showMessage("Vui lòng nhập Tên và SĐT!"); return;
+            }
+            try (Connection conn = KetNoiCSDL.getConnection()) {
+                // Check trùng SĐT
+                PreparedStatement check = conn.prepareStatement("SELECT * FROM KhachHang WHERE sdt=?");
+                check.setString(1, kh.getSdt());
+                if(check.executeQuery().next()) {
+                    view.showMessage("Số điện thoại này đã tồn tại!"); return;
+                }
+                
+                String sql = "INSERT INTO KhachHang(tenKH, sdt, diaChi) VALUES(?, ?, ?)";
+                PreparedStatement pst = conn.prepareStatement(sql);
+                pst.setString(1, kh.getTenKH());
+                pst.setString(2, kh.getSdt());
+                pst.setString(3, kh.getDiaChi());
+                pst.executeUpdate();
+                view.showMessage("Thêm khách hàng thành công!");
+                loadDanhSach("");
+                view.clearForm();
+            } catch (Exception ex) { ex.printStackTrace(); }
+        });
+        
+        // 3. Sửa
+        view.addSuaListener(e -> {
+            KhachHang kh = view.getKhachHangInput();
+            if(kh.getMaKH() == 0) { view.showMessage("Vui lòng chọn khách hàng để sửa!"); return; }
+            
+            try (Connection conn = KetNoiCSDL.getConnection()) {
+                String sql = "UPDATE KhachHang SET tenKH=?, sdt=?, diaChi=? WHERE maKH=?";
+                PreparedStatement pst = conn.prepareStatement(sql);
+                pst.setString(1, kh.getTenKH());
+                pst.setString(2, kh.getSdt());
+                pst.setString(3, kh.getDiaChi());
+                pst.setInt(4, kh.getMaKH());
+                pst.executeUpdate();
+                view.showMessage("Cập nhật thành công!");
+                loadDanhSach("");
+            } catch (Exception ex) { ex.printStackTrace(); }
+        });
+        
+        // 4. Xóa
+        view.addXoaListener(e -> {
+             KhachHang kh = view.getKhachHangInput();
+             if(kh.getMaKH() == 0) return;
+             if(view.showConfirm("Bạn có chắc muốn xóa khách hàng này?\nLưu ý: Nếu xóa, lịch sử mua hàng của họ có thể bị ảnh hưởng.") == JOptionPane.YES_OPTION) {
+                 try (Connection conn = KetNoiCSDL.getConnection()) {
+                     PreparedStatement pst = conn.prepareStatement("DELETE FROM KhachHang WHERE maKH=?");
+                     pst.setInt(1, kh.getMaKH());
+                     pst.executeUpdate();
+                     view.showMessage("Đã xóa!");
+                     loadDanhSach("");
+                     view.clearForm();
+                 } catch (Exception ex) { view.showMessage("Không thể xóa (Khách hàng này đã có hóa đơn)."); }
+             }
+        });
+        
+        // 5. Tìm kiếm & Làm mới
+        view.addTimKiemListener(e -> loadDanhSach(view.getTuKhoa()));
+        view.addLamMoiListener(e -> { view.clearForm(); loadDanhSach(""); });
     }
 
-    private void loadData() {
+    private void loadDanhSach(String keyword) {
         try (Connection conn = KetNoiCSDL.getConnection()) {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM KhachHang");
-            listKH.clear();
+            String sql = "SELECT * FROM KhachHang";
+            if(!keyword.isEmpty()) sql += " WHERE tenKH LIKE ? OR sdt LIKE ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            if(!keyword.isEmpty()) {
+                pst.setString(1, "%" + keyword + "%");
+                pst.setString(2, "%" + keyword + "%");
+            }
+            ResultSet rs = pst.executeQuery();
             view.getModel().setRowCount(0);
-            while (rs.next()) {
-                KhachHang kh = new KhachHang(
-                    rs.getInt("maKH"), rs.getString("tenKH"), rs.getString("sdt"), 
-                    rs.getString("diaChi"), rs.getString("email"), rs.getDate("ngayThamGia")
-                );
-                listKH.add(kh);
-                
-                // --- SỬA LỖI TẠI DÒNG NÀY (Dùng Object[] thay vì Vector[]) ---
+            while(rs.next()) {
                 view.getModel().addRow(new Object[]{
-                    kh.getMaKH(), kh.getTenKH(), kh.getSdt(), kh.getEmail(), kh.getDiaChi(), kh.getNgayThamGia(), ""
+                    rs.getInt("maKH"), rs.getString("tenKH"), rs.getString("sdt"), 
+                    rs.getString("diaChi"), rs.getDate("ngayThamGia")
                 });
             }
         } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    private void xuLyLuu() {
-        KhachHang kh = view.getKhachHangInput();
-        if (kh == null) { JOptionPane.showMessageDialog(view, "Thiếu tên hoặc SĐT!"); return; }
-
-        try (Connection conn = KetNoiCSDL.getConnection()) {
-            if (idDangChon == -1) {
-                // INSERT
-                String sql = "INSERT INTO KhachHang (tenKH, sdt, email, diaChi) VALUES (?,?,?,?)";
-                PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setString(1, kh.getTenKH()); pst.setString(2, kh.getSdt());
-                pst.setString(3, kh.getEmail()); pst.setString(4, kh.getDiaChi());
-                pst.executeUpdate();
-                JOptionPane.showMessageDialog(view, "Thêm thành công!");
-            } else {
-                // UPDATE
-                String sql = "UPDATE KhachHang SET tenKH=?, sdt=?, email=?, diaChi=? WHERE maKH=?";
-                PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setString(1, kh.getTenKH()); pst.setString(2, kh.getSdt());
-                pst.setString(3, kh.getEmail()); pst.setString(4, kh.getDiaChi());
-                pst.setInt(5, idDangChon);
-                pst.executeUpdate();
-                JOptionPane.showMessageDialog(view, "Cập nhật thành công!");
-                idDangChon = -1; // Reset về thêm mới
-            }
-            view.clearForm(); loadData();
-        } catch (Exception e) { JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage()); }
-    }
-
-    private void xuLyXoa(int id) {
-        try (Connection conn = KetNoiCSDL.getConnection()) {
-            conn.prepareStatement("DELETE FROM KhachHang WHERE maKH=" + id).executeUpdate();
-            loadData();
-        } catch (Exception e) { JOptionPane.showMessageDialog(view, "Không thể xóa (KH đã mua hàng)!"); }
     }
 }

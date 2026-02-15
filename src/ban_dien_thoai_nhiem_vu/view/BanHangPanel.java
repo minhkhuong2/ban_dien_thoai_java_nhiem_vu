@@ -25,6 +25,10 @@ public class BanHangPanel extends JPanel {
     private JLabel lblTongTien, lblGiamGia, lblThanhToan; 
     private JButton btnThanhToan, btnXoaKhoiGio, btnApDungMa; 
 
+    public void setMaGiamGia(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     // Interface để Controller gọi khi click vào Product Card
     public interface ProductCardListener {
         void onProductSelected(SanPham sp);

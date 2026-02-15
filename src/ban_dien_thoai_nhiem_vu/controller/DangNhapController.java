@@ -1,33 +1,20 @@
 package ban_dien_thoai_nhiem_vu.controller;
 
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
-import ban_dien_thoai_nhiem_vu.view.DangKyFrame;
-import ban_dien_thoai_nhiem_vu.view.DangNhapFrame;
-import ban_dien_thoai_nhiem_vu.view.MainFrame;
-// --- CÁC DÒNG IMPORT QUAN TRỌNG MỚI THÊM ---
 import ban_dien_thoai_nhiem_vu.model.NhanVien;
 import ban_dien_thoai_nhiem_vu.model.TaiKhoanSession;
-// --------------------------------------------
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
+import ban_dien_thoai_nhiem_vu.view.DangNhapFrame;
+import ban_dien_thoai_nhiem_vu.view.MainFrame;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class DangNhapController {
     private DangNhapFrame view;
 
     public DangNhapController(DangNhapFrame view) {
         this.view = view;
-
-        // 1. Sự kiện Đăng nhập
-        view.addDangNhapListener(e -> xuLyDangNhap());
-
-        // 2. Sự kiện chuyển sang Đăng Ký
-        view.addChuyenSangDangKyListener(e -> {
-            view.dispose(); 
-            DangKyFrame dkFrame = new DangKyFrame();
-            new DangKyController(dkFrame);
-            dkFrame.setVisible(true);
-        });
+        view.addLoginListener(e -> xuLyDangNhap());
     }
 
     private void xuLyDangNhap() {
@@ -47,30 +34,34 @@ public class DangNhapController {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                // 1. Tạo đối tượng Nhân viên
                 NhanVien nv = new NhanVien();
-                nv.setMaNV(rs.getString("maNV"));
+                nv.setMaNV(rs.getString("maNV")); 
                 nv.setHoTen(rs.getString("hoTen"));
+                nv.setNgaySinh(rs.getDate("ngaySinh"));
+                nv.setSdt(rs.getString("sdt"));
+                nv.setEmail(rs.getString("email"));
                 nv.setTaiKhoan(rs.getString("taiKhoan"));
-                nv.setVaiTro(rs.getString("vaiTro")); 
+                nv.setVaiTro(rs.getString("vaiTro"));
+                nv.setTrangThai(rs.getInt("trangThai"));
                 
-                // 2. LƯU VÀO SESSION (Hết báo lỗi đỏ)
                 TaiKhoanSession.taiKhoanHienTai = nv;
+
+                view.showMessage("Xin chào, " + nv.getHoTen());
                 
-                view.showMessage("Xin chào, " + nv.getHoTen() + " (" + nv.getVaiTro() + ")");
-                view.dispose(); 
-                
-                // 3. Mở màn hình chính
-                MainFrame mainView = new MainFrame();
-                new MainController(mainView);
-                mainView.setVisible(true);
-                
+                // Mở màn hình chính
+                MainFrame mainFrame = new MainFrame();
+                new MainController(mainFrame); // Khởi tạo controller
+                mainFrame.setVisible(true);    // HIỂN THỊ MÀN HÌNH CHÍNH
+
+                // Đóng màn hình đăng nhập
+                view.dispose();
+
             } else {
                 view.showMessage("Sai tài khoản hoặc mật khẩu!");
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            view.showMessage("Lỗi kết nối: " + ex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            view.showMessage("Lỗi kết nối CSDL!");
         }
     }
 }
