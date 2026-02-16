@@ -4,9 +4,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-// GradientPaint is in java.awt, which is already imported by java.awt.*
 
 public class DangNhapFrame extends JFrame {
     
@@ -14,174 +11,100 @@ public class DangNhapFrame extends JFrame {
     private JPasswordField txtMatKhau;
     private JButton btnDangNhap;
     private JButton btnDangKy;
+    private JButton btnQuenMatKhau; // [NÚT MỚI]
 
     public DangNhapFrame() {
         thietKeGiaoDien();
     }
 
     private void thietKeGiaoDien() {
-        setTitle("Đăng Nhập Hệ Thống - PNC Store");
-        setSize(900, 550); 
+        setTitle("Đăng Nhập - PNC STORE");
+        setSize(850, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(1, 2)); // Chia đôi màn hình
+        setLayout(new BorderLayout());
 
-        // --- LEFT PANEL: GRADIENT & BRANDING ---
-        GradientPanel pnlLeft = new GradientPanel(new Color(67, 94, 190), new Color(41, 128, 185));
-        pnlLeft.setLayout(new GridBagLayout());
-        
-        GridBagConstraints gbcLeft = new GridBagConstraints();
-        gbcLeft.gridx = 0; gbcLeft.gridy = 0;
-        gbcLeft.insets = new Insets(10, 10, 20, 10);
-        
-        // Logo
-        JLabel lblIcon = new JLabel("📱");
-        lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 64));
-        lblIcon.setForeground(Color.WHITE);
-        pnlLeft.add(lblIcon, gbcLeft);
-        
-        // Tên App
-        gbcLeft.gridy++;
-        JLabel lblApp = new JLabel("PNC MOBILE STORE");
-        lblApp.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblApp.setForeground(Color.WHITE);
-        pnlLeft.add(lblApp, gbcLeft);
-        
-        // Features
-        gbcLeft.gridy++;
-        String[] features = {"✔ Quản lý Sản Phẩm", "✔ Thống kê Doanh Thu", "✔ Hỗ trợ Online 24/7"};
-        for (String f : features) {
-            JLabel lblF = new JLabel(f);
-            lblF.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            lblF.setForeground(new Color(240, 240, 240));
-            gbcLeft.insets = new Insets(5, 10, 5, 10);
-            pnlLeft.add(lblF, gbcLeft);
-            gbcLeft.gridy++;
-        }
+        // --- TRÁI: LOGO ---
+        JPanel pnlLeft = new JPanel(new GridBagLayout());
+        pnlLeft.setBackground(new Color(67, 94, 190));
+        pnlLeft.setPreferredSize(new Dimension(400, 0));
+        JLabel lblLogo = new JLabel("PNC STORE");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblLogo.setForeground(Color.WHITE);
+        pnlLeft.add(lblLogo);
+        add(pnlLeft, BorderLayout.WEST);
 
-        add(pnlLeft);
-
-        // --- RIGHT PANEL: LOGIN FORM ---
+        // --- PHẢI: FORM ---
         JPanel pnlRight = new JPanel(new GridBagLayout());
         pnlRight.setBackground(Color.WHITE);
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 40, 10, 40);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0; gbc.weightx = 1.0;
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(10, 10, 10, 10);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridx = 0; g.gridy = 0;
 
         // Title
-        gbc.gridy = 0;
-        JLabel lblWelcome = new JLabel("Welcome Admin!");
-        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblWelcome.setForeground(new Color(50, 50, 50));
-        pnlRight.add(lblWelcome, gbc);
+        JLabel lblTitle = new JLabel("ĐĂNG NHẬP");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setForeground(new Color(67, 94, 190));
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        pnlRight.add(lblTitle, g);
 
-        gbc.gridy++;
-        JLabel lblSub = new JLabel("Vui lòng đăng nhập để tiếp tục");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lblSub.setForeground(Color.GRAY);
-        gbc.insets = new Insets(0, 40, 30, 40);
-        pnlRight.add(lblSub, gbc);
+        // Inputs
+        g.gridy++; pnlRight.add(new JLabel("Tài khoản:"), g);
+        g.gridy++; txtTaiKhoan = new JTextField(20); txtTaiKhoan.setPreferredSize(new Dimension(0, 40)); pnlRight.add(txtTaiKhoan, g);
 
-        // Input: Tài khoản
-        gbc.gridy++;
-        gbc.insets = new Insets(10, 40, 5, 40);
-        JLabel lblUser = new JLabel("Tài khoản");
-        lblUser.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblUser.setForeground(new Color(100, 100, 100));
-        pnlRight.add(lblUser, gbc);
+        g.gridy++; pnlRight.add(new JLabel("Mật khẩu:"), g);
+        g.gridy++; txtMatKhau = new JPasswordField(20); txtMatKhau.setPreferredSize(new Dimension(0, 40)); pnlRight.add(txtMatKhau, g);
 
-        gbc.gridy++;
-        gbc.insets = new Insets(0, 40, 15, 40);
-        txtTaiKhoan = new JTextField();
-        styleTextField(txtTaiKhoan);
-        pnlRight.add(txtTaiKhoan, gbc);
-
-        // Input: Mật khẩu
-        gbc.gridy++;
-        gbc.insets = new Insets(5, 40, 5, 40);
-        JLabel lblPass = new JLabel("Mật khẩu");
-        lblPass.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblPass.setForeground(new Color(100, 100, 100));
-        pnlRight.add(lblPass, gbc);
-
-        gbc.gridy++;
-        gbc.insets = new Insets(0, 40, 20, 40);
-        txtMatKhau = new JPasswordField();
-        styleTextField(txtMatKhau);
-        pnlRight.add(txtMatKhau, gbc);
-
-        // Button: Đăng nhập
-        gbc.gridy++;
-        gbc.insets = new Insets(10, 40, 10, 40);
+        // Nút Đăng Nhập
+        g.gridy++; g.insets = new Insets(20, 10, 5, 10);
         btnDangNhap = new JButton("ĐĂNG NHẬP");
-        btnDangNhap.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnDangNhap.setBackground(new Color(67, 94, 190));
         btnDangNhap.setForeground(Color.WHITE);
-        btnDangNhap.setFocusPainted(false);
-        btnDangNhap.setBorderPainted(false);
+        btnDangNhap.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnDangNhap.setPreferredSize(new Dimension(0, 45));
-        btnDangNhap.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        btnDangNhap.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { btnDangNhap.setBackground(new Color(45, 75, 160)); }
-            public void mouseExited(MouseEvent e) { btnDangNhap.setBackground(new Color(67, 94, 190)); }
-        });
-        
-        pnlRight.add(btnDangNhap, gbc);
-        getRootPane().setDefaultButton(btnDangNhap);
+        btnDangNhap.setFocusPainted(false);
+        pnlRight.add(btnDangNhap, g);
 
-        add(pnlRight);
+        // --- [VÍ DỤ CỤ THỂ] THÊM 2 NÚT LINK Ở DƯỚI ---
+        g.gridy++;
+        g.insets = new Insets(5, 10, 10, 10);
+        
+        JPanel pnlLinks = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        pnlLinks.setBackground(Color.WHITE);
+
+        btnDangKy = new JButton("Đăng ký mới");
+        styleLinkButton(btnDangKy, new Color(67, 94, 190)); // Màu xanh
+        
+        btnQuenMatKhau = new JButton("Quên mật khẩu?");
+        styleLinkButton(btnQuenMatKhau, Color.RED); // Màu đỏ cho nổi bật
+
+        pnlLinks.add(btnDangKy);
+        pnlLinks.add(new JLabel("|")); // Dấu gạch ngăn cách
+        pnlLinks.add(btnQuenMatKhau);
+        
+        pnlRight.add(pnlLinks, g);
+
+        add(pnlRight, BorderLayout.CENTER);
+    }
+
+    private void styleLinkButton(JButton btn, Color color) {
+        btn.setForeground(color);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
     
-    private void styleTextField(JTextField txt) {
-        txt.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txt.setPreferredSize(new Dimension(0, 40));
-        txt.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)), 
-            new EmptyBorder(5, 10, 5, 10)
-        ));
-    }
-
-    // --- INNER CLASS: GRADIENT PANEL (ĐỂ VẼ MÀU NỀN ĐẸP) ---
-    // Đây là phần bạn bị thiếu trước đó gây lỗi
-    class GradientPanel extends JPanel {
-        private Color color1;
-        private Color color2;
-
-        public GradientPanel(Color color1, Color color2) {
-            this.color1 = color1;
-            this.color2 = color2;
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            int w = getWidth();
-            int h = getHeight();
-            GradientPaint gp = new GradientPaint(0, 0, color1, w, h, color2);
-            g2d.setPaint(gp);
-            g2d.fillRect(0, 0, w, h);
-        }
-    }
-
-    // --- GETTERS & LISTENERS ---
-    
-    public String getTaiKhoan() { return txtTaiKhoan.getText().trim(); }
+    // Getters & Listeners
+    public String getTaiKhoan() { return txtTaiKhoan.getText(); }
     public String getMatKhau() { return new String(txtMatKhau.getPassword()); }
     
-    // Đổi tên thành addLoginListener để Controller cũ nhận diện được
-    public void addLoginListener(ActionListener l) { 
-        btnDangNhap.addActionListener(l); 
-    }
+    public void addLoginListener(ActionListener l) { btnDangNhap.addActionListener(l); }
+    public void addDangKyListener(ActionListener l) { btnDangKy.addActionListener(l); }
     
-    // Nếu Controller nào dùng addDangNhapListener thì vẫn gọi được cái này
-    public void addDangNhapListener(ActionListener l) {
-        btnDangNhap.addActionListener(l);
-    }
+    // [QUAN TRỌNG] Getter cho nút Quên MK
+    public void addQuenMatKhauListener(ActionListener l) { btnQuenMatKhau.addActionListener(l); }
     
     public void showMessage(String msg) { JOptionPane.showMessageDialog(this, msg); }
 }

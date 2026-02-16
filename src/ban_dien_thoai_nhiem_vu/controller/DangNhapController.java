@@ -3,8 +3,10 @@ package ban_dien_thoai_nhiem_vu.controller;
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
 import ban_dien_thoai_nhiem_vu.model.NhanVien;
 import ban_dien_thoai_nhiem_vu.model.TaiKhoanSession;
+import ban_dien_thoai_nhiem_vu.view.DangKyFrame;
 import ban_dien_thoai_nhiem_vu.view.DangNhapFrame;
 import ban_dien_thoai_nhiem_vu.view.MainFrame;
+import ban_dien_thoai_nhiem_vu.view.QuenMatKhauDialog; // Class này đã làm ở bài trước
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +16,23 @@ public class DangNhapController {
 
     public DangNhapController(DangNhapFrame view) {
         this.view = view;
+        
+        // Sự kiện Đăng nhập
         view.addLoginListener(e -> xuLyDangNhap());
+        
+        // Sự kiện Đăng ký
+        view.addDangKyListener(e -> {
+            view.dispose();
+            DangKyFrame dkFrame = new DangKyFrame();
+            new DangKyController(dkFrame);
+            dkFrame.setVisible(true);
+        });
+        
+        // --- [MỚI] Sự kiện Quên mật khẩu ---
+        view.addQuenMatKhauListener(e -> {
+             // Mở dialog Quên mật khẩu (Dialog này sẽ tự xử lý gửi mail)
+             new QuenMatKhauDialog(view).setVisible(true);
+        });
     }
 
     private void xuLyDangNhap() {
@@ -22,8 +40,7 @@ public class DangNhapController {
         String mk = view.getMatKhau();
 
         if (tk.isEmpty() || mk.isEmpty()) {
-            view.showMessage("Vui lòng nhập đầy đủ thông tin!");
-            return;
+            view.showMessage("Vui lòng nhập đầy đủ thông tin!"); return;
         }
 
         try (Connection conn = KetNoiCSDL.getConnection()) {
@@ -37,24 +54,27 @@ public class DangNhapController {
                 NhanVien nv = new NhanVien();
                 nv.setMaNV(rs.getString("maNV")); 
                 nv.setHoTen(rs.getString("hoTen"));
-                nv.setNgaySinh(rs.getDate("ngaySinh"));
                 nv.setSdt(rs.getString("sdt"));
                 nv.setEmail(rs.getString("email"));
                 nv.setTaiKhoan(rs.getString("taiKhoan"));
-                nv.setVaiTro(rs.getString("vaiTro"));
-                nv.setTrangThai(rs.getInt("trangThai"));
+                nv.setHinhAnh(rs.getString("hinhAnh"));
                 
+                String dbRole = rs.getString("vaiTro");
+                if (dbRole.equalsIgnoreCase("ADMIN") || dbRole.equalsIgnoreCase("QuanLy")) {
+                    nv.setVaiTro("QuanLy"); 
+                } else {
+                    nv.setVaiTro("NhanVien");
+                }
+                
+                nv.setTrangThai(rs.getInt("trangThai"));
                 TaiKhoanSession.taiKhoanHienTai = nv;
 
                 view.showMessage("Xin chào, " + nv.getHoTen());
                 
-                // Mở màn hình chính
-                MainFrame mainFrame = new MainFrame();
-                new MainController(mainFrame); // Khởi tạo controller
-                mainFrame.setVisible(true);    // HIỂN THỊ MÀN HÌNH CHÍNH
-
-                // Đóng màn hình đăng nhập
                 view.dispose();
+                MainFrame main = new MainFrame();
+                new MainController(main); 
+                main.setVisible(true);
 
             } else {
                 view.showMessage("Sai tài khoản hoặc mật khẩu!");

@@ -27,7 +27,7 @@ public class BanHangController {
     public BanHangController(BanHangPanel view, String initialSearch) {
         this.view = view;
         
-        // 1. Load danh sách sản phẩm ban đầu
+        // 1. Load sản phẩm
         if (initialSearch != null && !initialSearch.isEmpty()) {
             view.setSearchText(initialSearch);
             loadKhoHang(initialSearch);
@@ -35,13 +35,10 @@ public class BanHangController {
             loadKhoHang("");
         }
 
-        // 2. Sự kiện Tìm kiếm sản phẩm
+        // 2. Các sự kiện
         view.addTimKiemListener(e -> loadKhoHang(view.getTuKhoaTimKiem()));
-
-        // 3. Sự kiện Click sản phẩm -> Thêm vào giỏ
         view.setProductListener(sp -> themVaoGioHang(sp));
-
-        // 4. Sự kiện Xóa món khỏi giỏ
+        
         view.addXoaGioListener(e -> {
             int row = view.getTblGio().getSelectedRow();
             if (row >= 0) {
@@ -52,7 +49,6 @@ public class BanHangController {
             }
         });
 
-        // 5. Sự kiện Sửa số lượng trực tiếp trên bảng
         view.getModelGio().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -62,21 +58,19 @@ public class BanHangController {
             }
         });
 
-        // 6. Sự kiện Áp dụng Mã giảm giá
         view.addApDungMaListener(e -> xuLyMaGiamGia());
-
-        // 7. Sự kiện Thanh toán (Quan trọng)
+        
+        // SỰ KIỆN QUAN TRỌNG NHẤT: THANH TOÁN
         view.addThanhToanListener(e -> xuLyThanhToan());
     }
 
-    // --- LOAD KHO HÀNG ---
+    // --- CÁC HÀM CƠ BẢN ---
     private void loadKhoHang(String keyword) {
         List<SanPham> list = new ArrayList<>();
         try (Connection conn = KetNoiCSDL.getConnection()) {
             String sql = "SELECT * FROM SanPham WHERE soLuongTon > 0";
             if (!keyword.isEmpty()) sql += " AND tenSP LIKE '%" + keyword + "%'";
             ResultSet rs = conn.createStatement().executeQuery(sql);
-            
             while (rs.next()) {
                 SanPham sp = new SanPham();
                 sp.setMaSP(rs.getString("maSP"));
@@ -87,112 +81,58 @@ public class BanHangController {
                 list.add(sp);
             }
         } catch (Exception e) { e.printStackTrace(); }
-        
         view.hienThiDanhSachSanPham(list);
     }
 
-    // --- THÊM VÀO GIỎ ---
     private void themVaoGioHang(SanPham sp) {
-        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
         for(int i=0; i<view.getModelGio().getRowCount(); i++) {
             if(view.getModelGio().getValueAt(i, 0).equals(sp.getMaSP())) {
                 int slCu = Integer.parseInt(view.getModelGio().getValueAt(i, 2).toString());
-                int tonKho = sp.getTonKho(); // Lưu ý: Đây là tồn kho lúc load, có thể chưa real-time
-                
-                // Kiểm tra tồn kho sơ bộ
-                if (slCu + 1 > tonKho) {
-                    view.showMessage("Không đủ hàng trong kho (Tồn: " + tonKho + ")");
-                    return;
+                if (slCu + 1 > sp.getTonKho()) {
+                    view.showMessage("Không đủ hàng (Tồn: " + sp.getTonKho() + ")"); return;
                 }
-                
                 view.getModelGio().setValueAt(slCu + 1, i, 2); 
-                capNhatTongTien(); // Cập nhật lại tiền sau khi tăng số lượng
-                return;
+                capNhatTongTien(); return;
             }
         }
-        
-        // Nếu chưa có thì thêm mới
-        view.getModelGio().addRow(new Object[]{ 
-            sp.getMaSP(), sp.getTenSP(), 1, df.format(sp.getGiaBan()), df.format(sp.getGiaBan()) 
-        });
+        view.getModelGio().addRow(new Object[]{ sp.getMaSP(), sp.getTenSP(), 1, df.format(sp.getGiaBan()), df.format(sp.getGiaBan()) });
         capNhatTongTien();
     }
 
-    // --- SỬA SỐ LƯỢNG TRONG GIỎ ---
     private void xuLySuaSoLuong(int row) {
         try {
-            String slMoiStr = view.getModelGio().getValueAt(row, 2).toString();
-            int slMoi = Integer.parseInt(slMoiStr);
-            
-            if (slMoi <= 0) {
-                view.showMessage("Số lượng phải lớn hơn 0!");
-                view.getModelGio().setValueAt(1, row, 2); // Reset về 1
-                return;
-            }
-            
-            String donGiaStr = view.getModelGio().getValueAt(row, 3).toString().replace(",", "").replace(" đ", "");
-            double donGia = Double.parseDouble(donGiaStr);
-            
-            // Cập nhật cột Thành tiền
+            int slMoi = Integer.parseInt(view.getModelGio().getValueAt(row, 2).toString());
+            if (slMoi <= 0) { view.getModelGio().setValueAt(1, row, 2); return; }
+            double donGia = Double.parseDouble(view.getModelGio().getValueAt(row, 3).toString().replace(",", "").replace(" đ", ""));
             view.getModelGio().setValueAt(df.format(slMoi * donGia), row, 4);
             capNhatTongTien();
-            
-        } catch (NumberFormatException ex) {
-            view.showMessage("Vui lòng nhập số nguyên!");
-            // Có thể reset lại số lượng cũ nếu muốn
-        }
+        } catch (Exception ex) {}
     }
 
-    // --- XỬ LÝ MÃ GIẢM GIÁ ---
     private void xuLyMaGiamGia() {
         String code = view.getMaGiamGia().toUpperCase().trim();
-        if (code.isEmpty()) {
-            phanTramGiam = 0; 
-            view.showMessage("Đã hủy mã giảm giá."); 
-            capNhatTongTien(); 
-            return;
-        }
-        
+        if (code.isEmpty()) { phanTramGiam = 0; view.showMessage("Đã hủy mã."); capNhatTongTien(); return; }
         try (Connection conn = KetNoiCSDL.getConnection()) {
-            // Kiểm tra mã còn hạn và còn số lượng không
             String sql = "SELECT * FROM GiamGia WHERE code = ? AND ngayKetThuc >= CURDATE() AND soLuong > 0";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, code);
+            PreparedStatement pst = conn.prepareStatement(sql); pst.setString(1, code);
             ResultSet rs = pst.executeQuery();
-            
             if (rs.next()) {
                 phanTramGiam = (double) rs.getInt("phanTramGiam") / 100;
                 view.showMessage("Áp dụng mã: " + rs.getString("tenChuongTrinh") + "\nGiảm: " + rs.getInt("phanTramGiam") + "%");
-            } else {
-                phanTramGiam = 0; 
-                view.showMessage("Mã không hợp lệ hoặc đã hết lượt dùng!");
-            }
-        } catch (Exception e) { 
-            phanTramGiam = 0; 
-            e.printStackTrace();
-        }
+            } else { phanTramGiam = 0; view.showMessage("Mã không hợp lệ!"); }
+        } catch (Exception e) { phanTramGiam = 0; }
         capNhatTongTien();
     }
 
-    // --- TÍNH TỔNG TIỀN ---
     private void capNhatTongTien() {
         double tongHang = 0;
         for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
-            String tienStr = view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", "");
-            tongHang += Double.parseDouble(tienStr);
+            tongHang += Double.parseDouble(view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", ""));
         }
-        
-        double tienGiam = tongHang * phanTramGiam;
-        double tienPhaiTra = tongHang - tienGiam;
-        
-        view.setHienThiTien(
-            df.format(tongHang) + " đ", 
-            df.format(tienGiam) + " đ", 
-            df.format(tienPhaiTra) + " VNĐ"
-        );
+        view.setHienThiTien(df.format(tongHang) + " đ", df.format(tongHang * phanTramGiam) + " đ", df.format(tongHang * (1-phanTramGiam)) + " VNĐ");
     }
     
-    // --- [HELPER] TÌM MÃ KHÁCH HÀNG QUA SĐT ---
+    // --- HELPER LOOKUP ---
     private Integer layMaKhachHangTheoSDT(String sdt) {
         if (sdt == null || sdt.trim().isEmpty()) return null;
         try (Connection conn = KetNoiCSDL.getConnection()) {
@@ -200,25 +140,49 @@ public class BanHangController {
             pst.setString(1, sdt.trim());
             ResultSet rs = pst.executeQuery();
             if (rs.next()) return rs.getInt("maKH");
-        } catch (Exception e) { e.printStackTrace(); }
-        return null; // Không tìm thấy
+        } catch (Exception e) {}
+        return null;
     }
 
-    // --- THANH TOÁN & LƯU DB ---
+    private String layTenKhachHangTheoSDT(String sdt) {
+        if (sdt == null || sdt.trim().isEmpty()) return null;
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement("SELECT tenKH FROM KhachHang WHERE sdt = ?");
+            pst.setString(1, sdt.trim());
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) return rs.getString("tenKH");
+        } catch (Exception e) {}
+        return null;
+    }
+
+    // --- HÀM THANH TOÁN (LOGIC CHUẨN) ---
     private void xuLyThanhToan() {
+        // 1. Kiểm tra giỏ hàng
         if (view.getModelGio().getRowCount() == 0) { 
             view.showMessage("Giỏ hàng đang trống!"); 
             return; 
         }
         
-        // 1. Lấy thông tin Nhân viên bán (Xử lý String)
+        // 2. Lấy thông tin Nhân viên (String)
         NhanVien nv = TaiKhoanSession.taiKhoanHienTai;
-        String maNguoiBan = (nv != null) ? nv.getMaNV() : "NV_UNKNOWN"; // Default nếu null
+        String maNguoiBan = (nv != null) ? nv.getMaNV() : "NV_UNKNOWN";
 
-        // 2. Lấy thông tin Khách hàng (Tìm ID qua SĐT)
-        String inputKhach = view.getTenKhach(); // Ô này người dùng nhập SĐT hoặc Tên
-        Integer maKH = layMaKhachHangTheoSDT(inputKhach); 
-        String tenKhachBackup = inputKhach; // Lưu lại text họ nhập để backup
+        // 3. Xử lý thông tin Khách hàng (QUAN TRỌNG)
+        String inputKhach = view.getTenKhach(); // SĐT người dùng nhập
+        Integer maKH = layMaKhachHangTheoSDT(inputKhach); // Tìm ID khách
+        
+        String tenKhachLuu; 
+        if (maKH != null) {
+            // Nếu tìm thấy khách -> Lấy tên thật (Ví dụ: "Nguyễn Văn A")
+            tenKhachLuu = layTenKhachHangTheoSDT(inputKhach);
+        } else {
+            // Nếu không tìm thấy -> Lưu là khách lẻ
+            if (inputKhach == null || inputKhach.trim().isEmpty()) {
+                tenKhachLuu = "Khách vãng lai";
+            } else {
+                tenKhachLuu = "Khách lẻ (" + inputKhach + ")";
+            }
+        }
 
         Connection conn = null;
         try {
@@ -227,7 +191,7 @@ public class BanHangController {
 
             String maHD = "HD" + System.currentTimeMillis();
             
-            // Tính lại tổng tiền lần cuối để chính xác
+            // Tính tổng tiền
             double tongHang = 0;
             for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
                 String tienStr = view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", "");
@@ -236,21 +200,19 @@ public class BanHangController {
             double tongTienCuoiCung = tongHang * (1.0 - phanTramGiam);
 
             // A. INSERT HÓA ĐƠN
-            // Cột: maHD, ngayLap, maNV (String), maKH (Int/Null), tenKhachHang (String), tongTien
             String sqlHD = "INSERT INTO HoaDon (maHD, ngayLap, maNV, maKH, tenKhachHang, tongTien) VALUES (?, NOW(), ?, ?, ?, ?)";
             PreparedStatement pstHD = conn.prepareStatement(sqlHD);
             pstHD.setString(1, maHD); 
             pstHD.setString(2, maNguoiBan); 
             
-            if (maKH != null) pstHD.setInt(3, maKH); 
-            else pstHD.setNull(3, java.sql.Types.INTEGER);
+            // Xử lý maKH (Set NULL nếu không tìm thấy)
+            pstHD.setObject(3, maKH, java.sql.Types.INTEGER);
             
-            pstHD.setString(4, tenKhachBackup);
+            pstHD.setString(4, tenKhachLuu); // Lưu tên thật vào đây
             pstHD.setDouble(5, tongTienCuoiCung);
-            
             pstHD.executeUpdate();
 
-            // B. INSERT CHI TIẾT & TRỪ KHO
+            // B. INSERT CHI TIẾT & TRỪ KHO (Dùng Batch cho nhanh)
             String sqlCT = "INSERT INTO ChiTietHoaDon (maHD, maSP, soLuong, donGia, thanhTien) VALUES (?, ?, ?, ?, ?)";
             String sqlKho = "UPDATE SanPham SET soLuongTon = soLuongTon - ? WHERE maSP = ?";
             
@@ -263,47 +225,96 @@ public class BanHangController {
                 double donGia = Double.parseDouble(view.getModelGio().getValueAt(i, 3).toString().replace(",", "").replace(" đ", ""));
                 double thanhTien = Double.parseDouble(view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", ""));
 
-                // Chi tiết
+                // Batch Chi tiết
                 pstCT.setString(1, maHD); pstCT.setString(2, maSP); pstCT.setInt(3, soLuong);
                 pstCT.setDouble(4, donGia); pstCT.setDouble(5, thanhTien);
                 pstCT.addBatch();
 
-                // Trừ kho
+                // Batch Trừ Kho
                 pstKho.setInt(1, soLuong); pstKho.setString(2, maSP);
                 pstKho.addBatch();
             }
+            
             pstCT.executeBatch();
             pstKho.executeBatch();
 
-            // C. TRỪ SỐ LƯỢNG MÃ GIẢM GIÁ (Nếu có dùng)
+            // C. Trừ mã giảm giá (Nếu có)
             if (!view.getMaGiamGia().isEmpty() && phanTramGiam > 0) {
                 conn.createStatement().executeUpdate("UPDATE GiamGia SET soLuong = soLuong - 1 WHERE code = '" + view.getMaGiamGia().trim() + "'");
             }
 
-            conn.commit(); // XÁC NHẬN THÀNH CÔNG
+            conn.commit(); // XÁC NHẬN
             
             view.showMessage("Thanh toán thành công!\nMã HĐ: " + maHD);
-            
-            // D. RESET GIAO DIỆN
+            int confirm = JOptionPane.showConfirmDialog(view, "Bạn có muốn in hóa đơn (PDF) không?", "In Hóa Đơn", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                //xuất hóa đơn bằng textpdf
+                new XuatHoaDonPDF().xuatHoaDon(maHD); 
+            }
+            // Reset giao diện
             view.getModelGio().setRowCount(0);
             phanTramGiam = 0;
             view.setMaGiamGia("");
             capNhatTongTien();
-            loadKhoHang(""); // Load lại để cập nhật số lượng tồn mới
+            loadKhoHang(""); // Load lại kho để thấy số lượng giảm
+            String emailKhach = layEmailKhachHang(inputKhach);
             
-            // Hỏi in hóa đơn (Tính năng mở rộng nếu có)
-            int confirm = JOptionPane.showConfirmDialog(view, "Bạn có muốn in hóa đơn không?", "In Hóa Đơn", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                // Gọi class XuatHoaDon (nếu bạn đã làm)
-                // new XuatHoaDon().inHoaDon(maHD);
+            if (emailKhach != null && !emailKhach.isEmpty()) {
+                // Tạo nội dung
+                String noiDungHTML = taoNoiDungHoaDonHTML(maHD, tenKhachLuu, tongTienCuoiCung);
+                
+                // Chạy luồng riêng (Thread) để gửi mail không làm đơ phần mềm
+                new Thread(() -> {
+                    GuiEmail.guiHoaDon(emailKhach, "Hóa Đơn Điện Tử - " + maHD, noiDungHTML);
+                }).start();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            try { if (conn != null) conn.rollback(); } catch (SQLException ex) {} // Hoàn tác nếu lỗi
+            try { if (conn != null) conn.rollback(); } catch (SQLException ex) {} // Hoàn tác
             view.showMessage("Lỗi thanh toán: " + e.getMessage());
         } finally {
             try { if (conn != null) conn.close(); } catch (SQLException ex) {}
         }
+        
+        
+    }
+    private String layEmailKhachHang(String sdt) {
+        if (sdt == null || sdt.trim().isEmpty()) return null;
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement("SELECT email FROM KhachHang WHERE sdt = ?");
+            pst.setString(1, sdt.trim());
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) return rs.getString("email");
+        } catch (Exception e) {}
+        return null;
+    }
+    
+    private String taoNoiDungHoaDonHTML(String maHD, String tenKhach, double tongTien) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<h3>Cảm ơn quý khách đã mua hàng tại PNC Store!</h3>");
+        sb.append("<p>Mã hóa đơn: <b>").append(maHD).append("</b></p>");
+        sb.append("<p>Khách hàng: ").append(tenKhach).append("</p>");
+        sb.append("<table border='1' style='border-collapse: collapse; width: 100%;'>");
+        sb.append("<tr style='background-color: #f2f2f2;'><th>Tên Sản Phẩm</th><th>SL</th><th>Đơn Giá</th><th>Thành Tiền</th></tr>");
+        
+        for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
+            String tenSP = view.getModelGio().getValueAt(i, 1).toString();
+            String sl = view.getModelGio().getValueAt(i, 2).toString();
+            String donGia = view.getModelGio().getValueAt(i, 3).toString();
+            String thanhTien = view.getModelGio().getValueAt(i, 4).toString();
+            
+            sb.append("<tr>");
+            sb.append("<td>").append(tenSP).append("</td>");
+            sb.append("<td style='text-align: center;'>").append(sl).append("</td>");
+            sb.append("<td style='text-align: right;'>").append(donGia).append("</td>");
+            sb.append("<td style='text-align: right;'>").append(thanhTien).append("</td>");
+            sb.append("</tr>");
+        }
+        
+        sb.append("</table>");
+        sb.append("<h3 style='text-align: right; color: red;'>TỔNG TIỀN: ").append(df.format(tongTien)).append(" VNĐ</h3>");
+        sb.append("<p><i>Đây là thư tự động, vui lòng không trả lời email này.</i></p>");
+        return sb.toString();
     }
 }

@@ -3,311 +3,262 @@ package ban_dien_thoai_nhiem_vu.view;
 import ban_dien_thoai_nhiem_vu.model.SanPham;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.io.File;
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class BanHangPanel extends JPanel {
 
-    // --- LINH KIỆN ---
-    private JTextField txtTimKiemSP;
-    private JPanel pnlProductContainer; 
+    // --- Components Left ---
+    private JTextField txtTimKiem;
     private JButton btnTimKiem;
-
-    // Bên phải
+    private JPanel pnlDanhSachSanPham; 
+    
+    // --- Components Right ---
     private JTable tblGioHang;
-    private DefaultTableModel modelGio;
-    private JTextField txtTenKhach, txtSdtKhach, txtMaGiamGia; 
-    private JLabel lblTongTien, lblGiamGia, lblThanhToan; 
-    private JButton btnThanhToan, btnXoaKhoiGio, btnApDungMa; 
-
-    public void setMaGiamGia(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    // Interface để Controller gọi khi click vào Product Card
-    public interface ProductCardListener {
+    private DefaultTableModel modelGioHang;
+    private JButton btnXoaSP;
+    private JTextField txtTenKhach; 
+    private JTextField txtMaVoucher;
+    private JButton btnApDungVoucher;
+    private JLabel lblTongTien, lblGiamGia, lblThanhToan;
+    private JButton btnThanhToan;
+    
+    public interface ProductListener {
         void onProductSelected(SanPham sp);
     }
-    private ProductCardListener productListener;
+    private ProductListener productListener;
 
     public BanHangPanel() {
-        thietKeGiaoDien();
-    }
-
-    private void thietKeGiaoDien() {
         setLayout(new BorderLayout(10, 10));
-        setBackground(new Color(245, 247, 250));
+        setBackground(new Color(240, 242, 245));
         setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        // === PANEL TRÁI: KHO HÀNG (GRID) ===
-        JPanel pnlTrai = new JPanel(new BorderLayout(10, 10));
-        pnlTrai.setBackground(new Color(245, 247, 250));
-        pnlTrai.setPreferredSize(new Dimension(750, 0)); // 60% approx
         
-        // Tìm kiếm
-        JPanel pnlTimKiem = new JPanel(new BorderLayout(5, 5));
-        pnlTimKiem.setBackground(Color.WHITE);
-        pnlTimKiem.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, taoPanelTrai(), taoPanelPhai());
+        splitPane.setResizeWeight(0.65);
+        splitPane.setDividerSize(5);
+        splitPane.setBorder(null);
         
-        txtTimKiemSP = new JTextField();
-        txtTimKiemSP.setPreferredSize(new Dimension(0, 40));
-        txtTimKiemSP.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        add(splitPane, BorderLayout.CENTER);
+    }
+
+    private JPanel taoPanelTrai() {
+        JPanel pnl = new JPanel(new BorderLayout(0, 10));
+        pnl.setBackground(new Color(240, 242, 245));
         
-        btnTimKiem = new JButton("Tìm Kiếm");
-        btnTimKiem.setBackground(new Color(41, 98, 255));
-        btnTimKiem.setForeground(Color.BLACK);
-        btnTimKiem.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        JPanel pnlSearch = new JPanel(new BorderLayout(10, 0));
+        pnlSearch.setBackground(Color.WHITE);
+        pnlSearch.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-        pnlTimKiem.add(txtTimKiemSP, BorderLayout.CENTER);
-        pnlTimKiem.add(btnTimKiem, BorderLayout.EAST);
-        pnlTrai.add(pnlTimKiem, BorderLayout.NORTH);
-
-        // Container Sản Phẩm (Grid 3 Cột)
-        // Lưu ý: GridLayout(0, 3) nghĩa là 0 dòng (tự động) và 3 cột
-        pnlProductContainer = new JPanel(new GridLayout(0, 3, 15, 15)); 
-        pnlProductContainer.setBackground(new Color(245, 247, 250));
+        txtTimKiem = new JTextField();
+        txtTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        btnTimKiem = new JButton("Tìm kiếm");
+        btnTimKiem.setBackground(new Color(67, 94, 190));
+        btnTimKiem.setForeground(Color.WHITE);
         
-        JScrollPane scKho = new JScrollPane(pnlProductContainer);
-        scKho.setBorder(null);
-        scKho.getVerticalScrollBar().setUnitIncrement(16);
-        pnlTrai.add(scKho, BorderLayout.CENTER);
+        pnlSearch.add(txtTimKiem, BorderLayout.CENTER);
+        pnlSearch.add(btnTimKiem, BorderLayout.EAST);
+        
+        pnlDanhSachSanPham = new JPanel(new GridLayout(0, 3, 10, 10)); 
+        pnlDanhSachSanPham.setBackground(new Color(240, 242, 245));
+        
+        JScrollPane scroll = new JScrollPane(pnlDanhSachSanPham);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        
+        pnl.add(pnlSearch, BorderLayout.NORTH);
+        pnl.add(scroll, BorderLayout.CENTER);
+        return pnl;
+    }
 
-        // === PANEL PHẢI: GIỎ HÀNG ===
-        JPanel pnlPhai = new JPanel(new BorderLayout(10, 10));
-        pnlPhai.setBackground(Color.WHITE);
-        pnlPhai.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        // Header Cart
-        JLabel lblCartTitle = new JLabel("Giỏ Hàng");
-        lblCartTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
-        pnlPhai.add(lblCartTitle, BorderLayout.NORTH);
-
-        // Bảng giỏ hàng
-        String[] colsGio = {"Mã SP", "Tên SP", "SL", "Đơn Giá", "Thành Tiền"};
-        modelGio = new DefaultTableModel(colsGio, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 2; // Chỉ cho sửa cột SỐ LƯỢNG
-            }
+    private JPanel taoPanelPhai() {
+        JPanel pnl = new JPanel(new BorderLayout(0, 10));
+        pnl.setBackground(Color.WHITE);
+        pnl.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        JLabel lblTitle = new JLabel("Giỏ Hàng");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        pnl.add(lblTitle, BorderLayout.NORTH);
+        
+        String[] headers = {"Mã", "Tên SP", "SL", "Đơn Giá", "Thành Tiền"};
+        modelGioHang = new DefaultTableModel(headers, 0) {
+            @Override public boolean isCellEditable(int row, int col) { return col == 2; } 
         };
-        tblGioHang = new JTable(modelGio);
-        tblGioHang.setRowHeight(35);
-        tblGioHang.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        tblGioHang.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
+        tblGioHang = new JTable(modelGioHang);
+        tblGioHang.setRowHeight(30);
         
-        // Cấu hình chiều rộng cột
-        tblGioHang.getColumnModel().getColumn(0).setPreferredWidth(50);
-        tblGioHang.getColumnModel().getColumn(1).setPreferredWidth(150);
-        tblGioHang.getColumnModel().getColumn(2).setPreferredWidth(30);
-
-        JScrollPane scGio = new JScrollPane(tblGioHang);
-        scGio.setBorder(BorderFactory.createEmptyBorder());
-        scGio.getViewport().setBackground(Color.WHITE);
-        pnlPhai.add(scGio, BorderLayout.CENTER);
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        tblGioHang.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+        tblGioHang.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
         
-        // ACTION BUTTONS (Xóa)
-        btnXoaKhoiGio = new JButton("Xóa Sản Phẩm Chọn");
-        btnXoaKhoiGio.setBackground(new Color(255, 235, 238));
-        btnXoaKhoiGio.setForeground(Color.RED);
-        btnXoaKhoiGio.setBorder(null);
-        btnXoaKhoiGio.setPreferredSize(new Dimension(0, 30));
+        pnl.add(new JScrollPane(tblGioHang), BorderLayout.CENTER);
         
-        // --- FORM THANH TOÁN (BOTTOM RIGHT) ---
-        JPanel pnlCheckout = new JPanel();
-        pnlCheckout.setLayout(new BoxLayout(pnlCheckout, BoxLayout.Y_AXIS));
-        pnlCheckout.setBackground(Color.WHITE);
-        pnlCheckout.setBorder(new EmptyBorder(10, 0, 0, 0));
+        JPanel pnlFooter = new JPanel(new GridBagLayout());
+        pnlFooter.setBackground(Color.WHITE);
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(5, 0, 5, 0);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridx = 0; g.weightx = 1.0;
         
-        pnlCheckout.add(btnXoaKhoiGio);
-        pnlCheckout.add(Box.createVerticalStrut(15));
+        btnXoaSP = new JButton("Xóa Sản Phẩm Chọn");
+        btnXoaSP.setForeground(Color.RED);
+        btnXoaSP.setContentAreaFilled(false);
+        btnXoaSP.setBorderPainted(false);
+        btnXoaSP.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        pnlFooter.add(btnXoaSP, g);
         
-        pnlCheckout.add(createInputRow("Khách Hàng:", txtTenKhach = new JTextField()));
-        pnlCheckout.add(Box.createVerticalStrut(10));
-        pnlCheckout.add(createInputRow("Số ĐT:", txtSdtKhach = new JTextField()));
-        pnlCheckout.add(Box.createVerticalStrut(10));
+        txtTenKhach = new JTextField(); 
+        txtTenKhach.setBorder(BorderFactory.createTitledBorder("Số ĐT Khách Hàng (Tìm kiếm)"));
+        pnlFooter.add(txtTenKhach, g);
         
-        // Coupon
-        JPanel pMa = new JPanel(new BorderLayout(5, 0)); 
-        pMa.setBackground(Color.WHITE);
-        pMa.add(new JLabel("Mã Voucher: "), BorderLayout.WEST);
-        txtMaGiamGia = new JTextField();
-        btnApDungMa = new JButton("Áp Dụng");
-        btnApDungMa.setBackground(new Color(255, 193, 7)); // Yellow
-        pMa.add(txtMaGiamGia, BorderLayout.CENTER);
-        pMa.add(btnApDungMa, BorderLayout.EAST);
-        pnlCheckout.add(pMa);
-        pnlCheckout.add(Box.createVerticalStrut(15));
-
-        // Totals
-        lblTongTien = new JLabel("Tổng: 0 đ");
-        lblGiamGia = new JLabel("Giảm: 0 đ");
+        JPanel pnlVoucher = new JPanel(new BorderLayout(5, 0));
+        pnlVoucher.setBackground(Color.WHITE);
+        txtMaVoucher = new JTextField();
+        txtMaVoucher.setBorder(BorderFactory.createTitledBorder("Mã Voucher"));
+        btnApDungVoucher = new JButton("Áp Dụng");
+        pnlVoucher.add(txtMaVoucher, BorderLayout.CENTER);
+        pnlVoucher.add(btnApDungVoucher, BorderLayout.EAST);
+        pnlFooter.add(pnlVoucher, g);
+        
+        pnlFooter.add(new JSeparator(), g);
+        lblTongTien = createLabelTotal("Tổng tiền hàng: 0 đ", false);
+        pnlFooter.add(lblTongTien, g);
+        
+        lblGiamGia = createLabelTotal("Giảm giá: 0 đ", false);
         lblGiamGia.setForeground(new Color(40, 167, 69));
+        pnlFooter.add(lblGiamGia, g);
         
-        lblThanhToan = new JLabel("PHẢI TRẢ: 0 đ", SwingConstants.CENTER);
-        lblThanhToan.setFont(new Font("SansSerif", Font.BOLD, 22));
+        lblThanhToan = createLabelTotal("PHẢI TRẢ: 0 VNĐ", true);
         lblThanhToan.setForeground(new Color(220, 53, 69));
+        lblThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        pnlFooter.add(lblThanhToan, g);
         
-        pnlCheckout.add(lblTongTien);
-        pnlCheckout.add(lblGiamGia);
-        pnlCheckout.add(Box.createVerticalStrut(10));
-        pnlCheckout.add(lblThanhToan);
-        pnlCheckout.add(Box.createVerticalStrut(15));
-
-        // Checkout Button
         btnThanhToan = new JButton("THANH TOÁN");
-        btnThanhToan.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnThanhToan.setBackground(new Color(41, 98, 255)); 
+        btnThanhToan.setBackground(new Color(67, 94, 190));
         btnThanhToan.setForeground(Color.WHITE);
-        btnThanhToan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-        btnThanhToan.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnThanhToan.setFocusPainted(false);
-        btnThanhToan.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        btnThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnThanhToan.setPreferredSize(new Dimension(0, 50));
+        g.insets = new Insets(15, 0, 0, 0);
+        pnlFooter.add(btnThanhToan, g);
         
-        pnlCheckout.add(btnThanhToan);
-        
-        pnlPhai.add(pnlCheckout, BorderLayout.SOUTH);
-
-        // Split Pane
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pnlTrai, pnlPhai);
-        split.setDividerLocation(0.65);
-        split.setResizeWeight(0.65);
-        split.setBorder(null);
-
-        add(split, BorderLayout.CENTER);
+        pnl.add(pnlFooter, BorderLayout.SOUTH);
+        return pnl;
     }
     
-    private JPanel createInputRow(String label, JTextField txt) {
-        JPanel p = new JPanel(new BorderLayout(5, 0));
-        p.setBackground(Color.WHITE);
-        p.add(new JLabel(label), BorderLayout.WEST);
-        p.add(txt, BorderLayout.CENTER);
-        p.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        return p;
+    private JLabel createLabelTotal(String text, boolean isBold) {
+        JLabel lbl = new JLabel(text, SwingConstants.RIGHT);
+        lbl.setFont(new Font("Segoe UI", isBold ? Font.BOLD : Font.PLAIN, 14));
+        return lbl;
     }
-    
-    // --- DISPLAY PRODUCTS AS CARDS ---
-    public void hienThiDanhSachSanPham(List<SanPham> list) {
-        pnlProductContainer.removeAll();
-        // Calculate rows based on 3 columns
-        int rows = (int) Math.ceil(list.size() / 3.0);
-        if (rows == 0) rows = 1; // Prevent 0 rows issue if grid expects >0
-        
-        // Đảm bảo cast đúng kiểu
-        LayoutManager layout = pnlProductContainer.getLayout();
-        if (layout instanceof GridLayout) {
-            ((GridLayout) layout).setRows(rows);
+
+    // --- HÀM LOAD ẢNH THÔNG MINH (Chữa lỗi ảnh trắng xóa) ---
+    private ImageIcon loadSmartImage(String path, int w, int h) {
+        if (path == null || path.trim().isEmpty()) {
+            return null; // Hoặc trả về ảnh mặc định
         }
+        try {
+            // 1. Thử load đường dẫn tuyệt đối (File trên máy)
+            File f = new File(path);
+            if (f.exists()) {
+                ImageIcon icon = new ImageIcon(path);
+                return new ImageIcon(icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            }
+            
+            // 2. Thử load đường dẫn tương đối (Resource trong Jar)
+            java.net.URL url = getClass().getResource("/ban_dien_thoai_nhiem_vu/icons/" + path);
+            if (url != null) {
+                ImageIcon icon = new ImageIcon(url);
+                return new ImageIcon(icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            }
+        } catch (Exception e) {}
+        
+        return null;
+    }
+
+    public void hienThiDanhSachSanPham(List<SanPham> list) {
+        pnlDanhSachSanPham.removeAll();
         
         DecimalFormat df = new DecimalFormat("#,### đ");
-        
         for (SanPham sp : list) {
-            JPanel card = new JPanel();
-            card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-            card.setBackground(Color.WHITE);
-            card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 230, 230), 1),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-            ));
-            card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            JPanel pItem = new JPanel(new BorderLayout(5, 5));
+            pItem.setBackground(Color.WHITE);
+            pItem.setBorder(new LineBorder(new Color(230, 230, 230), 1));
+            pItem.setPreferredSize(new Dimension(160, 220));
+            pItem.setCursor(new Cursor(Cursor.HAND_CURSOR));
             
-            // Image Placeholder (or real image if path exists)
-            // Image Loading Logic
             JLabel lblImg = new JLabel();
-            lblImg.setPreferredSize(new Dimension(100, 100)); 
-            lblImg.setAlignmentX(Component.CENTER_ALIGNMENT);
             lblImg.setHorizontalAlignment(SwingConstants.CENTER);
-            lblImg.setOpaque(true);
-            lblImg.setBackground(new Color(240, 245, 250));
-
-            try {
-                String imagePath = sp.getHinhAnh();
-                if (imagePath != null && !imagePath.isEmpty()) {
-                    ImageIcon icon = new ImageIcon(imagePath);
-                    Image img = icon.getImage();
-                    // Scale image to fit 100x100 smoothly
-                    Image newImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-                    lblImg.setIcon(new ImageIcon(newImg));
-                    lblImg.setText(""); // Clear placeholder text
-                } else {
-                    lblImg.setText("IMG"); // Fallback text
-                }
-            } catch (Exception ex) {
-                lblImg.setText("Err");
-                ex.printStackTrace();
+            lblImg.setPreferredSize(new Dimension(160, 140));
+            
+            // --- GỌI HÀM LOAD ẢNH THÔNG MINH ---
+            ImageIcon icon = loadSmartImage(sp.getHinhAnh(), 140, 120);
+            if(icon != null) {
+                lblImg.setIcon(icon);
+            } else {
+                lblImg.setText("NO IMAGE");
             }
             
+            JPanel pInfo = new JPanel(new GridLayout(3, 1));
+            pInfo.setBackground(Color.WHITE);
+            pInfo.setBorder(new EmptyBorder(0, 10, 10, 10));
+            
             JLabel lblName = new JLabel(sp.getTenSP());
-            lblName.setFont(new Font("SansSerif", Font.BOLD, 14));
-            lblName.setAlignmentX(Component.CENTER_ALIGNMENT);
+            lblName.setFont(new Font("Segoe UI", Font.BOLD, 13));
             
             JLabel lblPrice = new JLabel(df.format(sp.getGiaBan()));
-            lblPrice.setForeground(new Color(41, 98, 255));
-            lblPrice.setAlignmentX(Component.CENTER_ALIGNMENT);
+            lblPrice.setForeground(new Color(67, 94, 190));
+            lblPrice.setFont(new Font("Segoe UI", Font.BOLD, 12));
             
             JLabel lblStock = new JLabel("Kho: " + sp.getTonKho());
-            lblStock.setFont(new Font("SansSerif", Font.PLAIN, 12));
             lblStock.setForeground(Color.GRAY);
-            lblStock.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            card.add(lblImg);
-            card.add(Box.createVerticalStrut(10));
-            card.add(lblName);
-            card.add(lblPrice);
-            card.add(lblStock);
+            lblStock.setFont(new Font("Segoe UI", Font.PLAIN, 11));
             
-            // Interaction
-            card.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                     if (productListener != null) productListener.onProductSelected(sp);
+            pInfo.add(lblName);
+            pInfo.add(lblPrice);
+            pInfo.add(lblStock);
+            
+            pItem.add(lblImg, BorderLayout.CENTER);
+            pItem.add(pInfo, BorderLayout.SOUTH);
+            
+            pItem.addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    if (productListener != null) productListener.onProductSelected(sp);
                 }
-                
-                // Hover effect
-                public void mouseEntered(MouseEvent e) {
-                    card.setBackground(new Color(240, 248, 255));
-                    card.setBorder(BorderFactory.createLineBorder(new Color(41, 98, 255), 1));
-                }
-                public void mouseExited(MouseEvent e) {
-                    card.setBackground(Color.WHITE);
-                    card.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
-                }
+                @Override public void mouseEntered(MouseEvent e) { pItem.setBorder(new LineBorder(new Color(67, 94, 190), 2)); }
+                @Override public void mouseExited(MouseEvent e) { pItem.setBorder(new LineBorder(new Color(230, 230, 230), 1)); }
             });
             
-            pnlProductContainer.add(card);
+            pnlDanhSachSanPham.add(pItem);
         }
-        pnlProductContainer.revalidate();
-        pnlProductContainer.repaint();
+        pnlDanhSachSanPham.revalidate();
+        pnlDanhSachSanPham.repaint();
     }
 
-    // --- GETTER & EVENTS ---
+    public String getTuKhoaTimKiem() { return txtTimKiem.getText(); }
+    public void setSearchText(String text) { txtTimKiem.setText(text); }
     public JTable getTblGio() { return tblGioHang; }
-    public DefaultTableModel getModelGio() { return modelGio; }
-    
-    public String getTenKhach() { return txtTenKhach.getText(); }
-    public String getSdtKhach() { return txtSdtKhach.getText(); }
-    public String getMaGiamGia() { return txtMaGiamGia.getText().trim(); }
-    public String getTuKhoaTimKiem() { return txtTimKiemSP.getText(); }
-    public void setSearchText(String text) { txtTimKiemSP.setText(text); }
-    
-    public String getLblThanhToanText() {
-        return lblThanhToan.getText();
+    public DefaultTableModel getModelGio() { return modelGioHang; }
+    public String getTenKhach() { return txtTenKhach.getText(); } 
+    public String getMaGiamGia() { return txtMaVoucher.getText(); }
+    public void setMaGiamGia(String code) { txtMaVoucher.setText(code); }
+    public void setHienThiTien(String tong, String giam, String phaiTra) {
+        lblTongTien.setText("Tổng tiền hàng: " + tong);
+        lblGiamGia.setText("Giảm giá: " + giam);
+        lblThanhToan.setText("PHẢI TRẢ: " + phaiTra);
     }
-    
-    public void setHienThiTien(String tongHang, String tienGiam, String canTra) {
-        lblTongTien.setText("Tổng tiền hàng: " + tongHang);
-        lblGiamGia.setText("Giảm giá: " + tienGiam);
-        lblThanhToan.setText("PHẢI TRẢ: " + canTra);
-    }
-
-    public void setProductListener(ProductCardListener l) { this.productListener = l; }
     public void addTimKiemListener(ActionListener l) { btnTimKiem.addActionListener(l); }
-    public void addXoaGioListener(ActionListener l) { btnXoaKhoiGio.addActionListener(l); }
+    public void setProductListener(ProductListener l) { this.productListener = l; }
+    public void addXoaGioListener(ActionListener l) { btnXoaSP.addActionListener(l); }
+    public void addApDungMaListener(ActionListener l) { btnApDungVoucher.addActionListener(l); }
     public void addThanhToanListener(ActionListener l) { btnThanhToan.addActionListener(l); }
-    public void addApDungMaListener(ActionListener l) { btnApDungMa.addActionListener(l); }
     public void showMessage(String msg) { JOptionPane.showMessageDialog(this, msg); }
+    public String getLblThanhToanText() { return lblThanhToan.getText(); }
 }

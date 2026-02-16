@@ -1,188 +1,163 @@
 package ban_dien_thoai_nhiem_vu.view;
 
 import ban_dien_thoai_nhiem_vu.model.NhanVien;
-import ban_dien_thoai_nhiem_vu.model.TaiKhoanSession;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ThongTinTaiKhoanPanel extends JPanel {
 
-    // Phần thông tin
-    private JLabel lblMaNV, lblHoTen, lblTaiKhoan, lblVaiTro;
-    
-    // Phần đổi mật khẩu
-    private JPasswordField txtMatKhauCu;
-    private JPasswordField txtMatKhauMoi;
-    private JPasswordField txtXacNhan;
-    private JButton btnDoiMatKhau;
-    private JButton btnHuy;
+    private JLabel lblAvatar;
+    private JButton btnDoiAvatar, btnLuuThongTin, btnDoiMatKhau;
+    private JTextField txtMaNV, txtHoTen, txtSDT, txtEmail, txtNgaySinh, txtTaiKhoan;
+    private JPasswordField txtMatKhauCu, txtMatKhauMoi, txtXacNhan;
+    private String duongDanAnhMoi = null; 
 
     public ThongTinTaiKhoanPanel() {
-        setLayout(new BorderLayout(20, 20));
-        setBackground(new Color(245, 247, 250));
-        setBorder(new EmptyBorder(20, 40, 40, 40));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // --- HEADER ---
-        JLabel lblTitle = new JLabel("Thông Tin Tài Khoản & Bảo Mật");
+        JLabel lblTitle = new JLabel("HỒ SƠ CÁ NHÂN & BẢO MẬT");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblTitle.setForeground(new Color(50, 50, 50));
+        lblTitle.setForeground(new Color(67, 94, 190));
         add(lblTitle, BorderLayout.NORTH);
 
-        // --- BODY (Chia đôi: Trái Info - Phải Đổi Pass) ---
-        JPanel pnlCenter = new JPanel(new GridLayout(1, 2, 30, 0));
-        pnlCenter.setOpaque(false);
+        // --- CONTENT ---
+        JPanel pnlCenter = new JPanel(new GridLayout(1, 2, 20, 0));
+        pnlCenter.setBackground(Color.WHITE);
+
+        // 1. CỘT TRÁI: THÔNG TIN
+        JPanel pnlInfo = new JPanel(new GridBagLayout());
+        pnlInfo.setBorder(new TitledBorder("Thông tin cá nhân"));
+        pnlInfo.setBackground(Color.WHITE);
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(5, 5, 5, 5); g.fill = GridBagConstraints.HORIZONTAL;
+
+        // Avatar
+        g.gridx = 0; g.gridy = 0; g.gridwidth = 2;
+        lblAvatar = new JLabel();
+        lblAvatar.setPreferredSize(new Dimension(100, 100));
+        lblAvatar.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        lblAvatar.setHorizontalAlignment(SwingConstants.CENTER);
+        // Icon mặc định (Tránh lỗi nếu không có ảnh)
+        lblAvatar.setIcon(UIManager.getIcon("FileView.computerIcon")); 
         
-        pnlCenter.add(createProfilePanel());
-        pnlCenter.add(createChangePassPanel());
+        JPanel pAvt = new JPanel(); pAvt.setBackground(Color.WHITE); pAvt.add(lblAvatar);
+        pnlInfo.add(pAvt, g);
+
+        g.gridy++; 
+        btnDoiAvatar = new JButton("Chọn ảnh...");
+        JPanel pBtnA = new JPanel(); pBtnA.setBackground(Color.WHITE); pBtnA.add(btnDoiAvatar);
+        pnlInfo.add(pBtnA, g);
+
+        // Fields
+        g.gridwidth = 1;
+        addField(pnlInfo, g, 2, "Mã NV:", txtMaNV = new JTextField()); txtMaNV.setEditable(false);
+        addField(pnlInfo, g, 3, "Họ Tên:", txtHoTen = new JTextField());
+        addField(pnlInfo, g, 4, "Ngày Sinh:", txtNgaySinh = new JTextField());
+        addField(pnlInfo, g, 5, "SĐT:", txtSDT = new JTextField());
+        addField(pnlInfo, g, 6, "Email:", txtEmail = new JTextField());
+        addField(pnlInfo, g, 7, "Vai Trò:", txtTaiKhoan = new JTextField()); txtTaiKhoan.setEditable(false);
+
+        g.gridx = 0; g.gridy = 8; g.gridwidth = 2; g.insets = new Insets(20, 5, 5, 5);
+        btnLuuThongTin = new JButton("Cập nhật Hồ sơ");
+        btnLuuThongTin.setBackground(new Color(40, 167, 69)); btnLuuThongTin.setForeground(Color.WHITE);
+        pnlInfo.add(btnLuuThongTin, g);
+
+        pnlCenter.add(pnlInfo);
+
+        // 2. CỘT PHẢI: ĐỔI MẬT KHẨU
+        JPanel pnlPass = new JPanel(new GridBagLayout());
+        pnlPass.setBorder(new TitledBorder("Đổi mật khẩu"));
+        pnlPass.setBackground(Color.WHITE);
         
+        GridBagConstraints gp = new GridBagConstraints();
+        gp.insets = new Insets(10, 10, 10, 10); gp.fill = GridBagConstraints.HORIZONTAL; gp.gridx = 0; gp.gridy = 0;
+
+        pnlPass.add(new JLabel("Mật khẩu hiện tại:"), gp);
+        gp.gridy++; pnlPass.add(txtMatKhauCu = new JPasswordField(20), gp);
+        
+        gp.gridy++; pnlPass.add(new JLabel("Mật khẩu mới:"), gp);
+        gp.gridy++; pnlPass.add(txtMatKhauMoi = new JPasswordField(20), gp);
+        
+        gp.gridy++; pnlPass.add(new JLabel("Nhập lại mật khẩu mới:"), gp);
+        gp.gridy++; pnlPass.add(txtXacNhan = new JPasswordField(20), gp);
+
+        gp.gridy++; gp.insets = new Insets(20, 10, 10, 10);
+        btnDoiMatKhau = new JButton("Lưu Mật Khẩu");
+        btnDoiMatKhau.setBackground(new Color(67, 94, 190)); btnDoiMatKhau.setForeground(Color.WHITE);
+        pnlPass.add(btnDoiMatKhau, gp);
+        
+        gp.gridy++; gp.weighty = 1.0; pnlPass.add(new JLabel(), gp); // Đẩy lên trên
+
+        pnlCenter.add(pnlPass);
         add(pnlCenter, BorderLayout.CENTER);
-        
-        // Load dữ liệu lên luôn khi mở
-        loadData();
+
+        // Event chọn ảnh
+        btnDoiAvatar.addActionListener(e -> chonAnh());
     }
 
-    private JPanel createProfilePanel() {
-        JPanel p = new JPanel(new GridBagLayout());
-        p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)), 
-            " Thông tin cá nhân ", 
-            TitledBorder.DEFAULT_JUSTIFICATION, 
-            TitledBorder.DEFAULT_POSITION, 
-            new Font("Segoe UI", Font.BOLD, 14)
-        ));
-
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(10, 20, 10, 20);
-        g.fill = GridBagConstraints.HORIZONTAL;
-        g.weightx = 1.0; 
-        g.gridx = 0; g.gridy = 0;
-
-        // Avatar (Icon đại diện)
-        JLabel lblAvatar = new JLabel("👤", SwingConstants.CENTER);
-        lblAvatar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 60));
-        p.add(lblAvatar, g);
-
-        // Các label thông tin
-        g.gridy++; p.add(createLabelPair("Mã Nhân Viên:", lblMaNV = new JLabel("...")), g);
-        g.gridy++; p.add(createLabelPair("Họ và Tên:", lblHoTen = new JLabel("...")), g);
-        g.gridy++; p.add(createLabelPair("Tài khoản:", lblTaiKhoan = new JLabel("...")), g);
-        g.gridy++; p.add(createLabelPair("Vai trò:", lblVaiTro = new JLabel("...")), g);
-        
-        // Đẩy các thành phần lên trên
-        g.gridy++; g.weighty = 1.0;
-        p.add(new JLabel(""), g); 
-
-        return p;
+    private void addField(JPanel p, GridBagConstraints g, int y, String lbl, JTextField txt) {
+        g.gridx = 0; g.gridy = y; g.weightx = 0.3; p.add(new JLabel(lbl), g);
+        g.gridx = 1; g.weightx = 0.7; p.add(txt, g);
     }
 
-    private JPanel createLabelPair(String title, JLabel valueLabel) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
-        
-        JLabel lblTitle = new JLabel(title);
-        lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblTitle.setForeground(Color.GRAY);
-        
-        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        valueLabel.setForeground(new Color(33, 33, 33));
-        
-        p.add(lblTitle, BorderLayout.NORTH);
-        p.add(valueLabel, BorderLayout.CENTER);
-        p.add(new JSeparator(), BorderLayout.SOUTH);
-        return p;
-    }
-
-    private JPanel createChangePassPanel() {
-        JPanel p = new JPanel(new GridBagLayout());
-        p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)), 
-            " Đổi mật khẩu ", 
-            TitledBorder.DEFAULT_JUSTIFICATION, 
-            TitledBorder.DEFAULT_POSITION, 
-            new Font("Segoe UI", Font.BOLD, 14)
-        ));
-
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(15, 20, 5, 20);
-        g.fill = GridBagConstraints.HORIZONTAL;
-        g.weightx = 1.0; 
-        g.gridx = 0; g.gridy = 0;
-
-        p.add(new JLabel("Mật khẩu hiện tại:"), g);
-        g.gridy++;
-        txtMatKhauCu = new JPasswordField(); styleField(txtMatKhauCu);
-        p.add(txtMatKhauCu, g);
-
-        g.gridy++;
-        p.add(new JLabel("Mật khẩu mới:"), g);
-        g.gridy++;
-        txtMatKhauMoi = new JPasswordField(); styleField(txtMatKhauMoi);
-        p.add(txtMatKhauMoi, g);
-
-        g.gridy++;
-        p.add(new JLabel("Nhập lại mật khẩu mới:"), g);
-        g.gridy++;
-        txtXacNhan = new JPasswordField(); styleField(txtXacNhan);
-        p.add(txtXacNhan, g);
-
-        // Buttons
-        g.gridy++; g.insets = new Insets(30, 20, 10, 20);
-        btnDoiMatKhau = new JButton("Xác nhận đổi");
-        btnDoiMatKhau.setBackground(new Color(67, 94, 190));
-        btnDoiMatKhau.setForeground(Color.WHITE);
-        btnDoiMatKhau.setPreferredSize(new Dimension(0, 40));
-        btnDoiMatKhau.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnDoiMatKhau.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        p.add(btnDoiMatKhau, g);
-
-        g.gridy++; g.insets = new Insets(10, 20, 10, 20);
-        btnHuy = new JButton("Xóa trắng");
-        btnHuy.setBackground(new Color(240, 240, 240));
-        btnHuy.setPreferredSize(new Dimension(0, 35));
-        p.add(btnHuy, g);
-        
-        g.gridy++; g.weighty = 1.0;
-        p.add(new JLabel(""), g); 
-
-        return p;
-    }
-    
-    private void styleField(JTextField txt) {
-        txt.setPreferredSize(new Dimension(0, 35));
-        txt.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-    }
-
-    private void loadData() {
-        NhanVien nv = TaiKhoanSession.taiKhoanHienTai;
-        if (nv != null) {
-            lblMaNV.setText(nv.getMaNV());
-            lblHoTen.setText(nv.getHoTen());
-            lblTaiKhoan.setText(nv.getTaiKhoan());
-            lblVaiTro.setText(nv.getVaiTro());
+    private void chonAnh() {
+        JFileChooser ch = new JFileChooser();
+        ch.setFileFilter(new FileNameExtensionFilter("Ảnh JPG/PNG", "jpg", "png"));
+        if(ch.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File f = ch.getSelectedFile();
+            duongDanAnhMoi = f.getAbsolutePath();
+            ImageIcon icon = new ImageIcon(duongDanAnhMoi);
+            Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            lblAvatar.setIcon(new ImageIcon(img));
         }
     }
 
-    // --- GETTERS & LISTENERS ---
+    // --- GETTERS & SETTERS ---
+    public void setThongTin(NhanVien nv) {
+        txtMaNV.setText(nv.getMaNV());
+        txtHoTen.setText(nv.getHoTen());
+        txtSDT.setText(nv.getSdt());
+        txtEmail.setText(nv.getEmail());
+        txtNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().toString() : "");
+        txtTaiKhoan.setText(nv.getVaiTro());
+        
+        if (nv.getHinhAnh() != null && !nv.getHinhAnh().isEmpty()) {
+            try {
+                ImageIcon icon = new ImageIcon(nv.getHinhAnh());
+                Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                lblAvatar.setIcon(new ImageIcon(img));
+            } catch (Exception e) {}
+        }
+    }
+
+    public String getHoTen() { return txtHoTen.getText(); }
+    public String getSDT() { return txtSDT.getText(); }
+    public String getEmail() { return txtEmail.getText(); }
+    public String getNgaySinh() { return txtNgaySinh.getText(); }
+    public String getDuongDanAnhMoi() { return duongDanAnhMoi; }
+    
     public String getMatKhauCu() { return new String(txtMatKhauCu.getPassword()); }
     public String getMatKhauMoi() { return new String(txtMatKhauMoi.getPassword()); }
     public String getXacNhan() { return new String(txtXacNhan.getPassword()); }
+
+    // --- [MỚI] HÀM THIẾU MÀ CONTROLLER CẦN ---
+    public void showMessage(String msg) { 
+        JOptionPane.showMessageDialog(this, msg); 
+    }
     
-    public void clearForm() {
+    public void clearPassFields() {
         txtMatKhauCu.setText("");
         txtMatKhauMoi.setText("");
         txtXacNhan.setText("");
     }
 
+    public void addLuuThongTinListener(ActionListener l) { btnLuuThongTin.addActionListener(l); }
     public void addDoiMatKhauListener(ActionListener l) { btnDoiMatKhau.addActionListener(l); }
-    public void addHuyListener(ActionListener l) { btnHuy.addActionListener(l); }
-    
-    public void showMessage(String msg) { JOptionPane.showMessageDialog(this, msg); }
 }

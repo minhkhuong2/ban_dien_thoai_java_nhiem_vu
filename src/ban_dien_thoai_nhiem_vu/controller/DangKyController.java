@@ -11,26 +11,26 @@ public class DangKyController {
     public DangKyController(DangKyFrame view) {
         this.view = view;
 
-        // 1. Sự kiện Đăng Ký
         view.addDangKyListener(e -> xuLyDangKy());
-
-        // 2. Sự kiện Quay Lại -> Mở lại form đăng nhập
+        
         view.addQuayLaiListener(e -> {
             view.dispose();
-            DangNhapFrame loginView = new DangNhapFrame();
-            new DangNhapController(loginView);
-            loginView.setVisible(true);
+            DangNhapFrame login = new DangNhapFrame();
+            new DangNhapController(login);
+            login.setVisible(true);
         });
     }
 
     private void xuLyDangKy() {
         String hoTen = view.getHoTen();
+        String sdt = view.getSDT();      // Mới
+        String email = view.getEmail();  // Mới
         String tk = view.getTaiKhoan();
         String mk = view.getMatKhau();
         String xacNhan = view.getXacNhanMK();
 
-        // Validate cơ bản
-        if (hoTen.isEmpty() || tk.isEmpty() || mk.isEmpty()) {
+        // Validate
+        if (hoTen.isEmpty() || sdt.isEmpty() || email.isEmpty() || tk.isEmpty() || mk.isEmpty()) {
             view.showMessage("Vui lòng nhập đầy đủ thông tin!"); return;
         }
         if (!mk.equals(xacNhan)) {
@@ -38,34 +38,35 @@ public class DangKyController {
         }
 
         try (Connection conn = KetNoiCSDL.getConnection()) {
-            // Kiểm tra trùng tài khoản
-            PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM NhanVien WHERE taiKhoan = ?");
-            checkStmt.setString(1, tk);
-            if (checkStmt.executeQuery().next()) {
-                view.showMessage("Tài khoản này đã tồn tại!"); return;
+            // Check trùng
+            PreparedStatement check = conn.prepareStatement("SELECT * FROM NhanVien WHERE taiKhoan = ?");
+            check.setString(1, tk);
+            if (check.executeQuery().next()) {
+                view.showMessage("Tài khoản đã tồn tại!"); return;
             }
 
-            // Tạo mã NV tự động (Ví dụ: NV + thời gian hiện tại để không trùng)
-            String maNV = "NV" + System.currentTimeMillis() % 10000; 
-
-            // Insert vào DB
-            String sql = "INSERT INTO NhanVien (maNV, hoTen, taiKhoan, matKhau, vaiTro, trangThai) VALUES (?, ?, ?, ?, ?, ?)";
+            // Insert (Có thêm sdt, email)
+            String maNV = "NV" + System.currentTimeMillis() % 10000;
+            String sql = "INSERT INTO NhanVien (maNV, hoTen, sdt, email, taiKhoan, matKhau, vaiTro, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
+            
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, maNV);
             pst.setString(2, hoTen);
-            pst.setString(3, tk);
-            pst.setString(4, mk);
-            pst.setString(5, "STAFF"); // Mặc định đăng ký là Nhân viên thường
-            pst.setInt(6, 1); // Trạng thái hoạt động
-
-            pst.executeUpdate();
-            view.showMessage("Đăng ký thành công! Hãy đăng nhập.");
+            pst.setString(3, sdt);
+            pst.setString(4, email);
+            pst.setString(5, tk);
+            pst.setString(6, mk);
+            pst.setString(7, "NhanVien"); // Mặc định là NV thường
             
-            // Chuyển về màn hình đăng nhập
+            pst.executeUpdate();
+            
+            view.showMessage("Đăng ký thành công! Vui lòng đăng nhập.");
+            
+            // Chuyển màn hình
             view.dispose();
-            DangNhapFrame loginView = new DangNhapFrame();
-            new DangNhapController(loginView);
-            loginView.setVisible(true);
+            DangNhapFrame login = new DangNhapFrame();
+            new DangNhapController(login);
+            login.setVisible(true);
 
         } catch (Exception ex) {
             ex.printStackTrace();

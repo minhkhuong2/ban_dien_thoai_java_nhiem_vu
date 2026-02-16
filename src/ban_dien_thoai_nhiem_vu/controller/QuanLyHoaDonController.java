@@ -5,51 +5,108 @@ import ban_dien_thoai_nhiem_vu.view.QuanLyHoaDonPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
-import java.text.NumberFormat;
-import java.util.Locale;
+import javax.swing.JOptionPane;
 
 public class QuanLyHoaDonController {
+    
     private QuanLyHoaDonPanel view;
-    private NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private DecimalFormat df = new DecimalFormat("#,### đ");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     public QuanLyHoaDonController(QuanLyHoaDonPanel view) {
         this.view = view;
-        loadDanhSachHoaDon();
-
-        // Sự kiện Click vào bảng Hóa đơn
-        view.addClickHoaDonListener(new MouseAdapter() {
+        
+        // Load danh sách ngay khi mở
+        loadDanhSachHoaDon("");
+        
+        // 1. Sự kiện Tìm kiếm
+        view.addTimKiemListener(e -> loadDanhSachHoaDon(view.getTuKhoa()));
+        
+        // 2. Sự kiện Làm mới (Tải lại)
+        view.addLamMoiListener(e -> loadDanhSachHoaDon(""));
+        
+        // 3. Sự kiện Click bảng -> Xem chi tiết
+        view.addBangListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = view.getTblHoaDon().getSelectedRow();
                 if (row >= 0) {
+                    // Lấy dữ liệu từ dòng được chọn
                     String maHD = view.getTblHoaDon().getValueAt(row, 0).toString();
+                    String ngay = view.getTblHoaDon().getValueAt(row, 1).toString();
+                    String nv = view.getTblHoaDon().getValueAt(row, 2).toString();
+                    String kh = view.getTblHoaDon().getValueAt(row, 3).toString();
+                    String tong = view.getTblHoaDon().getValueAt(row, 4).toString();
+                    
+                    // Hiển thị lên Panel chi tiết bên phải
+                    view.setThongTinChiTiet(maHD, ngay, nv, kh, tong);
                     loadChiTietHoaDon(maHD);
                 }
             }
         });
+
+        // 4. Sự kiện In Hóa Đơn (Nếu bạn đã thêm nút btnIn bên View)
+        try {
+            // Kiểm tra xem nút In có tồn tại không để tránh lỗi null
+            if (view.getBtnIn() != null) {
+                view.getBtnIn().addActionListener(e -> xuLyInHoaDon());
+            }
+        } catch (Exception ex) {
+            // Nếu chưa có nút In thì bỏ qua, không làm gì
+        }
     }
 
-    private void loadDanhSachHoaDon() {
+    // --- XỬ LÝ IN ẤN ---
+    private void xuLyInHoaDon() {
+        int row = view.getTblHoaDon().getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn hóa đơn cần in!");
+            return;
+        }
+        String maHD = view.getTblHoaDon().getValueAt(row, 0).toString();
+        
+        // Gọi class XuatHoaDon để thực hiện lệnh in
+        new XuatHoaDon().inHoaDon(maHD);
+    }
+
+    // --- LOAD DANH SÁCH (LOGIC CHUẨN: HIỆN TÊN KHÁCH THAY VÌ SĐT) ---
+    private void loadDanhSachHoaDon(String keyword) {
         try (Connection conn = KetNoiCSDL.getConnection()) {
-            // Sắp xếp ngày lập mới nhất lên đầu (DESC)
-            String sql = "SELECT * FROM HoaDon ORDER BY ngayLap DESC";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+            // Kỹ thuật SQL:
+            // LEFT JOIN KhachHang: Để lấy thông tin tên thật từ bảng Khách hàng.
+            // COALESCE(a, b, c): Lấy giá trị đầu tiên không null. 
+            // -> Ưu tiên lấy tenKH (bảng KhachHang). Nếu không có (null) thì lấy tenKhachHang (lưu cứng trong HoaDon).
+            
+            String sql = "SELECT hd.maHD, hd.ngayLap, nv.hoTen, " +
+                         "COALESCE(kh.tenKH, hd.tenKhachHang, 'Khách vãng lai') as tenHienThi, " +
+                         "hd.tongTien " +
+                         "FROM HoaDon hd " +
+                         "LEFT JOIN NhanVien nv ON hd.maNV = nv.maNV " +
+                         "LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH " + 
+                         "WHERE 1=1";
+            
+            if (!keyword.isEmpty()) {
+                // Tìm kiếm thông minh: Theo Mã HĐ hoặc Tên hoặc SĐT
+                sql += " AND (hd.maHD LIKE '%" + keyword + "%' " +
+                       "OR kh.tenKH LIKE '%" + keyword + "%' " +
+                       "OR kh.sdt LIKE '%" + keyword + "%')";
+            }
+            sql += " ORDER BY hd.ngayLap DESC"; // Hóa đơn mới nhất lên đầu
 
-            view.getModelHoaDon().setRowCount(0); // Xóa bảng cũ
-
+            ResultSet rs = conn.createStatement().executeQuery(sql);
+            view.getModelHoaDon().setRowCount(0);
+            
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
                 row.add(rs.getString("maHD"));
-                row.add(rs.getTimestamp("ngayLap"));
-                row.add(rs.getString("maNV")); 
-                row.add(rs.getString("tenKhachHang"));
-                
-                // Format tiền cho đẹp
-                double tongTien = rs.getDouble("tongTien");
-                row.add(currencyVN.format(tongTien));
-
+                row.add(sdf.format(rs.getTimestamp("ngayLap")));
+                // Xử lý tên nhân viên null (phòng khi nhân viên bị xóa)
+                row.add(rs.getString("hoTen") == null ? "Unknown" : rs.getString("hoTen"));
+                row.add(rs.getString("tenHienThi")); // Tên khách hàng chuẩn
+                row.add(df.format(rs.getDouble("tongTien")));
                 view.getModelHoaDon().addRow(row);
             }
         } catch (Exception e) {
@@ -57,10 +114,11 @@ public class QuanLyHoaDonController {
         }
     }
 
+    // --- LOAD CHI TIẾT HÓA ĐƠN ---
     private void loadChiTietHoaDon(String maHD) {
         try (Connection conn = KetNoiCSDL.getConnection()) {
-            // Join bảng để lấy tên SP
-            String sql = "SELECT ct.maSP, sp.tenSP, ct.soLuong, ct.donGia, ct.thanhTien " +
+            // Join bảng SanPham để lấy tên SP
+            String sql = "SELECT sp.tenSP, ct.soLuong, ct.donGia, ct.thanhTien " +
                          "FROM ChiTietHoaDon ct " +
                          "JOIN SanPham sp ON ct.maSP = sp.maSP " +
                          "WHERE ct.maHD = ?";
@@ -68,18 +126,14 @@ public class QuanLyHoaDonController {
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, maHD);
             ResultSet rs = pst.executeQuery();
-
-            view.getModelChiTiet().setRowCount(0); 
-
+            
+            view.getModelChiTiet().setRowCount(0);
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
-                row.add(rs.getString("maSP"));
                 row.add(rs.getString("tenSP"));
                 row.add(rs.getInt("soLuong"));
-                
-                row.add(currencyVN.format(rs.getDouble("donGia")));
-                row.add(currencyVN.format(rs.getDouble("thanhTien")));
-
+                row.add(df.format(rs.getDouble("donGia")));
+                row.add(df.format(rs.getDouble("thanhTien")));
                 view.getModelChiTiet().addRow(row);
             }
         } catch (Exception e) {

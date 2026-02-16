@@ -1,24 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ban_dien_thoai_nhiem_vu.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 public class KetNoiCSDL {
     public static Connection getConnection() {
         Connection conn = null;
         try {
-            // Thay đổi user và password nếu máy bạn khác
-            String url = "jdbc:mysql://localhost:3306/QuanLyDienThoai_PNC";
-            String user = "root";
-            String pass = ""; 
+            // 1. Nạp Driver (Bắt buộc với các bản NetBeans/Java mới)
+            Class.forName("com.mysql.cj.jdbc.Driver"); 
             
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(url, user, pass);
-            System.out.println(">> Kết nối thành công!");
+            // 2. Sửa lại tên CSDL cho đúng với phpMyAdmin của bạn: quanlydienthoai_pnc
+            String url = "jdbc:mysql://localhost:3306/quanlydienthoai_pnc?useSSL=false&rewriteBatchedStatements=true&characterEncoding=UTF-8";
+            
+            String user = "root";
+            String password = ""; // Mật khẩu (XAMPP thường để trống)
+            
+            conn = DriverManager.getConnection(url, user, password);
+            
         } catch (Exception e) {
+            System.out.println("Lỗi kết nối CSDL: " + e.getMessage());
             e.printStackTrace();
         }
         return conn;

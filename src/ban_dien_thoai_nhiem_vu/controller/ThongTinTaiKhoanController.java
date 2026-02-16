@@ -11,12 +11,55 @@ import java.sql.ResultSet;
 public class ThongTinTaiKhoanController {
     
     private ThongTinTaiKhoanPanel view;
+    private NhanVien nvHienTai;
 
     public ThongTinTaiKhoanController(ThongTinTaiKhoanPanel view) {
         this.view = view;
-        
+        this.nvHienTai = TaiKhoanSession.taiKhoanHienTai;
+
+        // Load dữ liệu
+        if (nvHienTai != null) {
+            view.setThongTin(nvHienTai);
+        }
+
+        view.addLuuThongTinListener(e -> xuLyCapNhatThongTin());
         view.addDoiMatKhauListener(e -> xuLyDoiMatKhau());
-        view.addHuyListener(e -> view.clearForm());
+    }
+
+    private void xuLyCapNhatThongTin() {
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            String sql = "UPDATE NhanVien SET hoTen=?, sdt=?, email=?, ngaySinh=?, hinhAnh=? WHERE maNV=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            
+            pst.setString(1, view.getHoTen());
+            pst.setString(2, view.getSDT());
+            pst.setString(3, view.getEmail());
+            
+            String ns = view.getNgaySinh();
+            if(ns.isEmpty()) pst.setNull(4, java.sql.Types.DATE);
+            else pst.setString(4, ns);
+
+            String pathAnh = view.getDuongDanAnhMoi();
+            if (pathAnh == null) pathAnh = nvHienTai.getHinhAnh();
+            pst.setString(5, pathAnh);
+
+            pst.setString(6, nvHienTai.getMaNV());
+
+            pst.executeUpdate();
+            
+            // Cập nhật lại Session để hiển thị đúng
+            nvHienTai.setHoTen(view.getHoTen());
+            nvHienTai.setSdt(view.getSDT());
+            nvHienTai.setEmail(view.getEmail());
+            // nvHienTai.setNgaySinh(...); // Nếu Model có hàm setNgaySinh(String) hoặc Date
+            nvHienTai.setHinhAnh(pathAnh);
+            
+            view.showMessage("Cập nhật hồ sơ thành công!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            view.showMessage("Lỗi: " + e.getMessage());
+        }
     }
 
     private void xuLyDoiMatKhau() {
@@ -24,46 +67,40 @@ public class ThongTinTaiKhoanController {
         String mkMoi = view.getMatKhauMoi();
         String xacNhan = view.getXacNhan();
         
-        NhanVien nv = TaiKhoanSession.taiKhoanHienTai;
-        
-        // 1. Kiểm tra rỗng
-        if (mkCu.isEmpty() || mkMoi.isEmpty() || xacNhan.isEmpty()) {
-            view.showMessage("Vui lòng nhập đầy đủ thông tin!");
+        if (mkCu.isEmpty() || mkMoi.isEmpty()) {
+            view.showMessage("Vui lòng nhập đầy đủ thông tin mật khẩu!");
             return;
         }
         
-        // 2. Kiểm tra xác nhận mật khẩu
         if (!mkMoi.equals(xacNhan)) {
-            view.showMessage("Mật khẩu mới và Xác nhận không khớp!");
+            view.showMessage("Mật khẩu xác nhận không khớp!");
             return;
         }
         
-        // 3. Kiểm tra mật khẩu cũ & Cập nhật
         try (Connection conn = KetNoiCSDL.getConnection()) {
-            // Check pass cũ trong DB cho chắc ăn (tránh trường hợp Session bị cũ)
+            // 1. Kiểm tra mật khẩu cũ có đúng không
             String sqlCheck = "SELECT * FROM NhanVien WHERE maNV = ? AND matKhau = ?";
             PreparedStatement pstCheck = conn.prepareStatement(sqlCheck);
-            pstCheck.setString(1, nv.getMaNV());
+            pstCheck.setString(1, nvHienTai.getMaNV());
             pstCheck.setString(2, mkCu);
             
-            ResultSet rs = pstCheck.executeQuery();
-            if (!rs.next()) {
-                view.showMessage("Mật khẩu cũ không đúng!");
+            if (!pstCheck.executeQuery().next()) {
+                view.showMessage("Mật khẩu hiện tại không đúng!");
                 return;
             }
             
-            // Cập nhật pass mới
+            // 2. Cập nhật mật khẩu mới
             String sqlUpdate = "UPDATE NhanVien SET matKhau = ? WHERE maNV = ?";
             PreparedStatement pstUp = conn.prepareStatement(sqlUpdate);
             pstUp.setString(1, mkMoi);
-            pstUp.setString(2, nv.getMaNV());
+            pstUp.setString(2, nvHienTai.getMaNV());
             pstUp.executeUpdate();
             
             view.showMessage("Đổi mật khẩu thành công!");
-            view.clearForm();
+            view.clearPassFields();
             
-            // Cập nhật lại session
-            nv.setMatKhau(mkMoi);
+            // (Tùy chọn) Cập nhật lại mật khẩu trong Session nếu Model có lưu
+            // nvHienTai.setMatKhau(mkMoi); 
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,0 +1,15 @@
+# Bỏ qua file biên dịch của NetBeans
+/build/
+/dist/
+/nbproject/private/
+/nbproject/project.properties
+/nbproject/genfiles.properties
+
+# Bỏ qua file cấu hình người dùng
+nbproject/private/
+build/
+dist/
+
+# File tạm của hệ điều hành
+.DS_Store
+Thumbs.db

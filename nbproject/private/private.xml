@@ -5,25 +5,29 @@
         <group>
             <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/BanHangPanel.java</file>
             <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/ChayChuongTrinh.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/ThongTinTaiKhoanPanel.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/ThongTinTaiKhoanController.java</file>
             <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/MainController.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/model/KhachHang.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLySanPhamPanel.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLySanPhamFrame.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/BanHangController.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/database/KetNoiCSDL.java</file>
             <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/QuanLySanPhamController.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLySanPhamFrame.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLyHoaDonPanel.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/QuanLyHoaDonController.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/BieuDoPanel.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/ThongKePanel.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/ThongKeController.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/XuatHoaDon.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/XuatHoaDonPDF.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/GuiEmail.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuenMatKhauDialog.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/DangNhapFrame.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLyNhanVienPanel.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/QuanLyNhanVienController.java</file>
             <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/MainFrame.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLyKhoFrame.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/QuanLyKhoController.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/TrangChuPanel.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/model/DanhMuc.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/model/ThuongHieu.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLyDanhMucPanel.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLyThuongHieuPanel.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/QuanLyThuocTinhPanel.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/model/SanPham.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/DanhMucController.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/ThuongHieuController.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/ThuocTinhController.java</file>
-            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/model/ThuocTinh.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/DangNhapController.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/view/DangKyFrame.java</file>
+            <file>file:/C:/Users/ADMIN/OneDrive/Documents/Báo%20cáo/Báo%20cáo/baitap/Ban_dien_thoai_nhiem_vu/src/ban_dien_thoai_nhiem_vu/controller/DangKyController.java</file>
         </group>
     </open-files>
 </project-private>

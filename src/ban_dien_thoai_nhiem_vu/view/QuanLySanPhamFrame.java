@@ -16,41 +16,35 @@ import java.util.Map;
 
 public class QuanLySanPhamFrame extends JFrame {
     
+    // --- [QUAN TRỌNG] ĐỂ PUBLIC ĐỂ CONTROLLER GỌI ĐƯỢC ---
+    public JTextField txtMaSP, txtTenSP, txtGiaNhap, txtGiaBan, txtTonKho;
+    public JTextArea txtMoTa;
+    public JComboBox<DanhMuc> cboDanhMuc;     
+    public JComboBox<ThuongHieu> cboThuongHieu; 
+    public JLabel lblHinhAnh;
+    public JButton btnChonAnh;
+    
+    // Thông số kỹ thuật
+    public JTextField txtManHinh, txtCamSau, txtCamTruoc, txtChip, txtPin, txtHDH;
+    public JPanel pnlThuocTinhDong; 
+    public Map<String, JComboBox<ThuocTinh>> dynamicCombos = new HashMap<>();
+
+    // Buttons
+    private JButton btnLuu, btnHuy, btnMoFormThem; 
+    public JButton btnNhapHang; 
+
+    // Layout
+    private CardLayout cardLayout;
+    private JPanel pnlMainContainer;
+    private JPanel pnlDanhSach, pnlFormNhap;
+    private JTable tblSanPham;
+    private DefaultTableModel tableModel;
+    private JTabbedPane tabForm;
+
     public interface TableActionEvent {
         void onEdit(int row);
         void onDelete(int row);
     }
-
-    private CardLayout cardLayout;
-    private JPanel pnlMainContainer;
-    
-    // List
-    private JPanel pnlDanhSach;
-    private JTable tblSanPham;
-    private DefaultTableModel tableModel;
-    private JButton btnMoFormThem; 
-    public JButton btnNhapHang; 
-    
-    // Form
-    private JPanel pnlFormNhap;
-    private JTabbedPane tabForm;
-    public JTextField txtMaSP, txtTenSP, txtGiaNhap, txtGiaBan, txtTonKho;
-    public JComboBox<DanhMuc> cboDanhMuc;     
-    public JComboBox<ThuongHieu> cboThuongHieu; 
-    public JTextArea txtMoTa;
-    public JLabel lblHinhAnh;
-    public JButton btnChonAnh;
-    
-    // --- [KHÔI PHỤC] CÁC TRƯỜNG NHẬP THÔNG SỐ CỨNG ---
-    public JTextField txtManHinh, txtCamSau, txtCamTruoc, txtChip, txtPin, txtHDH;
-    
-    private JButton btnLuu, btnHuy;
-
-    // Panel Động
-    public JPanel pnlThuocTinhDong; 
-    public Map<String, JComboBox<ThuocTinh>> dynamicCombos = new HashMap<>();
-
-    private String duongDanAnh = "";
 
     public QuanLySanPhamFrame() {
         thietKeGiaoDien();
@@ -73,7 +67,7 @@ public class QuanLySanPhamFrame extends JFrame {
         add(pnlMainContainer);
     }
 
-    // --- 1. DANH SÁCH ---
+    // --- 1. MÀN HÌNH DANH SÁCH ---
     private void taoGiaoDienDanhSach() {
         pnlDanhSach = new JPanel(new BorderLayout());
         pnlDanhSach.setBackground(new Color(245, 245, 250)); 
@@ -98,11 +92,6 @@ public class QuanLySanPhamFrame extends JFrame {
         btnMoFormThem.setForeground(Color.WHITE);
         btnMoFormThem.setPreferredSize(new Dimension(180, 40));
         
-        btnMoFormThem.addActionListener(e -> {
-            clearForm();
-            cardLayout.show(pnlMainContainer, "FORM_NHAP");
-        });
-
         pnlButtons.add(btnNhapHang);
         pnlButtons.add(btnMoFormThem);
 
@@ -126,7 +115,7 @@ public class QuanLySanPhamFrame extends JFrame {
         pnlDanhSach.add(new JScrollPane(tblSanPham), BorderLayout.CENTER);
     }
     
-    // --- 2. FORM NHẬP ---
+    // --- 2. FORM NHẬP LIỆU ---
     private void taoGiaoDienFormNhap() {
         pnlFormNhap = new JPanel(new BorderLayout());
         pnlFormNhap.setBackground(Color.WHITE);
@@ -139,7 +128,7 @@ public class QuanLySanPhamFrame extends JFrame {
         tabForm = new JTabbedPane();
         tabForm.setFont(new Font("Segoe UI", Font.BOLD, 14));
         tabForm.addTab("1. Thông tin chung", taoTabThongTinChung());
-        tabForm.addTab("2. Thông số kỹ thuật", taoTabThongSoKyThuat()); // Tab kết hợp
+        tabForm.addTab("2. Thông số kỹ thuật", taoTabThongSoKyThuat());
         
         pnlFormNhap.add(tabForm, BorderLayout.CENTER);
         
@@ -211,17 +200,15 @@ public class QuanLySanPhamFrame extends JFrame {
         return pnl;
     }
     
-    // --- [SỬA LẠI] TAB KẾT HỢP: CỨNG + ĐỘNG ---
     private JPanel taoTabThongSoKyThuat() {
         JPanel pnl = new JPanel(new BorderLayout(10, 10));
         pnl.setBackground(Color.WHITE);
         pnl.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // 1. PHẦN THÔNG SỐ CỨNG (Cam, Chip, Pin...)
+        // A. Cấu hình cứng
         JPanel pnlCung = new JPanel(new GridLayout(3, 2, 20, 15));
         pnlCung.setBackground(Color.WHITE);
         pnlCung.setBorder(new TitledBorder("A. Cấu hình phần cứng (Nhập tay)"));
-        
         pnlCung.add(createInput("Chip xử lý (CPU):", txtChip = new JTextField()));
         pnlCung.add(createInput("Màn hình:", txtManHinh = new JTextField()));
         pnlCung.add(createInput("Camera Sau:", txtCamSau = new JTextField()));
@@ -229,20 +216,16 @@ public class QuanLySanPhamFrame extends JFrame {
         pnlCung.add(createInput("Dung lượng Pin:", txtPin = new JTextField()));
         pnlCung.add(createInput("Hệ điều hành:", txtHDH = new JTextField()));
 
-        // 2. PHẦN THUỘC TÍNH ĐỘNG (RAM, Màu, Bộ nhớ...)
+        // B. Biến thể
         JPanel pnlDongWrapper = new JPanel(new BorderLayout());
         pnlDongWrapper.setBackground(Color.WHITE);
         pnlDongWrapper.setBorder(new TitledBorder("B. Biến thể sản phẩm (Tự động tải từ 'Quản lý Thuộc tính')"));
-        
-        pnlThuocTinhDong = new JPanel(new GridLayout(0, 3, 15, 15)); // 3 cột
+        pnlThuocTinhDong = new JPanel(new GridLayout(0, 3, 15, 15));
         pnlThuocTinhDong.setBackground(Color.WHITE);
-        
         pnlDongWrapper.add(pnlThuocTinhDong, BorderLayout.CENTER);
 
-        // Add cả 2 vào Panel chính
         pnl.add(pnlCung, BorderLayout.NORTH);
-        pnl.add(new JScrollPane(pnlDongWrapper), BorderLayout.CENTER); // Cho phần động cuộn được nếu nhiều
-        
+        pnl.add(new JScrollPane(pnlDongWrapper), BorderLayout.CENTER);
         return pnl;
     }
     
@@ -254,22 +237,17 @@ public class QuanLySanPhamFrame extends JFrame {
         return p;
     }
 
+    // --- Helpers ---
     public void addDynamicAttribute(String groupName, DefaultComboBoxModel<ThuocTinh> model) {
         JLabel lbl = new JLabel(groupName + ":");
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        
         JComboBox<ThuocTinh> cbo = new JComboBox<>(model);
         cbo.setPreferredSize(new Dimension(150, 35));
-        
         JPanel pItem = new JPanel(new BorderLayout(0, 5));
         pItem.setBackground(Color.WHITE);
-        pItem.add(lbl, BorderLayout.NORTH);
-        pItem.add(cbo, BorderLayout.CENTER);
-        
+        pItem.add(lbl, BorderLayout.NORTH); pItem.add(cbo, BorderLayout.CENTER);
         pnlThuocTinhDong.add(pItem);
         dynamicCombos.put(groupName, cbo);
-        
-        pnlThuocTinhDong.revalidate(); pnlThuocTinhDong.repaint();
     }
     
     public void clearDynamicAttributes() {
@@ -277,32 +255,26 @@ public class QuanLySanPhamFrame extends JFrame {
         pnlThuocTinhDong.revalidate(); pnlThuocTinhDong.repaint();
     }
     
-    // --- HELPERS ---
     public void hienThiAnh(String path) {
         if (path == null || path.isEmpty()) { lblHinhAnh.setIcon(null); lblHinhAnh.setText("No Image"); return; }
         try {
             ImageIcon icon = new ImageIcon(path);
             Image img = icon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
             lblHinhAnh.setIcon(new ImageIcon(img)); lblHinhAnh.setText("");
-            duongDanAnh = path;
         } catch (Exception e) { lblHinhAnh.setText("Err"); }
     }
     
     public void clearForm() {
         txtMaSP.setText(""); txtTenSP.setText(""); txtGiaNhap.setText(""); txtGiaBan.setText(""); txtTonKho.setText("");
         txtMoTa.setText(""); hienThiAnh(null);
-        // Clear text fields cứng
         txtChip.setText(""); txtManHinh.setText(""); txtCamSau.setText(""); txtCamTruoc.setText(""); txtPin.setText(""); txtHDH.setText("");
-        
-        if(cboDanhMuc.getItemCount() > 0) cboDanhMuc.setSelectedIndex(0);
-        if(cboThuongHieu.getItemCount() > 0) cboThuongHieu.setSelectedIndex(0);
-        
+        if(cboDanhMuc.getItemCount()>0) cboDanhMuc.setSelectedIndex(0);
+        if(cboThuongHieu.getItemCount()>0) cboThuongHieu.setSelectedIndex(0);
         clearDynamicAttributes();
         tabForm.setSelectedIndex(0);
         txtMaSP.setEditable(true);
     }
     
-    // Getters & Classes... (Giữ nguyên như cũ)
     public class PanelAction extends JPanel {
         public JButton cmdEdit, cmdDelete;
         public PanelAction() {
@@ -330,13 +302,14 @@ public class QuanLySanPhamFrame extends JFrame {
             return action;
         }
     }
+    
+    // Getters
+    public JButton getBtnMoFormThem() { return btnMoFormThem; }
     public DefaultTableModel getTableModel() { return tableModel; }
-    public JTable getTable() { return tblSanPham; }
     public void setTableActionEvent(TableActionEvent event) { tblSanPham.getColumnModel().getColumn(6).setCellEditor(new TableActionCellEditor(event)); }
     public void addLuuListener(ActionListener l) { btnLuu.addActionListener(l); }
     public void addChonAnhListener(ActionListener l) { btnChonAnh.addActionListener(l); }
     public void addNhapHangListener(ActionListener l) { btnNhapHang.addActionListener(l); }
-    public JButton getBtnMoFormThem() { return btnMoFormThem; }
     public void showMessage(String msg) { JOptionPane.showMessageDialog(this, msg); }
     public int showConfirm(String msg) { return JOptionPane.showConfirmDialog(this, msg, "Xác nhận", JOptionPane.YES_NO_OPTION); }
     public void showFormNhap() { cardLayout.show(pnlMainContainer, "FORM_NHAP"); }

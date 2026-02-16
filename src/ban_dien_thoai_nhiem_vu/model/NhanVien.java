@@ -12,6 +12,7 @@ public class NhanVien {
     private String matKhau;
     private String vaiTro; 
     private int trangThai;
+    private String hinhAnh;
 
     public NhanVien() {}
 
@@ -54,6 +55,9 @@ public class NhanVien {
 
     public int getTrangThai() { return trangThai; }
     public void setTrangThai(int trangThai) { this.trangThai = trangThai; }
+    
+    public String getHinhAnh() { return hinhAnh; }
+    public void setHinhAnh(String hinhAnh) { this.hinhAnh = hinhAnh; }
 
     @Override public String toString() { return hoTen; }
 }
