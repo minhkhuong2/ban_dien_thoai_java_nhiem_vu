@@ -1,63 +1,87 @@
-# PNC Store - Hệ Thống Quản Lý Cửa Hàng Điện Thoại 📱
+# PNC Store - Hệ Thống Quản Lý Bán Điện Thoại 📱
 
-Chào mừng các bạn đến với dự án **PNC Store**! Đây là phần mềm được ứng dụng rộng rãi trong việc quản lý bán hàng cho hệ thống cửa hàng điện thoại, được xây dựng bằng **Java Swing** và cơ sở dữ liệu **MySQL**.
+Chào mừng các bạn đến với dự án **PNC Store**! Đây là đồ án xây dựng phần mềm quản lý cửa hàng kinh doanh điện thoại di động sử dụng ngôn ngữ **Java (Swing)** và hệ quản trị cơ sở dữ liệu **MySQL**.
 
-## 🚀 Tính Năng Nổi Bật
-- **Tổng quan (Dashboard):** Xem nhanh Thống kê doanh thu, số lượng đơn hàng, biểu đồ tổng quan dễ nhìn.
-- **Bán hàng (POS):** 
-  - Lập hóa đơn nhanh, thêm sản phẩm giỏ hàng tiện lợi.
-  - Tùy chọn phương thức Giao hàng (Tiêu chuẩn/Hỏa tốc) và nhập Voucher giảm giá.
-  - Tích hợp thanh toán **Tiền mặt (COD)** và **Quét mã QR Code (VietQR / Napas247)** tự động nhận diện giá tiền.
-  - In hóa đơn ra file PDF chuẩn xác.
-- **Quản lý Sản Phẩm:** Quản lý kho, tồn kho, thương hiệu, danh mục. (Tích hợp Logo Thương hiệu chuyên nghiệp).
-- **Quản lý Khách Hàng:** Lưu trữ và quản lý thông tin khách mua.
-- **Quản lý Nhân Viên:** Phân quyền đăng nhập, Khôi phục mật khẩu thông qua mã OTP tự động được gửi tới **Email nhân viên**.
-
-## 🛠 Nền Tảng Công Nghệ
-- **Ngôn ngữ:** Java (JDK 8+)
-- **Giao diện UI/UX:** Java Swing (Sử dụng biểu đồ, bo tròn giao diện hiện đại).
-- **Cơ sở dữ liệu:** MySQL
-- **Tool server:** XAMPP (Apache + MySQL Local)
+Tài liệu này được viết rất chi tiết từ con số 0 để hỗ trợ tất cả các thành viên trong nhóm (kể cả những bạn mới làm quen với Java) đều có thể tự cài đặt và chạy được ứng dụng trên máy tính cá nhân của mình.
 
 ---
 
-## 📥 Hướng Dẫn Cài Đặt (Dành Cho Team Dev)
+## 🚀 1. Các Tính Năng Của Phần Mềm
+- **Đăng nhập & Xác thực:** Phân quyền nhân viên, Quên mật khẩu gửi mã OTP qua Email.
+- **Trang chủ (Dashboard):** Thống kê doanh thu, đơn hàng, khách hàng trực quan.
+- **Bán hàng (POS):** 
+  - Giao diện tính tiền thông minh, áp dụng mã giảm giá (Voucher).
+  - Lựa chọn hình thức giao hàng.
+  - Tích hợp thanh toán bằng cách **Quét mã QR Code (VietQR)**.
+  - In hóa đơn ra file PDF.
+- **Quản lý Sản phẩm:** Thêm, sửa, xóa các dòng điện thoại, quản lý Tồn kho, Thương hiệu.
+- **Quản lý Khách hàng & Nhân viên:** Quản lý thông tin, tra cứu lịch sử mua hàng, lập tài khoản cho nhân viên mới.
 
-Để dự án có thể chạy trơn tru trên máy tính của từng thành viên mà không bị lỗi DB hay lỗi báo đỏ, mọi người làm lần lượt theo 5 bước sau nhé:
+---
 
-### Bước 1: Cài đặt Phần Mềm Cơ Bản
-1. Đảm bảo máy đã được cài **Java Development Kit (JDK 8** trở lên).
-2. Tải và cài đặt **XAMPP** để tạo cơ sở dữ liệu cục bộ.
-3. Mở sẵn IDE mà bạn đang xài (Đề xuất: IntelliJ IDEA, NetBeans, hoặc Eclipse).
+## 🛠 2. Công Cụ Cần Cài Đặt (Yêu Cầu Chuẩn Bị)
+Trước khi chạy code, máy tính của bạn bắt buộc phải có sẵn các phần mềm sau (nhấn vào link để tải nếu chưa có):
+1. **[XAMPP](https://www.apachefriends.org/download.html)**: Để chạy máy chủ ảo tạo cơ sở dữ liệu MySQL cục bộ.
+2. **Java JDK (Phiên bản 8 trở lên)**: [Tải JDK](https://www.oracle.com/java/technologies/downloads/). (Lưu ý: nhớ set biến môi trường Environment Variables cho Java).
+3. **Phần mềm lập trình (IDE)**: Đề xuất sử dụng **[Apache NetBeans](https://netbeans.apache.org/download/index.html)** hoặc Eclipse, IntelliJ IDEA.
 
-### Bước 2: Thiết lập Cơ Sở Dữ Liệu (Database)
-1. Mở **XAMPP Control Panel** và nhấn `Start` cho 2 mục: **Apache** và **MySQL**.
-2. Mở trình duyệt web, vào địa chỉ: `http://localhost/phpmyadmin/`.
-3. Nhập tạo một Database mới tinh, đặt tên (Cực kì quan trọng): `quanlydienthoai_pnc` (Khuyến nghị chọn Bảng mã `utf8mb4_general_ci` hoặc `utf8_unicode_ci`).
-4. Import cấu trúc bảng:
-   - Trong giao diện phpMyAdmin của `quanlydienthoai_pnc`, bấm vào tab **Nhập (Import)**.
-   - Tìm đến file `quanlydienthoai_pnc.sql` ở ngay ngoài thư mục mã nguồn này.
-   - Nhấn "Go / Thực hiện" để import danh sách các bảng (SanPham, HoaDon, ThuongHieu...).
+---
 
-### Bước 3: Mở Code Trong IDE
-- Tùy vào IDE để bạn Open Project thư mục `Ban_dien_thoai_nhiem_vu`.
-- **Cực kì quan trọng:** Dự án này có sử dụng vài file `.jar` hỗ trợ (PDF, Javax.mail gửi Email, và MySQL Connector). Bạn cần nhấp chuột phải vào Project -> chọn **Build Path / Add Libraries/Add JARs** -> Kéo thả hết thư viện `.jar` từ thư mục `lib` vào dự án để hết báo lỗi đỏ.
+## 📥 3. Hướng Dẫn Cài Đặt Chi Tiết Từng Bước
 
-### Bước 4: Kiểm Tra Đường Truyền Database
-Bạn nào dùng pass thư mục MySQL (XAMPP tự custom) thì mở đường dẫn file này:
-👉 `src/ban_dien_thoai_nhiem_vu/database/KetNoiCSDL.java`
+### Bước 1: Tải Code Về Máy
+- Bấm vào nút màu xanh **`Code` -> `Download ZIP`** trên Github.
+- Giải nén file ZIP vừa tải về ra một thư mục Dễ tìm (Khuyên dùng: Để ở ổ `D:` hoặc `C:\Users\Tên_Bạn\Documents`, tránh để tên thư mục có dấu tiếng Việt).
 
-Kiểm tra 3 dòng chữ này xem đã khớp với máy mình chưa:
+### Bước 2: Thiết Lập Cơ Sở Dữ Liệu (Quan Trọng Nhất 🚨)
+Phần mềm cần có dữ liệu để hoạt động, bạn phải tạo "kho chứa" dữ liệu bằng XAMPP:
+1. Mở phần mềm **XAMPP Control Panel** lên.
+2. Nhấn nút **Start** ở 2 hàng đầu tiên là: **Apache** và **MySQL** (khi nào chữ sáng màu xanh lá cây là OK).
+3. Mở trình duyệt web (Chrome/Cốc Cốc), truy cập vào đường dẫn: [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/)
+4. Bấm vào chữ **Mới (New)** ở cột bên trái để tạo cơ sở dữ liệu.
+   - Ô "Tên cơ sở dữ liệu" nhập chính xác chữ này: **`quanlydienthoai_pnc`** *(Viết thường, không dấu, copy dán vào cho chắc chắn).*
+   - Ô "Bảng mã" (Collation) bên cạnh chọn: `utf8mb4_general_ci`.
+   - Bấm **Tạo (Create)**.
+5. Import cấu trúc bảng:
+   - Nhấn chuột chọn vào cơ sở dữ liệu `quanlydienthoai_pnc` vừa tạo ở cột trái.
+   - Nhìn lên menu ngang phía trên, bấm tab **Nhập (Import)**.
+   - Chọn nút **Choose File** -> Tìm đến file có tên `quanlydienthoai_pnc.sql` ở ngay trong thư mục code bạn vừa giải nén.
+   - Lăn chuột xuống dưới cùng, bấm **Nhập / Go**. Chờ màn hình báo màu xanh lá cây là Add dữ liệu thành công!
+
+### Bước 3: Mở Code Trong Netbeans / IDE
+1. Mở phần mềm NetBeans (hoặc Eclipse/IntelliJ).
+2. Vào Menu **File** -> **Open Project**.
+3. Tìm đến thư mục ban nãy bạn giải nén (nhấn trúng thư mục `Ban_dien_thoai_nhiem_vu`) và nhấn **Open**.
+
+*(Lưu ý: Nếu dùng dòng IDE khác, bạn có thể phải "Add thư viện (JAR)" bằng tay bằng cách nhấp phải vào project -> Build Path -> Add External JARs, tải thư viện MySQL Connector, iTextPDF, Java Mail nếu IDE báo đỏ).*
+
+### Bước 4: Chỉnh Lại Kết Nối Database (Nếu cần)
+Mở file `src/ban_dien_thoai_nhiem_vu/database/KetNoiCSDL.java`.
+Tìm đoạn:
 ```java
-String url = "jdbc:mysql://localhost:3306/quanlydienthoai_pnc...";
 String user = "root";
-String password = ""; // Điền pass Xampp của ae vào đây (mặc định để trống)
+String password = ""; 
 ```
+- Nếu XAMPP của bạn để mặc định, hãy **giữ nguyên phần password trống `""`**.
+- Nếu bạn từng cài mật khẩu riêng cho MySQL của mình, hãy nhập mật khẩu đó vào khoảng trống.
 
-### Bước 5: Chạy Ứng Dụng 🚀
-- Tìm đến file chứa hàm cấu trúc `main()` khởi động app:
-  Mở `src/ban_dien_thoai_nhiem_vu/view/DangNhapFrame.java` (hoặc `Main.java` nếu có file khởi tạo)
-- Chuột phải trên màn hình code -> `Run As -> Java Application` (Hoặc nhấn `Shift + F6` trên NetBeans).
+### Bước 5: Chạy Ứng Dụng Và Trải Nghiệm 🚀
+- Trong cây thư mục bên trái, tìm đến file khởi động chính: `src/ban_dien_thoai_nhiem_vu/view/DangNhapFrame.java`.
+- Click **chuột phải** vào file đó -> Chọn **Run File** (hoặc nhấn phím tắt `Shift + F6` trên NetBeans).
+- Khi thanh màn hình nhảy lên, bạn dùng **Tài khoản đăng nhập mặc định**:
+  > **Tên đăng nhập:** `admin` (hoặc email nhân viên bạn xem trong bảng NhanVien của Database).  
+  > **Mật khẩu:** `123` (hoặc theo Database).
 
-## 💡 Ghi Chú Hỗ Trợ Nhau
-Nếu tải code về mà có ai cài đặt bị bung lỗi `ClassNotFoundException: com.mysql.cj.jdbc.Driver` thì là **bước 3** anh em import file Libraries chưa nhận. Mọi người cứ hú trên group để team_teamview hỗ trợ nhé! Chúc project "PNC Store" chạy ngon lành! 🔥
+---
+
+## 💡 4. Cách Sửa Lỗi Thường Gặp Của Nhóm
+* **Lỗi `ClassNotFoundException: com.mysql.cj.jdbc.Driver` hoặc Cắm Cờ Đỏ Thư Viện:** 
+  - Máy của bạn chưa nhận Driver kết nối DB. Hãy nhấp chuột phải vào tên Project (trong NetBeans) -> chọn **Properties** -> mục **Libraries** -> bấm **Add JAR/Folder** -> Trỏ đường dẫn đến cục thư viện chứa file `.jar` (MySQL Connector) để gắn vào lại. Tương tự với thư viện PDF, QR Code.
+
+* **Lỗi `Access denied for user 'root'@'localhost'`:**
+  - Bạn điền sai mật khẩu Database rồi. Quay lại **Bước 4** và check pass cẩn thận.
+
+* **Lỗi Port 3306 in use trong XAMPP:**
+  - Máy bạn đang bị đụng phần mềm (thường do MySQL cài ngầm từ trước). Mở XAMPP -> Config ở dòng MySQL -> My.ini đổi cổng 3306 thành 3307, sau đó trong `KetNoiCSDL.java` cũng đổi URL thành `localhost:3307`.
+
+*Mọi thắc mắc và góp ý, các thành viên cứ thoải mái liên hệ trong group để được fix bug lẹ nhất nhé! Let's Code mạnh lên!* 🔥
