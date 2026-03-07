@@ -75,21 +75,20 @@ public class MainFrame extends JFrame {
         JPanel pnlLogo = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 40));
         pnlLogo.setBackground(Color.WHITE);
         
-        // Vẽ icon tròn cho Logo
-        JLabel lblIcon = new JLabel("✦") {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(COLOR_PRIMARY);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-                super.paintComponent(g);
+        // Vẽ logo tải từ tài nguyên
+        JLabel lblIcon = new JLabel();
+        try {
+            java.net.URL url = getClass().getResource("/ban_dien_thoai_nhiem_vu/icons/PNC.png");
+            if (url != null) {
+                ImageIcon originalIcon = new ImageIcon(url);
+                Image scaledImg = originalIcon.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+                lblIcon.setIcon(new ImageIcon(scaledImg));
+            } else {
+                lblIcon.setText("✦");
             }
-        };
-        lblIcon.setForeground(Color.WHITE);
-        lblIcon.setFont(new Font("SansSerif", Font.BOLD, 18));
+        } catch (Exception e) {}
         lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        lblIcon.setPreferredSize(new Dimension(35, 35));
+        lblIcon.setPreferredSize(new Dimension(50, 50));
 
         JLabel lblLogoText = new JLabel("PNC STORE"); 
         lblLogoText.setFont(new Font("Segoe UI", Font.BOLD, 22));

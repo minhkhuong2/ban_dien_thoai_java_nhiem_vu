@@ -31,16 +31,30 @@ public class ThuongHieuController {
                 ImageIcon icon = null;
                 if (path != null && !path.trim().isEmpty()) {
                     try {
+                        ImageIcon rawIcon = null;
                         File f = new File(path);
                         if (f.exists()) {
-                            Image img = new ImageIcon(path).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-                            icon = new ImageIcon(img);
+                            rawIcon = new ImageIcon(path);
                         } else {
                             java.net.URL url = getClass().getResource("/ban_dien_thoai_nhiem_vu/icons/" + path);
-                            if (url != null) {
-                                Image img = new ImageIcon(url).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-                                icon = new ImageIcon(img);
+                            if (url != null) rawIcon = new ImageIcon(url);
+                        }
+                        
+                        if (rawIcon != null && rawIcon.getIconWidth() > 0) {
+                            int oW = rawIcon.getIconWidth();
+                            int oH = rawIcon.getIconHeight();
+                            int tW = 100; // max width
+                            int tH = 60;  // max height
+                            
+                            int newW = tW;
+                            int newH = (oH * newW) / oW;
+                            if (newH > tH) {
+                                newH = tH;
+                                newW = (oW * newH) / oH;
                             }
+                            
+                            Image img = rawIcon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+                            icon = new ImageIcon(img);
                         }
                     } catch (Exception e){}
                 }

@@ -60,9 +60,21 @@ public class DangNhapFrame extends JFrame {
         GridBagConstraints gl = new GridBagConstraints();
         gl.gridx = 0; gl.gridy = 0;
         
-        JLabel lblLogoIcon = new JLabel("✦", SwingConstants.CENTER);
-        lblLogoIcon.setFont(new Font("SansSerif", Font.BOLD, 70));
-        lblLogoIcon.setForeground(Color.WHITE);
+        JLabel lblLogoIcon = new JLabel();
+        try {
+            java.net.URL url = getClass().getResource("/ban_dien_thoai_nhiem_vu/icons/PNC.png");
+            if (url != null) {
+                // Resize for Login Screen (white on blue background, expecting PNG to have transparency)
+                Image img = new ImageIcon(url).getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH);
+                lblLogoIcon.setIcon(new ImageIcon(img));
+            } else {
+                lblLogoIcon.setText("✦");
+                lblLogoIcon.setFont(new Font("SansSerif", Font.BOLD, 70));
+                lblLogoIcon.setForeground(Color.WHITE);
+            }
+        } catch(Exception e) {}
+        lblLogoIcon.setHorizontalAlignment(SwingConstants.CENTER);
+        
         gl.insets = new Insets(0, 0, 10, 0); 
         pnlLeft.add(lblLogoIcon, gl);
         

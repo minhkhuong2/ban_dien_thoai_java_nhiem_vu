@@ -20,7 +20,6 @@ public class TrangChuPanel extends JPanel {
     private JPanel pnlChartContainer;
     private JTable tblRecentOrders;
     private DefaultTableModel modelRecentOrders;
-    private JTextField txtSearch; 
     
     // Components to receive dynamic data
     private JPanel pnlProfStats;
@@ -88,53 +87,7 @@ public class TrangChuPanel extends JPanel {
         pnlTitles.add(lblTitle);
         p.add(pnlTitles, BorderLayout.WEST);
 
-        JPanel pRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 10));
-        pRight.setOpaque(false);
-        
-        JPanel pnlSearch = new RoundedPanel(25, Color.WHITE);
-        pnlSearch.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 8));
-        pnlSearch.setPreferredSize(new Dimension(300, 45));
-        
-        JPanel searchIcon = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(COLOR_TEXT_MUTED);
-                g2.setStroke(new BasicStroke(2));
-                g2.drawOval(2, 2, 10, 10);
-                g2.drawLine(10, 10, 16, 16);
-            }
-        };
-        searchIcon.setOpaque(false);
-        searchIcon.setPreferredSize(new Dimension(20, 20));
-        
-        txtSearch = new JTextField("Tìm kiếm");
-        txtSearch.setPreferredSize(new Dimension(220, 30));
-        txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtSearch.setForeground(COLOR_TEXT_MUTED);
-        txtSearch.setBorder(null);
-        txtSearch.setOpaque(false);
-        
-        txtSearch.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent evt) {
-                if (txtSearch.getText().trim().equals("Tìm kiếm")) {
-                    txtSearch.setText(""); txtSearch.setForeground(COLOR_TEXT_DARK);
-                }
-            }
-            public void focusLost(FocusEvent evt) {
-                if (txtSearch.getText().trim().isEmpty()) {
-                    txtSearch.setText("Tìm kiếm"); txtSearch.setForeground(COLOR_TEXT_MUTED);
-                }
-            }
-        });
-        
-        pnlSearch.add(searchIcon);
-        pnlSearch.add(txtSearch);
-        pRight.add(pnlSearch);
 
-        p.add(pRight, BorderLayout.EAST);
         return p;
     }
 
@@ -441,14 +394,7 @@ public class TrangChuPanel extends JPanel {
         }
     }
 
-    public String getSearchText() {
-        String txt = txtSearch.getText();
-        if (txt.equals("Tìm kiếm")) return "";
-        return txt.trim();
-    }
-    public void addSearchListener(ActionListener l) {
-        txtSearch.addActionListener(l); 
-    }
+
 
     class RoundedPanel extends JPanel {
         private int cornerRadius;
