@@ -84,4 +84,4 @@ String password = "";
 * **Lỗi Port 3306 in use trong XAMPP:**
   - Máy bạn đang bị đụng phần mềm (thường do MySQL cài ngầm từ trước). Mở XAMPP -> Config ở dòng MySQL -> My.ini đổi cổng 3306 thành 3307, sau đó trong `KetNoiCSDL.java` cũng đổi URL thành `localhost:3307`.
 
-*Mọi thắc mắc và góp ý, các thành viên cứ thoải mái liên hệ trong group để được fix bug lẹ nhất nhé! Let's Code mạnh lên!* 🔥
+
