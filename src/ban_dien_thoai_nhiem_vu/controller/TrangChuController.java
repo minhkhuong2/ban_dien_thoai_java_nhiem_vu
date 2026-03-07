@@ -19,6 +19,7 @@ public class TrangChuController {
         loadTongQuat();
         loadGiaoDichGanDay();
         loadBieuDoDoanhThu();
+        loadLichTrinhHomNay();
     }
 
     private void loadTongQuat() {
@@ -44,7 +45,47 @@ public class TrangChuController {
             if(rsCust.next()) {
                 view.setCustomers(rsCust.getInt(1) + "");
             }
+            
+            // 4. Các thông số Profile (Sản phẩm, Danh mục, Thương hiệu)
+            int sp = 0, dm = 0, th = 0;
+            ResultSet rsSP = conn.createStatement().executeQuery("SELECT COUNT(*) FROM SanPham");
+            if(rsSP.next()) sp = rsSP.getInt(1);
+            
+            ResultSet rsDM = conn.createStatement().executeQuery("SELECT COUNT(*) FROM DanhMuc");
+            if(rsDM.next()) dm = rsDM.getInt(1);
+            
+            ResultSet rsTH = conn.createStatement().executeQuery("SELECT COUNT(*) FROM ThuongHieu");
+            if(rsTH.next()) th = rsTH.getInt(1);
+            
+            view.setStoreStats(sp, dm, th);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void loadLichTrinhHomNay() {
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            String sql = "SELECT KhachHang.tenKH, HoaDon.ngayLap, HoaDon.tenKhachHang " +
+                         "FROM HoaDon " +
+                         "LEFT JOIN KhachHang ON HoaDon.maKH = KhachHang.maKH " +
+                         "WHERE DATE(HoaDon.ngayLap) = CURDATE() " +
+                         "ORDER BY HoaDon.ngayLap DESC LIMIT 3";
+            ResultSet rs = conn.createStatement().executeQuery(sql);
+            view.clearSchedule();
+            int count = 0;
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm a");
+            while (rs.next()) {
+                String tenKH = rs.getString("tenKH");
+                if (tenKH == null) tenKH = rs.getString("tenKhachHang");
+                if (tenKH == null || tenKH.isEmpty()) tenKH = "Khách Lẻ";
+                String time = sdf.format(rs.getTimestamp("ngayLap"));
+                view.addScheduleTask("Giao hàng: " + tenKH, time);
+                count++;
+            }
+            if (count == 0) {
+                view.addScheduleTask("Chưa có đơn hàng", "Hôm nay");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,10 +106,10 @@ public class TrangChuController {
                 if (tenKH == null) tenKH = "Khách Lẻ";
                 
                 double tongTien = rs.getDouble("tongTien");
-                int trangThai = rs.getInt("trangThai");
-                String strTrangThai = "Chờ xử lý";
-                if (trangThai == 1) strTrangThai = "Đã thanh toán";
-                else if (trangThai == 2) strTrangThai = "Đã hủy";
+                String strTrangThai = rs.getString("trangThai");
+                if (strTrangThai == null || strTrangThai.isEmpty()) {
+                    strTrangThai = "Hoàn thành"; // Mặc định nếu null do bảng cũ
+                }
                 
                 Object[] row = {
                     tenKH,

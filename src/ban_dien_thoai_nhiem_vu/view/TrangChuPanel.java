@@ -21,6 +21,10 @@ public class TrangChuPanel extends JPanel {
     private JTable tblRecentOrders;
     private DefaultTableModel modelRecentOrders;
     private JTextField txtSearch; 
+    
+    // Components to receive dynamic data
+    private JPanel pnlProfStats;
+    private JPanel pnlTasks;
 
     private final Color COLOR_BG = new Color(244, 247, 254);
     private final Color COLOR_PRIMARY = new Color(74, 38, 235);
@@ -147,11 +151,6 @@ public class TrangChuPanel extends JPanel {
         p.add(createWidgetCard("Khách Hàng Mới", lblCustomers, 2, false));
         p.add(createWidgetCard("Đơn Hàng", lblOrders, 3, false));
         
-        // --- BIND CLICK LISTENERS FOR TESTING ---
-        addClickToIncrementListener(lblRevenue, true);
-        addClickToIncrementListener(lblCustomers, false);
-        addClickToIncrementListener(lblOrders, false);
-        
         JLabel lblActive = new JLabel("Hệ thống Online");
         lblActive.setForeground(Color.WHITE);
         lblActive.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -230,30 +229,6 @@ public class TrangChuPanel extends JPanel {
         return card;
     }
 
-    private void addClickToIncrementListener(JLabel lbl, boolean isMoney) {
-        lbl.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                try {
-                    String text = lbl.getText().replaceAll("[^0-9]", ""); // Lấy ra số
-                    if(text.isEmpty()) text = "0";
-                    long value = Long.parseLong(text);
-                    
-                    if(isMoney) {
-                        value += 750000;
-                        java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
-                        lbl.setText(df.format(value) + " đ");
-                    } else {
-                        value += 1;
-                        lbl.setText(String.valueOf(value));
-                    }
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     private JPanel createWidgetGrid() {
         JPanel p = new JPanel(new BorderLayout(20, 20));
         p.setOpaque(false);
@@ -311,12 +286,12 @@ public class TrangChuPanel extends JPanel {
         lblProfName.setForeground(COLOR_TEXT_DARK);
         cardProfile.add(lblProfName, BorderLayout.CENTER);
 
-        JPanel pnlProfStats = new JPanel(new GridLayout(1, 3));
+        pnlProfStats = new JPanel(new GridLayout(1, 3));
         pnlProfStats.setOpaque(false);
         pnlProfStats.setBorder(new EmptyBorder(0, 0, 20, 0));
-        pnlProfStats.add(createProfStat("Dự Án", "28"));
-        pnlProfStats.add(createProfStat("Theo Dõi", "643"));
-        pnlProfStats.add(createProfStat("Đang Theo", "76"));
+        pnlProfStats.add(createProfStat("Sản phẩm", "0"));
+        pnlProfStats.add(createProfStat("Danh mục", "0"));
+        pnlProfStats.add(createProfStat("Thương hiệu", "0"));
         cardProfile.add(pnlProfStats, BorderLayout.SOUTH);
 
         pTopRow.add(cardChart, BorderLayout.CENTER);
@@ -367,13 +342,11 @@ public class TrangChuPanel extends JPanel {
         lblExtraTitle.setForeground(COLOR_TEXT_DARK);
         cardExtra.add(lblExtraTitle, BorderLayout.NORTH);
         
-        JPanel pnlTasks = new JPanel(new GridLayout(3, 1, 0, 10));
+        pnlTasks = new JPanel(new GridLayout(3, 1, 0, 10));
         pnlTasks.setOpaque(false);
         pnlTasks.setBorder(new EmptyBorder(20, 0, 0, 0));
         
-        pnlTasks.add(createTask("Giao Hàng", "01:00 PM - 02:00 PM"));
-        pnlTasks.add(createTask("Kiểm Kho", "02:00 PM - 03:00 PM"));
-        pnlTasks.add(createTask("Họp Nhân Viên", "03:00 PM - 04:00 PM"));
+        // Items will be added dynamically
         
         cardExtra.add(pnlTasks, BorderLayout.CENTER);
 
@@ -443,6 +416,29 @@ public class TrangChuPanel extends JPanel {
     }
     public void clearRecentOrders() {
         modelRecentOrders.setRowCount(0);
+    }
+
+    public void setStoreStats(int products, int categories, int brands) {
+        pnlProfStats.removeAll();
+        pnlProfStats.add(createProfStat("Sản phẩm", String.valueOf(products)));
+        pnlProfStats.add(createProfStat("Danh mục", String.valueOf(categories)));
+        pnlProfStats.add(createProfStat("Thương hiệu", String.valueOf(brands)));
+        pnlProfStats.revalidate();
+        pnlProfStats.repaint();
+    }
+    
+    public void clearSchedule() {
+        pnlTasks.removeAll();
+        pnlTasks.revalidate();
+        pnlTasks.repaint();
+    }
+    
+    public void addScheduleTask(String title, String time) {
+        if (pnlTasks.getComponentCount() < 3) {
+            pnlTasks.add(createTask(title, time));
+            pnlTasks.revalidate();
+            pnlTasks.repaint();
+        }
     }
 
     public String getSearchText() {

@@ -158,7 +158,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         JPanel pBanner = new JPanel(new BorderLayout(10, 10));
         pBanner.setBackground(new Color(232, 244, 253)); // Light blue alert box
         pBanner.setBorder(new EmptyBorder(15, 15, 15, 15));
-        JLabel lblInfoIcon = new JLabel("ℹ");
+        JLabel lblInfoIcon = new JLabel("(i)");
         lblInfoIcon.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblInfoIcon.setForeground(COLOR_PRIMARY);
         JLabel lblInfoText = new JLabel("<html>Nên sử dụng mật khẩu mạnh chứa ít nhất 8 ký tự, <br>bao gồm chữ, số và ký tự đặc biệt để tài khoản an toàn hơn.</html>");

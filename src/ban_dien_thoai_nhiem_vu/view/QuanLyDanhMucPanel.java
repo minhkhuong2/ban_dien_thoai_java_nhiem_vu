@@ -9,7 +9,8 @@ import java.awt.event.ActionListener;
 public class QuanLyDanhMucPanel extends JPanel {
     
     private JTextField txtTenDM;
-    private JButton btnThem;
+    private JButton btnThem, btnSua, btnXoa;
+    private int selectedId = -1;
     private JTable tblDanhMuc;
     private DefaultTableModel model;
 
@@ -76,17 +77,21 @@ public class QuanLyDanhMucPanel extends JPanel {
         pInput.add(lbl, BorderLayout.NORTH);
         pInput.add(txtTenDM, BorderLayout.CENTER);
         
-        btnThem = createFlatButton("+ Lưu Danh Mục", COLOR_SUCCESS, Color.WHITE);
+        btnThem = createFlatButton("Thêm Mới", COLOR_SUCCESS, Color.WHITE);
+        btnSua = createFlatButton("Cập Nhật", new Color(255, 193, 7), Color.BLACK);
+        btnXoa = createFlatButton("Xóa", new Color(220, 53, 69), Color.WHITE);
         
         // Căn button xuong dưới
         JPanel pCenterWrap = new JPanel(new BorderLayout());
         pCenterWrap.setOpaque(false);
         pCenterWrap.add(pInput, BorderLayout.NORTH);
         
-        JPanel pBtnWrap = new JPanel(new BorderLayout());
+        JPanel pBtnWrap = new JPanel(new GridLayout(1, 3, 10, 0));
         pBtnWrap.setOpaque(false);
         pBtnWrap.setBorder(new EmptyBorder(20, 0, 0, 0));
-        pBtnWrap.add(btnThem, BorderLayout.CENTER);
+        pBtnWrap.add(btnThem);
+        pBtnWrap.add(btnSua);
+        pBtnWrap.add(btnXoa);
 
         p.add(lblHeader, BorderLayout.NORTH);
         p.add(pCenterWrap, BorderLayout.CENTER);
@@ -158,6 +163,15 @@ public class QuanLyDanhMucPanel extends JPanel {
     // --- GETTERS & LISTENERS ---
     public String getTenDM() { return txtTenDM.getText().trim(); }
     public void setTenDM(String t) { txtTenDM.setText(t); }
+    public int getSelectedId() { return selectedId; }
+    public void setSelectedId(int id) { this.selectedId = id; }
     public DefaultTableModel getModel() { return model; }
+    public JTable getTable() { return tblDanhMuc; }
     public void addThemListener(ActionListener l) { btnThem.addActionListener(l); }
+    public void addSuaListener(ActionListener l) { btnSua.addActionListener(l); }
+    public void addXoaListener(ActionListener l) { btnXoa.addActionListener(l); }
+    public void addTableClickListener(java.awt.event.MouseAdapter l) { tblDanhMuc.addMouseListener(l); }
+    
+    public void showMessage(String msg) { JOptionPane.showMessageDialog(this, msg); }
+    public int showConfirm(String msg) { return JOptionPane.showConfirmDialog(this, msg, "Xác nhận", JOptionPane.YES_NO_OPTION); }
 }

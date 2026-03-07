@@ -97,7 +97,7 @@ public class QuanLySanPhamFrame extends JFrame {
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         pnlButtons.setOpaque(false);
 
-        btnNhapHang = createFlatButton("📦 NHẬP HÀNG", COLOR_PRIMARY, Color.WHITE);
+        btnNhapHang = createFlatButton("NHẬP HÀNG", COLOR_PRIMARY, Color.WHITE);
         btnNhapHang.setPreferredSize(new Dimension(160, 42));
         
         btnMoFormThem = createFlatButton("+ Thêm Sản Phẩm Mới", COLOR_SUCCESS, Color.WHITE);
@@ -157,7 +157,7 @@ public class QuanLySanPhamFrame extends JFrame {
         pnlHeader.setOpaque(false);
         pnlHeader.setBorder(new EmptyBorder(0, 0, 15, 0));
         
-        JLabel lblTitle = new JLabel("🛒 Thông Tin Chi Tiết Sản Phẩm");
+        JLabel lblTitle = new JLabel("Thông Tin Chi Tiết Sản Phẩm");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
         lblTitle.setForeground(COLOR_TEXT_DARK);
         pnlHeader.add(lblTitle, BorderLayout.WEST);
@@ -234,10 +234,10 @@ public class QuanLySanPhamFrame extends JFrame {
         g.gridx=3; g.weightx=1.0; g.insets = new Insets(8, 0, 15, 0); txtGiaBan = createTextField(); pnl.add(txtGiaBan, g);
 
         // Tồn Kho & Ảnh
-        g.gridx=2; g.gridy=3; g.weightx=0; g.insets = new Insets(8, 30, 15, 10); pnl.add(createLabel("Tồn Kho (Auto):"), g);
-        g.gridx=3; g.weightx=1.0; g.insets = new Insets(8, 0, 15, 0); txtTonKho = createTextField(); txtTonKho.setEditable(false); pnl.add(txtTonKho, g);
+        g.gridx=0; g.gridy=3; g.weightx=0; g.insets = new Insets(8, 0, 15, 30); pnl.add(createLabel("Tồn Kho (Auto):"), g);
+        g.gridx=1; g.weightx=1.0; g.insets = new Insets(8, 0, 15, 0); txtTonKho = createTextField(); txtTonKho.setEditable(false); pnl.add(txtTonKho, g);
         
-        g.gridx=0; g.gridy=3; g.weightx=0; g.anchor = GridBagConstraints.NORTHWEST; g.insets = new Insets(8, 0, 15, 30);
+        g.gridx=0; g.gridy=4; g.weightx=0; g.anchor = GridBagConstraints.NORTHWEST; g.insets = new Insets(8, 0, 15, 30);
         pnl.add(createLabel("Mô tả / Bài viết:"), g);
         g.gridx=1; g.ipady=80; g.gridwidth=3; 
         txtMoTa = new JTextArea(); 

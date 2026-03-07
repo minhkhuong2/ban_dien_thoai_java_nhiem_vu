@@ -28,8 +28,13 @@ public class BanHangPanel extends JPanel {
     private JTextField txtTenKhach; 
     private JTextField txtMaVoucher;
     private JButton btnApDungVoucher;
-    private JLabel lblTongTien, lblGiamGia, lblThanhToan;
+    private JLabel lblTongTien, lblGiamGia, lblVanChuyen, lblThanhToan;
     private JButton btnThanhToan;
+    
+    // Shipping & Payment Options
+    private JRadioButton radGiaoTieuChuan, radGiaoHoaToc;
+    private JRadioButton radThanhToanCOD, radChuyenKhoan;
+    private ButtonGroup grpGiaoHang, grpThanhToan;
     
     // UI Constants
     private final Color COLOR_BG = new Color(245, 247, 250);
@@ -79,7 +84,7 @@ public class BanHangPanel extends JPanel {
             new EmptyBorder(5, 10, 5, 10)
         ));
         
-        btnTimKiem = createFlatButton("🔍 Tìm kiếm", COLOR_PRIMARY, Color.WHITE);
+        btnTimKiem = createFlatButton("Tìm kiếm", COLOR_PRIMARY, Color.WHITE);
         btnTimKiem.setPreferredSize(new Dimension(130, 42));
         
         pnlSearch.add(txtTimKiem, BorderLayout.CENTER);
@@ -108,7 +113,7 @@ public class BanHangPanel extends JPanel {
             new EmptyBorder(20, 20, 20, 20)
         ));
         
-        JLabel lblTitle = new JLabel("🛒 Đơn Hàng Mới");
+        JLabel lblTitle = new JLabel("Đơn Hàng Mới");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(240, 240, 240)));
@@ -146,8 +151,6 @@ public class BanHangPanel extends JPanel {
         pTableWrap.setBorder(new EmptyBorder(15, 0, 15, 0));
         pTableWrap.add(sc, BorderLayout.CENTER);
         
-        pnl.add(pTableWrap, BorderLayout.CENTER);
-        
         // FOOTER TÍNH TIỀN (POS STYLE)
         JPanel pnlFooter = new JPanel(new GridBagLayout());
         pnlFooter.setBackground(Color.WHITE);
@@ -156,7 +159,7 @@ public class BanHangPanel extends JPanel {
         g.fill = GridBagConstraints.HORIZONTAL;
         g.gridx = 0; g.weightx = 1.0;
         
-        btnXoaSP = new JButton("🗑 Xóa Chọn");
+        btnXoaSP = new JButton("Xóa Chọn");
         btnXoaSP.setForeground(COLOR_DANGER);
         btnXoaSP.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnXoaSP.setContentAreaFilled(false);
@@ -195,11 +198,64 @@ public class BanHangPanel extends JPanel {
         pnlVoucher.add(lblVoucher, BorderLayout.NORTH);
         pnlVoucher.add(pVwrap, BorderLayout.CENTER);
         pnlFooter.add(pnlVoucher, g);
+        // --- 1. SHIPPING OPTIONS ---
+        JPanel pnlShipping = new JPanel(new GridLayout(2, 1, 5, 5));
+        pnlShipping.setBackground(Color.WHITE);
+        pnlShipping.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(COLOR_TABLE_BORDER), 
+            "   Vận chuyển ", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, 
+            new Font("Segoe UI", Font.BOLD, 13), COLOR_TEXT_DARK
+        ));
+        
+        radGiaoTieuChuan = new JRadioButton("Giao hàng tiêu chuẩn (3-5 ngày)");
+        radGiaoTieuChuan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        radGiaoTieuChuan.setBackground(Color.WHITE);
+        radGiaoTieuChuan.setSelected(true);
+        
+        radGiaoHoaToc = new JRadioButton("Giao hàng nhanh hỏa tốc (1-2 ngày) - 30.000 đ");
+        radGiaoHoaToc.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        radGiaoHoaToc.setBackground(Color.WHITE);
+        
+        grpGiaoHang = new ButtonGroup();
+        grpGiaoHang.add(radGiaoTieuChuan);
+        grpGiaoHang.add(radGiaoHoaToc);
+        
+        pnlShipping.add(radGiaoTieuChuan);
+        pnlShipping.add(radGiaoHoaToc);
+        g.insets = new Insets(10, 0, 5, 0);
+        pnlFooter.add(pnlShipping, g);
+
+        // --- 2. PAYMENT METHODS ---
+        JPanel pnlPayment = new JPanel(new GridLayout(2, 1, 5, 5));
+        pnlPayment.setBackground(Color.WHITE);
+        pnlPayment.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(COLOR_TABLE_BORDER), 
+            "   Thanh toán ", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, 
+            new Font("Segoe UI", Font.BOLD, 13), COLOR_TEXT_DARK
+        ));
+        
+        radThanhToanCOD = new JRadioButton(" Thanh toán khi nhận hàng (COD)");
+        radThanhToanCOD.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        radThanhToanCOD.setBackground(Color.WHITE);
+        radThanhToanCOD.setSelected(true);
+        
+        radChuyenKhoan = new JRadioButton(" Chuyển khoản ngân hàng (Quét mã QR)");
+        radChuyenKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        radChuyenKhoan.setBackground(Color.WHITE);
+        
+        grpThanhToan = new ButtonGroup();
+        grpThanhToan.add(radThanhToanCOD);
+        grpThanhToan.add(radChuyenKhoan);
+        
+        pnlPayment.add(radThanhToanCOD);
+        pnlPayment.add(radChuyenKhoan);
+        g.insets = new Insets(5, 0, 10, 0);
+        pnlFooter.add(pnlPayment, g);
         
         // Đường line gạch xéo như hóa đơn
         JSeparator st = new JSeparator();
         st.setForeground(Color.BLACK);
-        g.insets = new Insets(15, 0, 10, 0);
+        g.insets = new Insets(10, 0, 10, 0);
         pnlFooter.add(st, g);
         
         // Tính tiền block
@@ -209,6 +265,9 @@ public class BanHangPanel extends JPanel {
         
         lblGiamGia = createLabelTotal("CHIẾT KHẤU:", "- 0 đ", COLOR_SUCCESS, 15);
         pnlFooter.add(lblGiamGia, g);
+        
+        lblVanChuyen = createLabelTotal("PHÍ VẬN CHUYỂN:", "Miễn phí", COLOR_SUCCESS, 15);
+        pnlFooter.add(lblVanChuyen, g);
         
         lblThanhToan = createLabelTotal("KHÁCH PHẢI TRẢ:", "0 VNĐ", COLOR_DANGER, 22);
         g.insets = new Insets(10, 0, 15, 0);
@@ -220,7 +279,18 @@ public class BanHangPanel extends JPanel {
         g.insets = new Insets(10, 0, 0, 0);
         pnlFooter.add(btnThanhToan, g);
         
-        pnl.add(pnlFooter, BorderLayout.SOUTH);
+        JScrollPane scrollFooter = new JScrollPane(pnlFooter);
+        scrollFooter.setBorder(null);
+        scrollFooter.getViewport().setBackground(Color.WHITE);
+        scrollFooter.getVerticalScrollBar().setUnitIncrement(16);
+        
+        JSplitPane splitRight = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pTableWrap, scrollFooter);
+        splitRight.setResizeWeight(0.35); // 35% cho table
+        splitRight.setDividerSize(5); 
+        splitRight.setBorder(null);
+        splitRight.setOpaque(false);
+        
+        pnl.add(splitRight, BorderLayout.CENTER);
         return pnl;
     }
     
@@ -353,12 +423,29 @@ public class BanHangPanel extends JPanel {
     public String getTenKhach() { return txtTenKhach.getText(); } 
     public String getMaGiamGia() { return txtMaVoucher.getText(); }
     public void setMaGiamGia(String code) { txtMaVoucher.setText(code); }
+    public double getPhiVanChuyen() {
+        return radGiaoHoaToc.isSelected() ? 30000 : 0;
+    }
+    
+    public boolean isChuyenKhoan() {
+        return radChuyenKhoan.isSelected();
+    }
+    
+    public void addGiaoHangListener(ActionListener l) {
+        radGiaoHoaToc.addActionListener(l);
+        radGiaoTieuChuan.addActionListener(l);
+    }
+    
     public void setHienThiTien(String tong, String giam, String phaiTra) {
-        // Need to extract raw text as we modified it to be HTML previously in old logic.
-        // It's safer to re-create the label fully in the modern logic.
-        // Or simpler: Re-use method
         lblTongTien.setText(createLabelTotal("TỔNG TIỀN HÀNG:", tong, COLOR_TEXT_DARK, 15).getText());
         lblGiamGia.setText(createLabelTotal("CHIẾT KHẤU:", "- " + giam, COLOR_SUCCESS, 15).getText());
+        
+        if (getPhiVanChuyen() > 0) {
+            lblVanChuyen.setText(createLabelTotal("PHÍ VẬN CHUYỂN:", "+ 30,000 đ", COLOR_TEXT_DARK, 15).getText());
+        } else {
+            lblVanChuyen.setText(createLabelTotal("PHÍ VẬN CHUYỂN:", "Miễn phí", COLOR_SUCCESS, 15).getText());
+        }
+        
         lblThanhToan.setText(createLabelTotal("KHÁCH PHẢI TRẢ:", phaiTra, COLOR_DANGER, 22).getText());
     }
     public void addTimKiemListener(ActionListener l) { btnTimKiem.addActionListener(l); }

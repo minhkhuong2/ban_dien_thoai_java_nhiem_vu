@@ -190,7 +190,7 @@ public class QuanLySanPhamPanel extends JPanel {
         pnlHeader.setOpaque(false);
         pnlHeader.setBorder(new EmptyBorder(0, 0, 15, 0));
         
-        JLabel lblTitle = new JLabel("🛒 Thông Tin Chi Tiết Sản Phẩm");
+        JLabel lblTitle = new JLabel("Thông Tin Chi Tiết Sản Phẩm");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
         lblTitle.setForeground(COLOR_TEXT_DARK);
         pnlHeader.add(lblTitle, BorderLayout.WEST);
@@ -256,9 +256,9 @@ public class QuanLySanPhamPanel extends JPanel {
         g.gridy = 4; pnl.add(createLabel("Giá Bán:"), g);
         g.gridy = 5; txtGiaBan = createTextField(); pnl.add(txtGiaBan, g);
         
-        g.gridy = 6; g.anchor = GridBagConstraints.NORTHWEST;
+        g.gridy = 6; g.gridx = 0; g.anchor = GridBagConstraints.NORTHWEST;
         pnl.add(createLabel("Mô tả:"), g);
-        g.gridy = 7; g.ipady = 80; 
+        g.gridy = 7; g.gridx = 0; g.ipady = 80; g.gridwidth = 2; 
         txtMoTa = new JTextArea(); 
         txtMoTa.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         txtMoTa.setBorder(BorderFactory.createCompoundBorder(
@@ -266,7 +266,7 @@ public class QuanLySanPhamPanel extends JPanel {
             new EmptyBorder(8, 8, 8, 8)
         ));
         pnl.add(new JScrollPane(txtMoTa), g);
-        g.ipady = 0;
+        g.ipady = 0; g.gridwidth = 1;
 
         // CỘT 2
         g.gridy = 0; g.gridx = 1; g.weightx = 1.0; pnl.add(createLabel("Tên Sản Phẩm (*):"), g);

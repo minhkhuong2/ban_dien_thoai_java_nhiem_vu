@@ -82,13 +82,13 @@ public class QuanLyKhachHangPanel extends JPanel {
         txtSDT = addInputField(pInput, "Số Điện Thoại (*):", g, gridy++, true);
         
         // Địa chỉ
-        g.gridy = gridy++;
+        g.gridy = gridy * 2;
         JLabel lblDiaChi = new JLabel("Địa Chỉ Liên Hệ:");
         lblDiaChi.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblDiaChi.setForeground(COLOR_TEXT_MUTED);
         pInput.add(lblDiaChi, g);
         
-        g.gridy = gridy++;
+        g.gridy = gridy * 2 + 1; gridy++;
         txtDiaChi = new JTextArea(4, 20); 
         txtDiaChi.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         txtDiaChi.setBorder(BorderFactory.createCompoundBorder(
@@ -189,7 +189,7 @@ public class QuanLyKhachHangPanel extends JPanel {
             }
         });
         
-        btnTim = createFlatButton("🔍 Tìm Kiếm", COLOR_PRIMARY, Color.WHITE);
+        btnTim = createFlatButton("Tìm Kiếm", COLOR_PRIMARY, Color.WHITE);
         btnTim.setPreferredSize(new Dimension(130, 40));
         
         pSearch.add(txtTimKiem, BorderLayout.CENTER);

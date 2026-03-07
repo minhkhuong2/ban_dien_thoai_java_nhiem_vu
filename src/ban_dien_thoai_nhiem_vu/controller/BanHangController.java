@@ -62,6 +62,7 @@ public class BanHangController {
         
         // SỰ KIỆN QUAN TRỌNG NHẤT: THANH TOÁN
         view.addThanhToanListener(e -> xuLyThanhToan());
+        view.addGiaoHangListener(e -> capNhatTongTien());
     }
 
     // --- CÁC HÀM CƠ BẢN ---
@@ -129,7 +130,12 @@ public class BanHangController {
         for (int i = 0; i < view.getModelGio().getRowCount(); i++) {
             tongHang += Double.parseDouble(view.getModelGio().getValueAt(i, 4).toString().replace(",", "").replace(" đ", ""));
         }
-        view.setHienThiTien(df.format(tongHang) + " đ", df.format(tongHang * phanTramGiam) + " đ", df.format(tongHang * (1-phanTramGiam)) + " VNĐ");
+        
+        double tienGiamKhach = tongHang * phanTramGiam;
+        double tienVanChuyen = view.getPhiVanChuyen();
+        double tienPhaiTra = tongHang - tienGiamKhach + tienVanChuyen;
+        
+        view.setHienThiTien(df.format(tongHang) + " đ", df.format(tienGiamKhach) + " đ", df.format(tienPhaiTra) + " VNĐ");
     }
     
     // --- HELPER LOOKUP ---
@@ -199,8 +205,25 @@ public class BanHangController {
             }
             double tongTienCuoiCung = tongHang * (1.0 - phanTramGiam);
 
-            // A. INSERT HÓA ĐƠN
-            String sqlHD = "INSERT INTO HoaDon (maHD, ngayLap, maNV, maKH, tenKhachHang, tongTien) VALUES (?, NOW(), ?, ?, ?, ?)";
+            // A. INSERT HÓA ĐƠN (Mặc định 'Chờ xử lý' theo yêu cầu)
+            // Tính toán trước tổng tiền khách phải trả thực sự (có trừ % và cộng ship)
+            double phiVanChuyen = view.getPhiVanChuyen();
+            double tongTienPhaiThu = (tongHang * (1.0 - phanTramGiam)) + phiVanChuyen;
+            
+            if (view.isChuyenKhoan()) {
+                ban_dien_thoai_nhiem_vu.view.QRCodeDialog qr = new ban_dien_thoai_nhiem_vu.view.QRCodeDialog(
+                        (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(view),
+                        tongTienPhaiThu,
+                        "THANHTOAN " + maHD
+                );
+                qr.setVisible(true);
+                if (!qr.isPaid()) {
+                    conn.rollback();
+                    return; // Khách hủy chuyển khoản
+                }
+            }
+
+            String sqlHD = "INSERT INTO HoaDon (maHD, ngayLap, maNV, maKH, tenKhachHang, tongTien, trangThai) VALUES (?, NOW(), ?, ?, ?, ?, 'Chờ xử lý')";
             PreparedStatement pstHD = conn.prepareStatement(sqlHD);
             pstHD.setString(1, maHD); 
             pstHD.setString(2, maNguoiBan); 
@@ -208,8 +231,8 @@ public class BanHangController {
             // Xử lý maKH (Set NULL nếu không tìm thấy)
             pstHD.setObject(3, maKH, java.sql.Types.INTEGER);
             
-            pstHD.setString(4, tenKhachLuu); // Lưu tên thật vào đây
-            pstHD.setDouble(5, tongTienCuoiCung);
+            pstHD.setString(4, tenKhachLuu); 
+            pstHD.setDouble(5, tongTienPhaiThu);
             pstHD.executeUpdate();
 
             // B. INSERT CHI TIẾT & TRỪ KHO (Dùng Batch cho nhanh)
@@ -251,23 +274,24 @@ public class BanHangController {
                 //xuất hóa đơn bằng textpdf
                 new XuatHoaDonPDF().xuatHoaDon(maHD); 
             }
+            // GỬI EMAIL - Làm TRƯỚC khi reset giao diện giỏ hàng
+            String emailKhach = layEmailKhachHang(inputKhach);
+            if (emailKhach != null && !emailKhach.isEmpty()) {
+                // Tạo nội dung (cần đọc từ bảng Giỏ hàng đang hiển thị)
+                String noiDungHTML = taoNoiDungHoaDonHTML(maHD, tenKhachLuu, tongTienCuoiCung);
+                
+                // Chạy luồng riêng (Thread) để gửi mail không làm đơ phần mềm
+                new Thread(() -> {
+                    GuiEmail.guiHoaDon(emailKhach, "Hóa Đơn Điện Tử PNC Store - " + maHD, noiDungHTML);
+                }).start();
+            }
+
             // Reset giao diện
             view.getModelGio().setRowCount(0);
             phanTramGiam = 0;
             view.setMaGiamGia("");
             capNhatTongTien();
             loadKhoHang(""); // Load lại kho để thấy số lượng giảm
-            String emailKhach = layEmailKhachHang(inputKhach);
-            
-            if (emailKhach != null && !emailKhach.isEmpty()) {
-                // Tạo nội dung
-                String noiDungHTML = taoNoiDungHoaDonHTML(maHD, tenKhachLuu, tongTienCuoiCung);
-                
-                // Chạy luồng riêng (Thread) để gửi mail không làm đơ phần mềm
-                new Thread(() -> {
-                    GuiEmail.guiHoaDon(emailKhach, "Hóa Đơn Điện Tử - " + maHD, noiDungHTML);
-                }).start();
-            }
 
         } catch (Exception e) {
             e.printStackTrace();

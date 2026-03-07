@@ -14,7 +14,8 @@ public class QuanLyHoaDonPanel extends JPanel {
     private JButton btnTim, btnLamMoi;
     private JTable tblHoaDon, tblChiTiet;
     private DefaultTableModel modelHoaDon, modelChiTiet;
-    private JButton btnIn;
+    private JButton btnIn, btnCapNhatTrangThai;
+    private JComboBox<String> cboTrangThai;
     
     private JLabel lblMaHD, lblNgayLap, lblNguoiBan, lblKhachHang, lblTongTien;
 
@@ -85,9 +86,9 @@ public class QuanLyHoaDonPanel extends JPanel {
             }
         });
         
-        btnTim = createFlatButton("🔍 Tìm Kiếm", COLOR_PRIMARY, Color.WHITE);
-        btnLamMoi = createFlatButton("🔄 Tải Lại", new Color(240, 240, 240), COLOR_TEXT_DARK);
-        btnIn = createFlatButton("🖨 In Báo Cáo", new Color(25, 135, 84), Color.WHITE);
+        btnTim = createFlatButton("Tìm Kiếm", COLOR_PRIMARY, Color.WHITE);
+        btnLamMoi = createFlatButton("Tải Lại", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnIn = createFlatButton("In Báo Cáo", new Color(25, 135, 84), Color.WHITE);
 
         
         JPanel pBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
@@ -105,7 +106,7 @@ public class QuanLyHoaDonPanel extends JPanel {
         pnlHeaderGroup.add(pSearch, BorderLayout.CENTER);
 
         // Table
-        String[] cols = {"Mã HĐ", "Ngày Lập", "Nhân Viên", "Khách Hàng", "Tổng Tiền"};
+        String[] cols = {"Mã HĐ", "Ngày Lập", "Nhân Viên", "Khách Hàng", "Tổng Tiền", "Trạng Thái"};
         modelHoaDon = new DefaultTableModel(cols, 0) {
             @Override public boolean isCellEditable(int row, int col) { return false; }
         };
@@ -115,6 +116,10 @@ public class QuanLyHoaDonPanel extends JPanel {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
         tblHoaDon.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+        
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tblHoaDon.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
 
         JScrollPane sc = new JScrollPane(tblHoaDon);
         sc.setBorder(null);
@@ -140,7 +145,7 @@ public class QuanLyHoaDonPanel extends JPanel {
         ));
         
         // Info Panel - Invoice Detail Header Like a Receipt
-        JPanel pInfo = new JPanel(new GridLayout(6, 1, 0, 12));
+        JPanel pInfo = new JPanel(new GridLayout(6, 1, 0, 10)); // Thu hẹp gap một chút để đủ chỗ
         pInfo.setBackground(Color.WHITE);
         
         JLabel lblTitle = new JLabel("Chi Tiết Hóa Đơn");
@@ -154,12 +159,34 @@ public class QuanLyHoaDonPanel extends JPanel {
         pInfo.add(lblNguoiBan = createDetailLabel("Người bán: --"));
         pInfo.add(lblKhachHang = createDetailLabel("Khách hàng: --"));
         
-        JPanel pnlTotal = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 15));
+        JPanel pnlTotal = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 10));
         pnlTotal.setBackground(Color.WHITE);
         pnlTotal.add(lblTongTien = new JLabel("TỔNG TIẾN: 0 đ")); 
         lblTongTien.setForeground(new Color(220, 53, 69)); 
         lblTongTien.setFont(new Font("Segoe UI", Font.BOLD, 22));
         pInfo.add(pnlTotal);
+        
+        // --- STATUS UPDATE BLOCK ---
+        JPanel pnlStatus = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
+        pnlStatus.setBackground(Color.WHITE);
+        pnlStatus.setBorder(new EmptyBorder(5, 0, 10, 0));
+        
+        JLabel lblStatusTag = new JLabel("Trạng thái đơn hàng:");
+        lblStatusTag.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblStatusTag.setForeground(COLOR_TEXT_DARK);
+        
+        String[] trangThaiList = {"Chờ xử lý", "Đang giao", "Hoàn thành", "Đã hủy"};
+        cboTrangThai = new JComboBox<>(trangThaiList);
+        cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        cboTrangThai.setBackground(Color.WHITE);
+        cboTrangThai.setPreferredSize(new Dimension(140, 35));
+        
+        btnCapNhatTrangThai = createFlatButton("Cập Nhật", new Color(13, 202, 240), Color.BLACK);
+        btnCapNhatTrangThai.setPreferredSize(new Dimension(100, 35));
+        
+        pnlStatus.add(lblStatusTag);
+        pnlStatus.add(cboTrangThai);
+        pnlStatus.add(btnCapNhatTrangThai);
 
         // Table Details
         String[] cols = {"Tên SP", "SL", "Đơn Giá", "Thành Tiền"};
@@ -178,7 +205,13 @@ public class QuanLyHoaDonPanel extends JPanel {
         sc.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1));
         sc.getViewport().setBackground(Color.WHITE);
 
-        pnl.add(pInfo, BorderLayout.NORTH);
+        // Add 3 main blocks: Info (Top), Status Action (Middle), Table (Bottom)
+        JPanel pnlTopBlocks = new JPanel(new BorderLayout());
+        pnlTopBlocks.setBackground(Color.WHITE);
+        pnlTopBlocks.add(pInfo, BorderLayout.NORTH);
+        pnlTopBlocks.add(pnlStatus, BorderLayout.SOUTH);
+
+        pnl.add(pnlTopBlocks, BorderLayout.NORTH);
         pnl.add(sc, BorderLayout.CENTER);
         
         pnlWrapper.add(pnl, BorderLayout.CENTER);
@@ -241,4 +274,7 @@ public class QuanLyHoaDonPanel extends JPanel {
     public void addBangListener(MouseAdapter l) { tblHoaDon.addMouseListener(l); }
     public JButton getBtnIn() { return btnIn; }
     public void addInListener(ActionListener l) { btnIn.addActionListener(l); }
+    
+    public JComboBox<String> getCboTrangThai() { return cboTrangThai; }
+    public void addCapNhatStatusListener(ActionListener l) { btnCapNhatTrangThai.addActionListener(l); }
 }

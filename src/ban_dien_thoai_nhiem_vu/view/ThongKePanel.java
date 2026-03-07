@@ -59,11 +59,7 @@ public class ThongKePanel extends JPanel {
         JPanel pText3 = (JPanel) ((BorderLayout)card3.getLayout()).getLayoutComponent(BorderLayout.CENTER);
         lblSanPhamBan = (JLabel) pText3.getComponent(1);
         
-        // --- ADD CLICK TO INCREMENT TEST FEATURE ---
-        addClickToIncrementListener(lblDoanhThu, true);
-        addClickToIncrementListener(lblSoDon, false);
-        addClickToIncrementListener(lblSanPhamBan, false);
-
+        
         pnlContent.add(pnlKPI, BorderLayout.NORTH);
 
         // -- Bottom Side: Chart --
@@ -112,31 +108,6 @@ public class ThongKePanel extends JPanel {
 
         card.add(pText, BorderLayout.CENTER);
         return card;
-    }
-
-    private void addClickToIncrementListener(JLabel lbl, boolean isMoney) {
-        lbl.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                try {
-                    String text = lbl.getText().replaceAll("[^0-9]", ""); // Lấy ra số
-                    if(text.isEmpty()) text = "0";
-                    long value = Long.parseLong(text);
-                    
-                    if(isMoney) {
-                        value += 1500000; // Doanh thu cộng nhiều lên
-                        // Convert to money format manually here or just leave simple
-                        java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
-                        lbl.setText(df.format(value) + " đ");
-                    } else {
-                        value += 1;
-                        lbl.setText(String.valueOf(value));
-                    }
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public void setTongDoanhThu(String text) { 

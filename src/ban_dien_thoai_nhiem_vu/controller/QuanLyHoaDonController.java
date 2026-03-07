@@ -40,15 +40,21 @@ public class QuanLyHoaDonController {
                     String nv = view.getTblHoaDon().getValueAt(row, 2).toString();
                     String kh = view.getTblHoaDon().getValueAt(row, 3).toString();
                     String tong = view.getTblHoaDon().getValueAt(row, 4).toString();
+                    String trangThai = view.getTblHoaDon().getValueAt(row, 5).toString();
                     
                     // Hiển thị lên Panel chi tiết bên phải
                     view.setThongTinChiTiet(maHD, ngay, nv, kh, tong);
+                    view.getCboTrangThai().setSelectedItem(trangThai);
+                    
                     loadChiTietHoaDon(maHD);
                 }
             }
         });
+        
+        // 4. Sự kiện Cập nhật Trạng Thái Hóa Đơn
+        view.addCapNhatStatusListener(e -> updateTrangThaiHoaDon());
 
-        // 4. Sự kiện In Hóa Đơn (Nếu bạn đã thêm nút btnIn bên View)
+        // 5. Sự kiện In Hóa Đơn (Nếu bạn đã thêm nút btnIn bên View)
         try {
             // Kiểm tra xem nút In có tồn tại không để tránh lỗi null
             if (view.getBtnIn() != null) {
@@ -71,6 +77,43 @@ public class QuanLyHoaDonController {
         // Gọi class XuatHoaDon để thực hiện lệnh in
         new XuatHoaDon().inHoaDon(maHD);
     }
+    
+    // --- XỬ LÝ CẬP NHẬT TRẠNG THÁI ---
+    private void updateTrangThaiHoaDon() {
+        int row = view.getTblHoaDon().getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một hóa đơn từ danh sách bên trái để cập nhật!");
+            return;
+        }
+        
+        String maHD = view.getTblHoaDon().getValueAt(row, 0).toString();
+        String trangThaiMoi = view.getCboTrangThai().getSelectedItem().toString();
+        
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            String sql = "UPDATE HoaDon SET trangThai = ? WHERE maHD = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, trangThaiMoi);
+            pst.setString(2, maHD);
+            
+            if (pst.executeUpdate() > 0) {
+                JOptionPane.showMessageDialog(view, "Cập nhật trạng thái thành công!");
+                loadDanhSachHoaDon(view.getTuKhoa());
+                
+                // Select lại dòng vừa cập nhật
+                for (int i = 0; i < view.getTblHoaDon().getRowCount(); i++) {
+                    if (view.getTblHoaDon().getValueAt(i, 0).toString().equals(maHD)) {
+                        view.getTblHoaDon().setRowSelectionInterval(i, i);
+                        break;
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(view, "Phát sinh lỗi khi cập nhật!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Lỗi kết nối CSDL!");
+        }
+    }
 
     // --- LOAD DANH SÁCH (LOGIC CHUẨN: HIỆN TÊN KHÁCH THAY VÌ SĐT) ---
     private void loadDanhSachHoaDon(String keyword) {
@@ -82,7 +125,7 @@ public class QuanLyHoaDonController {
             
             String sql = "SELECT hd.maHD, hd.ngayLap, nv.hoTen, " +
                          "COALESCE(kh.tenKH, hd.tenKhachHang, 'Khách vãng lai') as tenHienThi, " +
-                         "hd.tongTien " +
+                         "hd.tongTien, hd.trangThai " +
                          "FROM HoaDon hd " +
                          "LEFT JOIN NhanVien nv ON hd.maNV = nv.maNV " +
                          "LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH " + 
@@ -107,6 +150,11 @@ public class QuanLyHoaDonController {
                 row.add(rs.getString("hoTen") == null ? "Unknown" : rs.getString("hoTen"));
                 row.add(rs.getString("tenHienThi")); // Tên khách hàng chuẩn
                 row.add(df.format(rs.getDouble("tongTien")));
+                
+                String trangThai = rs.getString("trangThai");
+                if(trangThai == null || trangThai.isEmpty()) trangThai = "Hoàn thành"; // Fallback nếu DB rỗng
+                row.add(trangThai);
+                
                 view.getModelHoaDon().addRow(row);
             }
         } catch (Exception e) {
