@@ -54,6 +54,7 @@ public class DangNhapController {
                 NhanVien nv = new NhanVien();
                 nv.setMaNV(rs.getString("maNV")); 
                 nv.setHoTen(rs.getString("hoTen"));
+                nv.setNgaySinh(rs.getDate("ngaySinh"));
                 nv.setSdt(rs.getString("sdt"));
                 nv.setEmail(rs.getString("email"));
                 nv.setTaiKhoan(rs.getString("taiKhoan"));

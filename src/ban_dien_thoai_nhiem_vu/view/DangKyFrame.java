@@ -1,7 +1,9 @@
 package ban_dien_thoai_nhiem_vu.view;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -11,127 +13,161 @@ public class DangKyFrame extends JFrame {
 
     private JTextField txtHoTen, txtTaiKhoan, txtSDT, txtEmail;
     private JPasswordField txtMatKhau, txtXacNhanMK;
-    private JButton btnDangKy, btnQuayLai;
+    private JButton btnDangKy;
+    private JLabel lblQuayLai;
 
     public DangKyFrame() {
         thietKeGiaoDien();
     }
 
     private void thietKeGiaoDien() {
-        setTitle("Đăng Ký Tài Khoản Mới - PNC STORE");
-        setSize(900, 650); 
+        setTitle("Đăng Ký Tài Khoản - PNC STORE");
+        setSize(550, 750); 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(1, 2)); // Chia đôi màn hình
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.WHITE);
 
-        // --- CỘT TRÁI: HÌNH ẢNH / BANNER ---
-        JPanel pnlLeft = new JPanel();
-        pnlLeft.setBackground(new Color(23, 162, 184)); // Màu xanh Cyan chủ đạo
-        pnlLeft.setLayout(new GridBagLayout());
+        // Form Panel
+        JPanel pnlMain = new JPanel(new GridBagLayout());
+        pnlMain.setBackground(Color.WHITE);
+        pnlMain.setBorder(new EmptyBorder(30, 40, 30, 40));
         
-        GridBagConstraints gbcLeft = new GridBagConstraints();
-        gbcLeft.gridx = 0; gbcLeft.gridy = 0;
-        
-        JLabel lblIcon = new JLabel("📝");
-        lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 80));
-        pnlLeft.add(lblIcon, gbcLeft);
-        
-        gbcLeft.gridy++;
-        JLabel lblBrand = new JLabel("PNC STORE");
-        lblBrand.setFont(new Font("Segoe UI", Font.BOLD, 30));
-        lblBrand.setForeground(Color.WHITE);
-        pnlLeft.add(lblBrand, gbcLeft);
-        
-        gbcLeft.gridy++;
-        JLabel lblSlogan = new JLabel("Hệ thống quản lý chuyên nghiệp");
-        lblSlogan.setFont(new Font("Segoe UI", Font.ITALIC, 16));
-        lblSlogan.setForeground(new Color(224, 255, 255));
-        pnlLeft.add(lblSlogan, gbcLeft);
-        
-        add(pnlLeft);
+        GridBagConstraints g = new GridBagConstraints();
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 1.0; 
+        g.gridx = 0; g.gridy = 0;
 
-        // --- CỘT PHẢI: FORM NHẬP LIỆU (SỬA LỖI OVERLAP TẠI ĐÂY) ---
-        JPanel pnlRight = new JPanel(new GridBagLayout());
-        pnlRight.setBackground(Color.WHITE);
+        // --- LOGO ---
+        JLabel lblLogo = new JLabel("PNC STORE");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblLogo.setForeground(new Color(41, 98, 255)); // #2962FF
+        g.insets = new Insets(0, 0, 25, 0);
+        g.gridwidth = 2; // Span across columns
+        pnlMain.add(lblLogo, g);
+
+        // --- TITLE ---
+        g.gridy++;
+        JLabel lblTitle = new JLabel("Đăng ký");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setForeground(new Color(33, 33, 33));
+        g.insets = new Insets(0, 0, 5, 0);
+        pnlMain.add(lblTitle, g);
         
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0; 
-        gbc.gridx = 0; 
-        gbc.gridy = 0; // Bắt đầu từ dòng 0
+        // --- SUBTITLE ---
+        g.gridy++;
+        JLabel lblSubtitle = new JLabel("Thiết lập tài khoản cá nhân của bạn.");
+        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblSubtitle.setForeground(new Color(117, 117, 117));
+        g.insets = new Insets(0, 0, 20, 0);
+        pnlMain.add(lblSubtitle, g);
 
-        // Title Form
-        JLabel lblTitle = new JLabel("ĐĂNG KÝ TÀI KHOẢN");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblTitle.setForeground(new Color(23, 162, 184));
-        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        // Reset grid width to split standard fields into two columns where needed
+        g.gridwidth = 1;
+
+        // --- ROW 1: HO TEN & SDT ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 15, 5); // Right margin for left item
+        txtHoTen = new JTextField();
+        setupModernTextField(txtHoTen, "Họ và tên");
+        pnlMain.add(txtHoTen, g);
+
+        g.gridx = 1;
+        g.insets = new Insets(0, 5, 15, 0); // Left margin for right item
+        txtSDT = new JTextField();
+        setupModernTextField(txtSDT, "Số điện thoại");
+        pnlMain.add(txtSDT, g);
+
+        // --- ROW 2: TAI KHOAN & EMAIL ---
+        g.gridy++; g.gridx = 0;
+        g.insets = new Insets(0, 0, 15, 5);
+        txtTaiKhoan = new JTextField();
+        setupModernTextField(txtTaiKhoan, "Tên đăng nhập / Account");
+        pnlMain.add(txtTaiKhoan, g);
+
+        g.gridx = 1;
+        g.insets = new Insets(0, 5, 15, 0);
+        txtEmail = new JTextField();
+        setupModernTextField(txtEmail, "Email");
+        pnlMain.add(txtEmail, g);
+
+        // Reset to full width for Password fields
+        g.gridwidth = 2;
+
+        // --- ROW 3: PASSWORD ---
+        g.gridy++; g.gridx = 0;
+        g.insets = new Insets(0, 0, 15, 0);
+        txtMatKhau = new JPasswordField();
+        setupModernTextField(txtMatKhau, "Mật khẩu");
+        pnlMain.add(txtMatKhau, g);
+
+        // --- ROW 4: CONFIRM PWD ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 15, 0);
+        txtXacNhanMK = new JPasswordField();
+        setupModernTextField(txtXacNhanMK, "Xác nhận mật khẩu");
+        pnlMain.add(txtXacNhanMK, g);
+
+        // --- TERMS ---
+        g.gridy++;
+        JCheckBox chkTerms = new JCheckBox("  Tôi đồng ý với các Điều khoản & Chính sách bảo mật");
+        chkTerms.setBackground(Color.WHITE);
+        chkTerms.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        chkTerms.setForeground(new Color(33, 33, 33));
+        chkTerms.setFocusPainted(false);
+        g.insets = new Insets(5, 0, 20, 0);
+        pnlMain.add(chkTerms, g);
+
+        // --- SUBMIT BUTTON ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 15, 0);
+        btnDangKy = new JButton("Tạo tài khoản");
+        btnDangKy.setBackground(new Color(41, 98, 255)); // #2962FF
+        btnDangKy.setForeground(Color.WHITE);
+        btnDangKy.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnDangKy.setPreferredSize(new Dimension(0, 45));
+        btnDangKy.setFocusPainted(false);
+        btnDangKy.setBorderPainted(false);
+        btnDangKy.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        pnlMain.add(btnDangKy, g);
+
+        // --- LOGIN LINK ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 0, 0);
+        JPanel pnlLogin = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        pnlLogin.setBackground(Color.WHITE);
         
-        gbc.insets = new Insets(20, 40, 20, 40); // Cách lề
-        pnlRight.add(lblTitle, gbc);
+        JLabel lblAsk = new JLabel("Đã có tài khoản?");
+        lblAsk.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblAsk.setForeground(new Color(33, 33, 33));
+        pnlLogin.add(lblAsk);
+        
+        lblQuayLai = new JLabel("Đăng nhập");
+        lblQuayLai.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblQuayLai.setForeground(new Color(255, 107, 107));
+        lblQuayLai.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        pnlLogin.add(lblQuayLai);
 
-        // --- CÁC Ô NHẬP LIỆU ---
-        // Gọi hàm helper đã được fix lỗi khoảng cách
-        addLabelAndField(pnlRight, gbc, "Họ và Tên (*)", txtHoTen = new JTextField());
-        addLabelAndField(pnlRight, gbc, "Số điện thoại (*)", txtSDT = new JTextField());
-        addLabelAndField(pnlRight, gbc, "Email (*)", txtEmail = new JTextField());
-        addLabelAndField(pnlRight, gbc, "Tên đăng nhập (*)", txtTaiKhoan = new JTextField());
-        addLabelAndField(pnlRight, gbc, "Mật khẩu (*)", txtMatKhau = new JPasswordField());
-        addLabelAndField(pnlRight, gbc, "Nhập lại mật khẩu (*)", txtXacNhanMK = new JPasswordField());
+        pnlMain.add(pnlLogin, g);
 
-        // Buttons
-        gbc.gridy++;
-        gbc.insets = new Insets(20, 40, 10, 40);
-        btnDangKy = new JButton("ĐĂNG KÝ NGAY");
-        styleButton(btnDangKy, new Color(40, 167, 69)); // Màu xanh lá
-        pnlRight.add(btnDangKy, gbc);
-
-        gbc.gridy++;
-        gbc.insets = new Insets(0, 40, 20, 40);
-        btnQuayLai = new JButton("Quay lại Đăng nhập");
-        btnQuayLai.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnQuayLai.setForeground(Color.GRAY);
-        btnQuayLai.setBorderPainted(false);
-        btnQuayLai.setContentAreaFilled(false);
-        btnQuayLai.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        pnlRight.add(btnQuayLai, gbc);
-
-        add(pnlRight);
+        // Wrap to center vertically via North/Center/South, or just straight Center
+        JScrollPane scrollPane = new JScrollPane(pnlMain);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        add(scrollPane, BorderLayout.CENTER);
     }
 
-    // --- HÀM HELPER ĐÃ FIX LỖI OVERLAP ---
-    private void addLabelAndField(JPanel pnl, GridBagConstraints gbc, String text, JTextField field) {
-        // 1. Thêm Label
-        gbc.gridy++; // Xuống dòng mới
-        gbc.insets = new Insets(10, 40, 5, 40); // Top: 10, Bottom: 5 (Tạo khoảng cách)
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lbl.setForeground(Color.DARK_GRAY);
-        pnl.add(lbl, gbc);
-
-        // 2. Thêm TextField
-        gbc.gridy++; // Xuống dòng tiếp theo cho ô nhập
-        gbc.insets = new Insets(0, 40, 0, 40); // Bottom: 0 (Để sát với dòng tiếp theo hơn chút)
-        field.setPreferredSize(new Dimension(0, 35));
+    private void setupModernTextField(JTextField field, String titleText) {
+        field.setPreferredSize(new Dimension(0, 45));
         field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        // Bo viền cho đẹp
-        field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)), 
-            new EmptyBorder(5, 10, 5, 10)
-        ));
-        pnl.add(field, gbc);
-    }
-    
-    private void styleButton(JButton btn, Color bg) {
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(bg);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setPreferredSize(new Dimension(0, 45));
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        Border lineBorder = BorderFactory.createLineBorder(new Color(200, 200, 200), 1, true);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(lineBorder, " " + titleText + " ", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 11), new Color(117, 117, 117));
+        Border margin = new EmptyBorder(0, 10, 5, 10); // Internal padding
+        
+        field.setBorder(BorderFactory.createCompoundBorder(titledBorder, margin));
     }
 
-    // Getters & Listeners
+    // Getters
     public String getHoTen() { return txtHoTen.getText(); }
     public String getSDT() { return txtSDT.getText(); }
     public String getEmail() { return txtEmail.getText(); }
@@ -139,7 +175,16 @@ public class DangKyFrame extends JFrame {
     public String getMatKhau() { return new String(txtMatKhau.getPassword()); }
     public String getXacNhanMK() { return new String(txtXacNhanMK.getPassword()); }
     
+    // Listeners
     public void addDangKyListener(ActionListener l) { btnDangKy.addActionListener(l); }
-    public void addQuayLaiListener(ActionListener l) { btnQuayLai.addActionListener(l); }
+    public void addQuayLaiListener(ActionListener l) {
+        lblQuayLai.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                l.actionPerformed(new java.awt.event.ActionEvent(this, java.awt.event.ActionEvent.ACTION_PERFORMED, "QUAY_LAI"));
+            }
+        });
+    }
+    
     public void showMessage(String msg) { JOptionPane.showMessageDialog(this, msg); }
 }

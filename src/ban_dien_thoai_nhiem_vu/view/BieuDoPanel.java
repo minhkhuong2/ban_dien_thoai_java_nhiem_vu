@@ -5,27 +5,35 @@ import java.awt.*;
 import java.util.Map;
 import java.text.DecimalFormat;
 
-// Class này dùng để tự vẽ biểu đồ mà không cần thư viện ngoài
 public class BieuDoPanel extends JPanel {
-    private Map<String, Double> data; // Dữ liệu: Ngày -> Doanh thu
+    private Map<String, Double> data; 
     private String title;
+    
+    // Venus Colors
+    private final Color COLOR_PRIMARY = new Color(74, 38, 235); // #4A26EB
+    private final Color COLOR_PRIMARY_LIGHT = new Color(74, 38, 235, 30); 
+    
+    private final Color COLOR_TEXT_DARK = new Color(43, 54, 116);
+    private final Color COLOR_TEXT_MUTED = new Color(163, 174, 208);
 
     public BieuDoPanel(String title) {
         this.title = title;
         setBackground(Color.WHITE);
-        setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 30, 20)); 
     }
 
     public void setData(Map<String, Double> data) {
         this.data = data;
-        repaint(); // Vẽ lại khi có dữ liệu mới
+        repaint(); 
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (data == null || data.isEmpty()) {
-            g.drawString("Chưa có dữ liệu thống kê...", getWidth()/2 - 50, getHeight()/2);
+            g.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            g.setColor(COLOR_TEXT_MUTED);
+            g.drawString("Chưa có dữ liệu thống kê...", getWidth()/2 - 80, getHeight()/2);
             return;
         }
 
@@ -34,51 +42,81 @@ public class BieuDoPanel extends JPanel {
 
         int w = getWidth();
         int h = getHeight();
-        int padding = 50;
-        int barWidth = (w - 2 * padding) / data.size() - 20; // Độ rộng cột
+        int paddingBottom = 60;
+        int paddingTop = 90;
+        int paddingSide = 50;
         
-        // Tìm giá trị lớn nhất để chia tỉ lệ
+        int barWidth = 45; 
+        int totalSpacing = (w - 2 * paddingSide) / data.size();
+
+        // 1. Draw Title Area
+        g2.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        g2.setColor(COLOR_TEXT_MUTED);
+        g2.drawString(title, 30, 40);
+        
+        g2.setFont(new Font("Segoe UI", Font.BOLD, 34));
+        g2.setColor(COLOR_TEXT_DARK);
+        
+        double totalSum = 0;
         double maxVal = 0;
-        for (Double val : data.values()) if (val > maxVal) maxVal = val;
-        if(maxVal == 0) maxVal = 1; // Tránh chia cho 0
-
-        // Vẽ tiêu đề
-        g2.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        g2.drawString(title, w/2 - g2.getFontMetrics().stringWidth(title)/2, 30);
-
-        // Vẽ các cột
-        int x = padding;
-        DecimalFormat df = new DecimalFormat("#,###");
-        g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        for (Double val : data.values()) {
+            totalSum += val;
+            if (val > maxVal) maxVal = val;
+        }
+        if(maxVal == 0) maxVal = 1;
         
+        DecimalFormat df = new DecimalFormat("#,###");
+        String totalStr = "$" + df.format(totalSum);
+        g2.drawString(totalStr, 30, 85);
+        
+        int targetY = paddingTop + (h - paddingTop - paddingBottom) / 3;
+        
+        Stroke dashed = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{6}, 0);
+        g2.setStroke(dashed);
+        g2.setColor(COLOR_PRIMARY);
+        g2.drawLine(paddingSide, targetY, w - paddingSide, targetY);
+        
+        g2.setStroke(new BasicStroke(1)); 
+        
+        g2.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        g2.drawString("Mục Tiêu Tuần", w - paddingSide - 90, targetY - 10);
+
+        // 2. Draw Bars
+        int xCenter = paddingSide + totalSpacing / 2;
+        
+        int currentIndex = 0;
+        int highestIndex = -1;
+        
+        int i=0;
+        for (Double val : data.values()) {
+            if (val == maxVal) highestIndex = i;
+            i++;
+        }
+
         for (Map.Entry<String, Double> entry : data.entrySet()) {
             String label = entry.getKey();
             double value = entry.getValue();
             
-            // Tính chiều cao cột
-            int barHeight = (int) ((value / maxVal) * (h - 2 * padding - 40));
-
-            // Vẽ cột (Màu xanh dương)
-            g2.setColor(new Color(67, 94, 190));
-            g2.fillRect(x, h - padding - barHeight, barWidth, barHeight);
+            int maxBarHeight = h - paddingTop - paddingBottom - 20;
+            int barHeight = (int) ((value / maxVal) * maxBarHeight);
             
-            // Viền cột
-            g2.setColor(Color.DARK_GRAY);
-            g2.drawRect(x, h - padding - barHeight, barWidth, barHeight);
+            int bx = xCenter - (barWidth/2);
+            int by = h - paddingBottom - barHeight;
 
-            // Vẽ số tiền trên đỉnh cột
-            g2.setColor(Color.BLACK);
-            String valStr = df.format(value);
-            g2.drawString(valStr, x + (barWidth - g2.getFontMetrics().stringWidth(valStr))/2, h - padding - barHeight - 5);
+            if (currentIndex == highestIndex) {
+                g2.setColor(COLOR_PRIMARY); 
+            } else {
+                g2.setColor(COLOR_PRIMARY_LIGHT); 
+            }
+            g2.fillRoundRect(bx, by, barWidth, barHeight, 20, 20); 
+            
+            g2.setColor(COLOR_TEXT_MUTED);
+            g2.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            int labelWidth = g2.getFontMetrics().stringWidth(label);
+            g2.drawString(label, xCenter - labelWidth/2, h - 20);
 
-            // Vẽ ngày dưới chân cột
-            g2.drawString(label, x + (barWidth - g2.getFontMetrics().stringWidth(label))/2, h - padding + 20);
-
-            x += barWidth + 20; // Dịch sang cột tiếp theo
+            xCenter += totalSpacing;
+            currentIndex++;
         }
-        
-        // Vẽ trục X
-        g2.setColor(Color.GRAY);
-        g2.drawLine(padding - 10, h - padding, w - padding, h - padding);
     }
 }

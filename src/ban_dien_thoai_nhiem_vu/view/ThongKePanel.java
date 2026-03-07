@@ -7,71 +7,150 @@ import java.util.Map;
 
 public class ThongKePanel extends JPanel {
 
-    // 3 Thẻ bài tóm tắt
     private JLabel lblDoanhThu, lblSoDon, lblSanPhamBan;
     private BieuDoPanel pnlBieuDo;
 
+    private final Color COLOR_BG = new Color(245, 247, 250);
+    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    private final Color COLOR_PRIMARY = new Color(13, 110, 253);
+    private final Color COLOR_SUCCESS = new Color(25, 135, 84);
+    private final Color COLOR_WARNING = new Color(255, 193, 7);
+
     public ThongKePanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(new Color(240, 242, 245));
-        setBorder(new EmptyBorder(20, 20, 20, 20));
+        setBackground(COLOR_BG);
+        setBorder(new EmptyBorder(30, 30, 30, 30));
 
-        // 1. HEADER (3 Thẻ bài)
-        JPanel pnlHeader = new JPanel(new GridLayout(1, 3, 20, 0));
+        // 1. HEADER (Title)
+        JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setOpaque(false);
-        pnlHeader.setPreferredSize(new Dimension(0, 120));
-
-        pnlHeader.add(createCard("DOANH THU (Tháng này)", "0 VNĐ", new Color(40, 167, 69), "💰"));
-        pnlHeader.add(createCard("TỔNG ĐƠN HÀNG", "0", new Color(23, 162, 184), "🛒"));
-        pnlHeader.add(createCard("SẢN PHẨM ĐÃ BÁN", "0", new Color(255, 193, 7), "📦"));
-        
-        // Lưu tham chiếu để Controller set text
-        lblDoanhThu = (JLabel) ((JPanel) pnlHeader.getComponent(0)).getComponent(1);
-        lblSoDon = (JLabel) ((JPanel) pnlHeader.getComponent(1)).getComponent(1);
-        lblSanPhamBan = (JLabel) ((JPanel) pnlHeader.getComponent(2)).getComponent(1);
-
+        JLabel lblTitle = new JLabel("BÁO CÁO & THỐNG KÊ CHI TIẾT");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblTitle.setForeground(COLOR_TEXT_DARK);
+        pnlHeader.add(lblTitle, BorderLayout.WEST);
         add(pnlHeader, BorderLayout.NORTH);
 
-        // 2. BODY (Biểu đồ)
-        pnlBieuDo = new BieuDoPanel("BIỂU ĐỒ DOANH THU 7 NGÀY GẦN NHẤT");
-        add(pnlBieuDo, BorderLayout.CENTER);
+        // 2. MAIN CONTENT (Split: Stats Top, Chart Bottom)
+        JPanel pnlContent = new JPanel(new BorderLayout(0, 20));
+        pnlContent.setOpaque(false);
+
+        // -- Top Side: KPI Cards (Horizontal) --
+        JPanel pnlKPI = new JPanel(new GridLayout(1, 3, 20, 0));
+        pnlKPI.setOpaque(false);
+        pnlKPI.setPreferredSize(new Dimension(0, 140)); // Fixed height for cards
+
+        pnlKPI.add(createModernCard("TỔNG DOANH THU", "0 đ", COLOR_SUCCESS));
+        pnlKPI.add(createModernCard("TỔNG ĐƠN HÀNG", "0", COLOR_PRIMARY));
+        pnlKPI.add(createModernCard("SẢN PHẨM ĐÃ BÁN", "0", COLOR_WARNING));
+
+        // Card 1
+        JPanel card1 = (JPanel) pnlKPI.getComponent(0);
+        JPanel pText1 = (JPanel) ((BorderLayout)card1.getLayout()).getLayoutComponent(BorderLayout.CENTER);
+        lblDoanhThu = (JLabel) pText1.getComponent(1);
+        
+        // Card 2
+        JPanel card2 = (JPanel) pnlKPI.getComponent(1);
+        JPanel pText2 = (JPanel) ((BorderLayout)card2.getLayout()).getLayoutComponent(BorderLayout.CENTER);
+        lblSoDon = (JLabel) pText2.getComponent(1);
+        
+        // Card 3
+        JPanel card3 = (JPanel) pnlKPI.getComponent(2);
+        JPanel pText3 = (JPanel) ((BorderLayout)card3.getLayout()).getLayoutComponent(BorderLayout.CENTER);
+        lblSanPhamBan = (JLabel) pText3.getComponent(1);
+        
+        // --- ADD CLICK TO INCREMENT TEST FEATURE ---
+        addClickToIncrementListener(lblDoanhThu, true);
+        addClickToIncrementListener(lblSoDon, false);
+        addClickToIncrementListener(lblSanPhamBan, false);
+
+        pnlContent.add(pnlKPI, BorderLayout.NORTH);
+
+        // -- Bottom Side: Chart --
+        JPanel chartContainer = new JPanel(new BorderLayout());
+        chartContainer.setBackground(Color.WHITE);
+        chartContainer.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(222, 226, 230), 1),
+                new EmptyBorder(25, 25, 25, 25)
+        ));
+
+        pnlBieuDo = new BieuDoPanel("Biểu đồ Doanh Thu 7 Ngày Qua");
+        chartContainer.add(pnlBieuDo, BorderLayout.CENTER);
+        
+        pnlContent.add(chartContainer, BorderLayout.CENTER);
+
+        add(pnlContent, BorderLayout.CENTER);
     }
 
-    private JPanel createCard(String title, String value, Color color, String icon) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(color);
-        p.setBorder(new EmptyBorder(15, 20, 15, 20));
+    private JPanel createModernCard(String title, String value, Color accentColor) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(Color.WHITE);
+        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Title
-        JLabel lblTitle = new JLabel(title);
-        lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lblTitle.setForeground(new Color(255, 255, 255, 200));
-        
-        // Value
-        JLabel lblValue = new JLabel(value);
-        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblValue.setForeground(Color.WHITE);
-        
-        // Icon
-        JLabel lblIcon = new JLabel(icon);
-        lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 40));
-        lblIcon.setForeground(new Color(255, 255, 255, 100));
+        // Tạo thiết kế phẳng dạng phẳng (Flat Design) có đường viền Top accent (cạnh viền màu nổi phía trên)
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(222, 226, 230), 1),
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(6, 0, 0, 0, accentColor),
+                new EmptyBorder(25, 25, 25, 25)
+            )
+        ));
 
-        JPanel pText = new JPanel(new GridLayout(2, 1));
+        JPanel pText = new JPanel(new GridLayout(2, 1, 0, 8));
         pText.setOpaque(false);
+
+        JLabel lblTitle = new JLabel(title);
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblTitle.setForeground(COLOR_TEXT_MUTED);
+
+        JLabel lblValue = new JLabel(value);
+        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        lblValue.setForeground(COLOR_TEXT_DARK);
+
         pText.add(lblTitle);
         pText.add(lblValue);
-        
-        p.add(pText, BorderLayout.CENTER);
-        p.add(lblIcon, BorderLayout.EAST);
-        
-        return p;
+
+        card.add(pText, BorderLayout.CENTER);
+        return card;
     }
 
-    // --- SETTERS ---
-    public void setTongDoanhThu(String text) { lblDoanhThu.setText(text); }
-    public void setTongDonHang(String text) { lblSoDon.setText(text); }
-    public void setTongSanPham(String text) { lblSanPhamBan.setText(text); }
+    private void addClickToIncrementListener(JLabel lbl, boolean isMoney) {
+        lbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                try {
+                    String text = lbl.getText().replaceAll("[^0-9]", ""); // Lấy ra số
+                    if(text.isEmpty()) text = "0";
+                    long value = Long.parseLong(text);
+                    
+                    if(isMoney) {
+                        value += 1500000; // Doanh thu cộng nhiều lên
+                        // Convert to money format manually here or just leave simple
+                        java.text.DecimalFormat df = new java.text.DecimalFormat("#,###");
+                        lbl.setText(df.format(value) + " đ");
+                    } else {
+                        value += 1;
+                        lbl.setText(String.valueOf(value));
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void setTongDoanhThu(String text) { 
+        lblDoanhThu.setText(text); 
+    }
+    public void setTongDonHang(String text) { 
+        // Bỏ chữ " Đơn" thừa từ controller nếu có để số liệu hiển thị lớn và đẹp hơn
+        String numText = text.replace(" Đơn", "").trim();
+        lblSoDon.setText(numText); 
+    }
+    public void setTongSanPham(String text) { 
+        String numText = text.replace(" Sản phẩm", "").trim();
+        lblSanPhamBan.setText(numText); 
+    }
     
     public void capNhatBieuDo(Map<String, Double> data) {
         pnlBieuDo.setData(data);

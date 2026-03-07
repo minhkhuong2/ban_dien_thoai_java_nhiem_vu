@@ -2,9 +2,13 @@ package ban_dien_thoai_nhiem_vu.view;
 
 import ban_dien_thoai_nhiem_vu.controller.GuiEmail;
 import ban_dien_thoai_nhiem_vu.database.KetNoiCSDL;
+
 import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 public class QuenMatKhauDialog extends JDialog {
     
@@ -14,112 +18,160 @@ public class QuenMatKhauDialog extends JDialog {
     private String serverOTP = null; 
     private String emailUser = null;
 
-    public QuenMatKhauDialog(Frame parent) { // Sửa tham số thành Frame để tương thích với view
-        super(parent, "Quên mật khẩu", true);
-        setSize(450, 400); // Tăng kích thước chút cho đẹp
+    public QuenMatKhauDialog(Frame parent) {
+        super(parent, "Khôi phục mật khẩu - PNC STORE", true);
+        setSize(480, 580); 
         setLocationRelativeTo(parent);
-        setLayout(new GridLayout(4, 1, 10, 10));
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.WHITE);
 
-        // --- BƯỚC 1: NHẬP EMAIL ---
-        JPanel p1 = new JPanel(new BorderLayout(5, 5));
-        p1.setBorder(BorderFactory.createTitledBorder("Bước 1: Nhập Email đã đăng ký"));
+        JPanel pnlMain = new JPanel(new GridBagLayout());
+        pnlMain.setBackground(Color.WHITE);
+        pnlMain.setBorder(new EmptyBorder(30, 40, 30, 40));
+        
+        GridBagConstraints g = new GridBagConstraints();
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 1.0; 
+        g.gridx = 0; g.gridy = 0;
+
+        // --- TITLE ---
+        JLabel lblTitle = new JLabel("Quên mật khẩu?");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setForeground(new Color(33, 33, 33));
+        g.insets = new Insets(0, 0, 5, 0);
+        pnlMain.add(lblTitle, g);
+        
+        // --- SUBTITLE ---
+        g.gridy++;
+        JLabel lblSubtitle = new JLabel("<html>Đừng lo lắng, chuyện này thường xảy ra.<br>Nhập email để nhận mã OTP khôi phục.</html>");
+        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblSubtitle.setForeground(new Color(117, 117, 117));
+        g.insets = new Insets(0, 0, 25, 0);
+        pnlMain.add(lblSubtitle, g);
+
+        // --- EMAIL INPUT TIER ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 10, 0);
         txtEmail = new JTextField();
-        btnGuiMa = new JButton("Gửi mã OTP");
-        p1.add(txtEmail, BorderLayout.CENTER);
-        p1.add(btnGuiMa, BorderLayout.EAST);
-        add(p1);
+        setupModernTextField(txtEmail, "Bước 1: Nhập Email đã đăng ký");
+        pnlMain.add(txtEmail, g);
 
-        // --- BƯỚC 2: NHẬP OTP ---
-        JPanel p2 = new JPanel(new BorderLayout());
-        p2.setBorder(BorderFactory.createTitledBorder("Bước 2: Nhập mã xác nhận (6 số)"));
+        // Nút gửi email
+        g.gridy++;
+        g.insets = new Insets(0, 0, 20, 0);
+        btnGuiMa = new JButton("Gửi mã OTP xác nhận");
+        styleButton(btnGuiMa, new Color(245, 246, 250), new Color(41, 98, 255));
+        pnlMain.add(btnGuiMa, g);
+
+        // --- OTP INPUT ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 15, 0);
         txtOTP = new JTextField();
-        txtOTP.setFont(new Font("SansSerif", Font.BOLD, 16));
         txtOTP.setHorizontalAlignment(SwingConstants.CENTER);
-        p2.add(txtOTP, BorderLayout.CENTER);
-        add(p2);
+        setupModernTextField(txtOTP, "Bước 2: Nhập mã xác nhận (OTP)");
+        pnlMain.add(txtOTP, g);
 
-        // --- BƯỚC 3: MẬT KHẨU MỚI ---
-        JPanel p3 = new JPanel(new BorderLayout());
-        p3.setBorder(BorderFactory.createTitledBorder("Bước 3: Mật khẩu mới"));
+        // --- NEW PASSWORD INPUT ---
+        g.gridy++;
+        g.insets = new Insets(0, 0, 25, 0);
         txtMatKhauMoi = new JPasswordField();
-        p3.add(txtMatKhauMoi, BorderLayout.CENTER);
-        add(p3);
+        setupModernTextField(txtMatKhauMoi, "Bước 3: Tạo Mật khẩu mới");
+        pnlMain.add(txtMatKhauMoi, g);
 
-        // --- BƯỚC 4: NÚT XÁC NHẬN (QUAN TRỌNG: PHẢI NEW TRƯỚC RỒI MỚI SET MÀU) ---
-        btnXacNhan = new JButton("ĐỔI MẬT KHẨU"); // <--- Khởi tạo ở đây
-        
-        // Sau đó mới được tô màu
-        btnXacNhan.setBackground(new Color(41, 98, 255)); 
-        btnXacNhan.setForeground(Color.WHITE);
-        btnXacNhan.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnXacNhan.setFocusPainted(false);
-        
-        // Thêm vào Panel bọc ngoài để có padding (khoảng cách) cho đẹp
-        JPanel pBtn = new JPanel(new BorderLayout());
-        pBtn.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
-        pBtn.add(btnXacNhan, BorderLayout.CENTER);
-        add(pBtn);
+        // --- SUBMIT COMPLETED ---
+        g.gridy++;
+        g.insets = new Insets(10, 0, 15, 0);
+        btnXacNhan = new JButton("ĐỔI MẬT KHẨU");
+        styleButton(btnXacNhan, new Color(41, 98, 255), Color.WHITE);
+        pnlMain.add(btnXacNhan, g);
+
+        add(pnlMain, BorderLayout.CENTER);
 
         // --- SỰ KIỆN GỬI MÃ ---
-        btnGuiMa.addActionListener(e -> {
-            String email = txtEmail.getText().trim();
-            if(email.isEmpty()) { JOptionPane.showMessageDialog(this, "Vui lòng nhập Email!"); return; }
+        btnGuiMa.addActionListener(e -> actionGuiMa());
 
-            try (Connection conn = KetNoiCSDL.getConnection()) {
-                PreparedStatement pst = conn.prepareStatement("SELECT * FROM NhanVien WHERE email = ?");
-                pst.setString(1, email);
-                if (pst.executeQuery().next()) {
-                    btnGuiMa.setText("Đang gửi...");
-                    btnGuiMa.setEnabled(false);
-                    
-                    new Thread(() -> {
-                        serverOTP = GuiEmail.guiMaOTP(email);
-                        SwingUtilities.invokeLater(() -> {
-                            if (serverOTP != null) {
-                                JOptionPane.showMessageDialog(this, "Đã gửi mã OTP về email: " + email);
-                                emailUser = email;
-                                txtEmail.setEditable(false);
-                                txtOTP.requestFocus();
-                            } else {
-                                JOptionPane.showMessageDialog(this, "Lỗi gửi mail! Kiểm tra lại kết nối.");
-                            }
-                            btnGuiMa.setText("Gửi lại mã");
-                            btnGuiMa.setEnabled(true);
-                        });
-                    }).start();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Email này chưa được đăng ký trong hệ thống!");
-                }
-            } catch (Exception ex) { ex.printStackTrace(); }
-        });
+        // --- SỰ KIỆN XÁC NHẬN ---
+        btnXacNhan.addActionListener(e -> actionXacNhan());
+    }
 
-        // --- SỰ KIỆN XÁC NHẬN ĐỔI PASS ---
-        btnXacNhan.addActionListener(e -> {
-            if (serverOTP == null) { JOptionPane.showMessageDialog(this, "Vui lòng lấy mã OTP trước!"); return; }
-            
-            String userOTP = txtOTP.getText().trim();
-            String newPass = new String(txtMatKhauMoi.getPassword());
+    private void actionGuiMa() {
+        String email = txtEmail.getText().trim();
+        if(email.isEmpty()) { JOptionPane.showMessageDialog(this, "Vui lòng nhập Email!"); return; }
 
-            if (!userOTP.equals(serverOTP)) {
-                JOptionPane.showMessageDialog(this, "Mã OTP không đúng!");
-                return;
-            }
-            if (newPass.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới!");
-                return;
-            }
-
-            try (Connection conn = KetNoiCSDL.getConnection()) {
-                PreparedStatement pst = conn.prepareStatement("UPDATE NhanVien SET matKhau = ? WHERE email = ?");
-                pst.setString(1, newPass);
-                pst.setString(2, emailUser);
-                pst.executeUpdate();
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement("SELECT * FROM NhanVien WHERE email = ?");
+            pst.setString(1, email);
+            if (pst.executeQuery().next()) {
+                btnGuiMa.setText("Đang gửi...");
+                btnGuiMa.setEnabled(false);
                 
-                JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công! Hãy đăng nhập lại.");
-                dispose(); 
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                new Thread(() -> {
+                    serverOTP = GuiEmail.guiMaOTP(email);
+                    SwingUtilities.invokeLater(() -> {
+                        if (serverOTP != null) {
+                            JOptionPane.showMessageDialog(this, "Đã gửi mã OTP về email: " + email);
+                            emailUser = email;
+                            txtEmail.setEditable(false);
+                            txtOTP.requestFocus();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Lỗi gửi mail! Kiểm tra lại kết nối.");
+                        }
+                        btnGuiMa.setText("Gửi lại mã");
+                        btnGuiMa.setEnabled(true);
+                    });
+                }).start();
+            } else {
+                JOptionPane.showMessageDialog(this, "Email này chưa được đăng ký trong hệ thống!");
             }
-        });
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    private void actionXacNhan() {
+        if (serverOTP == null) { JOptionPane.showMessageDialog(this, "Vui lòng lấy mã OTP trước!"); return; }
+        
+        String userOTP = txtOTP.getText().trim();
+        String newPass = new String(txtMatKhauMoi.getPassword());
+
+        if (!userOTP.equals(serverOTP)) {
+            JOptionPane.showMessageDialog(this, "Mã OTP không đúng!");
+            return;
+        }
+        if (newPass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới!");
+            return;
+        }
+
+        try (Connection conn = KetNoiCSDL.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement("UPDATE NhanVien SET matKhau = ? WHERE email = ?");
+            pst.setString(1, newPass);
+            pst.setString(2, emailUser);
+            pst.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công! Hãy đăng nhập lại.");
+            dispose(); 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setupModernTextField(JTextField field, String titleText) {
+        field.setPreferredSize(new Dimension(0, 45));
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        
+        Border lineBorder = BorderFactory.createLineBorder(new Color(200, 200, 200), 1, true);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(lineBorder, " " + titleText + " ", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.PLAIN, 11), new Color(117, 117, 117));
+        Border margin = new EmptyBorder(0, 10, 5, 10); 
+        
+        field.setBorder(BorderFactory.createCompoundBorder(titledBorder, margin));
+    }
+
+    private void styleButton(JButton btn, Color bg, Color fg) {
+        btn.setBackground(bg);
+        btn.setForeground(fg);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setPreferredSize(new Dimension(0, 45));
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 }

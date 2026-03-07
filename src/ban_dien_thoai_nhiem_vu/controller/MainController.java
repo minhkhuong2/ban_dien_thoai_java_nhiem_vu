@@ -21,8 +21,8 @@ public class MainController {
         // 2. Gắn sự kiện
         setupListeners();
         
-        // 3. Mở tab mặc định
-        openBanHang();
+        // 3. Mở tab mặc định (Tổng quan)
+        openTrangChu();
     }
 
     private void setupUserSession() {
@@ -158,12 +158,7 @@ public class MainController {
         }
 
         if (view.getBtnTrangChu() != null) {
-            view.getBtnTrangChu().addActionListener(e -> {
-                view.setActiveButton(view.getBtnTrangChu());
-                ThongKePanel p = new ThongKePanel();
-                new ThongKeController(p);
-                view.showPanel(p);
-            });
+            view.getBtnTrangChu().addActionListener(e -> openTrangChu());
         }
         
         if (view.getMenuTaiKhoan() != null) {
@@ -191,5 +186,16 @@ public class MainController {
         BanHangPanel p = new BanHangPanel();
         new BanHangController(p);
         view.showPanel(p);
+    }
+
+    private void openTrangChu() {
+        if (view.getBtnTrangChu() != null) {
+            view.setActiveButton(view.getBtnTrangChu());
+            
+            // Theo như yêu cầu của người dùng, "Tổng quan" sẽ dùng TrangChuPanel 
+            TrangChuPanel p = new TrangChuPanel(view.lblStatDoanhThu, view.lblStatDonHang, view.lblStatKhachHang);
+            new TrangChuController(p);
+            view.showPanel(p);
+        }
     }
 }

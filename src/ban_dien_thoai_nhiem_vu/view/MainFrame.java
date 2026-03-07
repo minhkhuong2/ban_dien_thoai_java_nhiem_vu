@@ -1,6 +1,7 @@
 package ban_dien_thoai_nhiem_vu.view;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,101 +10,112 @@ import java.net.URL;
 
 public class MainFrame extends JFrame {
     
-    // --- CÁC NÚT MENU (SIDEBAR) ---
+    // --- SIDEBAR MENU BUTTONS ---
     private JButton btnTrangChu;
     private JButton btnBanHang;
-    private JButton btnSanPham; // Nút này sẽ hiện Popup Menu
+    private JButton btnSanPham; // Submenu
     private JButton btnKho; 
     private JButton btnKhachHang;
     private JButton btnGiamGia;
     private JButton btnHoaDon;
     private JButton btnThongKe;
-    private JButton btnHeThong; // Nút Hệ thống
+    private JButton btnHeThong; // Submenu
     private JButton btnDangXuat;
 
-    // --- POPUP MENU CHO SẢN PHẨM ---
+    // --- POPUP MENU ---
     private JPopupMenu popupSanPham;
     private JMenuItem menuQuanLySP;
     private JMenuItem menuDanhMuc;
     private JMenuItem menuThuongHieu;
     private JMenuItem menuThuocTinh;
 
-    // --- POPUP MENU CHO HỆ THỐNG ---
     private JPopupMenu popupHeThong;
     private JMenuItem menuNhanVien;
     private JMenuItem menuTaiKhoan;
 
-    // --- PANEL CHỨA NỘI DUNG ---
+    // --- PANELS ---
     private JPanel pnlContent;
     private JPanel pnlMenu;
     
-    // --- LABEL HIỂN THỊ THÔNG TIN USER ---
+    // --- USER INFO ---
     private JLabel lblUserInfo; 
 
-    // --- CÁC NHÃN HIỂN THỊ SỐ LIỆU (Dashboard) ---
+    // --- DASHBOARD LABELS (Passed to TrangChuPanel) ---
     public JLabel lblStatSanPham = new JLabel("0");
     public JLabel lblStatDonHang = new JLabel("0");
     public JLabel lblStatDoanhThu = new JLabel("0 đ");
     public JLabel lblStatKhachHang = new JLabel("0");
 
+    // COLORS MATCHING VENUS MOCKUP
+    private final Color COLOR_PRIMARY = new Color(74, 38, 235); // #4A26EB Indigo Blue
+    private final Color COLOR_BG = new Color(244, 247, 254); // #F4F7FE Light body background
+    private final Color COLOR_TEXT_MUTED = new Color(160, 174, 192); // Gray textual items
+
     public MainFrame() {
         thietKeGiaoDien();
-        taoMenuSanPhamDropdown(); // Tạo menu con cho nút Sản Phẩm
-        taoMenuHeThongDropdown(); // Tạo menu con cho nút Hệ thống
+        taoMenuSanPhamDropdown();
+        taoMenuHeThongDropdown();
     }
 
     private void thietKeGiaoDien() {
-        setTitle("HỆ THỐNG QUẢN LÝ ĐIỆN THOẠI - PNC STORE");
-        setSize(1400, 800);
+        setTitle("PNC Dashboard");
+        setSize(1450, 850);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // 1. MENU BÊN TRÁI (SIDEBAR)
+        // 1. SIDEBAR (MENU BÊN TRÁI)
         pnlMenu = new JPanel();
         pnlMenu.setBackground(Color.WHITE); 
-        pnlMenu.setPreferredSize(new Dimension(260, 0));
+        pnlMenu.setPreferredSize(new Dimension(280, 0));
         pnlMenu.setLayout(new BorderLayout()); 
-        pnlMenu.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(240, 240, 240))); 
+        pnlMenu.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(230, 230, 230))); 
 
-        // --- Logo Area ---
-        JPanel pnlLogo = new JPanel(new BorderLayout());
+        // LOGO AREA
+        JPanel pnlLogo = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 40));
         pnlLogo.setBackground(Color.WHITE);
-        pnlLogo.setBorder(new EmptyBorder(30, 0, 30, 0));
         
-        JLabel lblLogoText = new JLabel("PNC STORE", SwingConstants.CENTER); 
-        lblLogoText.setFont(new Font("SansSerif", Font.BOLD, 26));
-        lblLogoText.setForeground(new Color(41, 98, 255)); 
+        // Vẽ icon tròn cho Logo
+        JLabel lblIcon = new JLabel("✦") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(COLOR_PRIMARY);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                super.paintComponent(g);
+            }
+        };
+        lblIcon.setForeground(Color.WHITE);
+        lblIcon.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
+        lblIcon.setPreferredSize(new Dimension(35, 35));
+
+        JLabel lblLogoText = new JLabel("PNC STORE"); 
+        lblLogoText.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblLogoText.setForeground(new Color(43, 54, 116)); 
         
-        // Label hiển thị tên user (Controller sẽ set text vào đây)
-        lblUserInfo = new JLabel("Xin chào, ...", SwingConstants.CENTER);
-        lblUserInfo.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        lblUserInfo.setForeground(Color.GRAY);
-        
-        pnlLogo.add(lblLogoText, BorderLayout.CENTER);
-        pnlLogo.add(lblUserInfo, BorderLayout.SOUTH);
+        pnlLogo.add(lblIcon);
+        pnlLogo.add(lblLogoText);
         
         pnlMenu.add(pnlLogo, BorderLayout.NORTH);
 
-        // --- Menu Buttons Container ---
+        // MENU BUTTONS CONTAINER
         JPanel pnlMenuBtns = new JPanel();
         pnlMenuBtns.setLayout(new BoxLayout(pnlMenuBtns, BoxLayout.Y_AXIS));
         pnlMenuBtns.setBackground(Color.WHITE);
-        pnlMenuBtns.setBorder(new EmptyBorder(10, 10, 20, 10));
+        pnlMenuBtns.setBorder(new EmptyBorder(10, 20, 20, 20)); // Padding cho các nút
 
-        // Khởi tạo các nút
-        btnTrangChu  = taoNutMenu("Dashboard", "home.png", true); 
-        btnBanHang   = taoNutMenu("Bán Hàng", "cart.png", false); 
-        btnSanPham   = taoNutMenu("Sản Phẩm ▼", "phone.png", false);
-        btnKho       = taoNutMenu("Quản Lý Kho", "warehouse.png", false); 
-        btnKhachHang = taoNutMenu("Khách Hàng", "user.png", false);
-        btnGiamGia   = taoNutMenu("Voucher", "voucher.png", false);
-        btnHoaDon    = taoNutMenu("Hóa Đơn", "bill.png", false);
-        btnThongKe   = taoNutMenu("Thống Kê", "chart.png", false);
-        btnHeThong   = taoNutMenu("Hệ thống ▼", "setting.png", false);
-        btnDangXuat  = taoNutMenu("Đăng Xuất", "logout.png", false);
-
-        // Thêm vào Panel (Có khoảng cách)
+        btnTrangChu  = taoNutMenu("Tổng Quan", true); 
+        btnBanHang   = taoNutMenu("Bán Hàng", false); 
+        btnSanPham   = taoNutMenu("Sản Phẩm", false);
+        btnKho       = taoNutMenu("Quản Lý Kho", false); 
+        btnKhachHang = taoNutMenu("Khách Hàng", false);
+        btnGiamGia   = taoNutMenu("Khuyến Mãi", false);
+        btnHoaDon    = taoNutMenu("Hóa Đơn", false);
+        // btnThongKe   = taoNutMenu("Thống Kê", false); // Bỏ comment ra nếu muốn dùng lại
+        btnHeThong   = taoNutMenu("Hệ Thống", false);
+        
         addButtonToPanel(pnlMenuBtns, btnTrangChu);
         addButtonToPanel(pnlMenuBtns, btnBanHang);
         addButtonToPanel(pnlMenuBtns, btnSanPham);
@@ -111,39 +123,43 @@ public class MainFrame extends JFrame {
         addButtonToPanel(pnlMenuBtns, btnKhachHang);
         addButtonToPanel(pnlMenuBtns, btnGiamGia);
         addButtonToPanel(pnlMenuBtns, btnHoaDon);
-        addButtonToPanel(pnlMenuBtns, btnThongKe);
+        // addButtonToPanel(pnlMenuBtns, btnThongKe); // Đã comment nút Thống Kê
         addButtonToPanel(pnlMenuBtns, btnHeThong);
         
         pnlMenu.add(pnlMenuBtns, BorderLayout.CENTER);
         
-        // Logout Area
-        JPanel pnlLogout = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // LOGOUT AREA
+        JPanel pnlLogout = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         pnlLogout.setBackground(Color.WHITE);
-        pnlLogout.setBorder(new EmptyBorder(20, 20, 20, 20));
+        btnDangXuat = taoNutMenu("Đăng Xuất", false);
         pnlLogout.add(btnDangXuat);
         pnlMenu.add(pnlLogout, BorderLayout.SOUTH);
 
         add(pnlMenu, BorderLayout.WEST);
 
-        // 2. NỘI DUNG CHÍNH (CONTENT AREA)
+        // 2. MAIN CONTENT AREA
         pnlContent = new JPanel(new BorderLayout());
-        pnlContent.setBackground(new Color(245, 247, 250)); 
+        pnlContent.setBackground(COLOR_BG); 
         add(pnlContent, BorderLayout.CENTER);
     }
     
-    // Hàm phụ để add nút và khoảng cách cho gọn code
     private void addButtonToPanel(JPanel pnl, JButton btn) {
-        pnl.add(btn);
-        pnl.add(Box.createVerticalStrut(10));
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+        wrapper.add(btn, BorderLayout.CENTER);
+        wrapper.setMaximumSize(new Dimension(280, 50));
+        
+        pnl.add(wrapper);
+        pnl.add(Box.createVerticalStrut(10)); // Khoảng cách giữa các nút
     }
 
     private void taoMenuHeThongDropdown() {
         popupHeThong = new JPopupMenu();
         popupHeThong.setBackground(Color.WHITE);
-        popupHeThong.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        popupHeThong.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
         
-        menuNhanVien = new JMenuItem("   Quản lý Nhân sự   ");
-        menuTaiKhoan = new JMenuItem("   Thông tin Tài khoản   ");
+        menuNhanVien = new JMenuItem("   Quản Lý Nhân Sự   ");
+        menuTaiKhoan = new JMenuItem("   Thông Tin Tài Khoản   ");
         
         Font fontMenu = new Font("Segoe UI", Font.PLAIN, 14);
         styleMenuItem(menuNhanVien, fontMenu);
@@ -157,23 +173,20 @@ public class MainFrame extends JFrame {
 
     private void taoMenuSanPhamDropdown() {
         popupSanPham = new JPopupMenu();
-        popupSanPham.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        popupSanPham.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
         popupSanPham.setBackground(Color.WHITE);
 
-        // Tạo các Item con
-        menuQuanLySP = new JMenuItem("   Danh sách Sản phẩm   ");
-        menuDanhMuc = new JMenuItem("   Quản lý Danh mục   ");
-        menuThuongHieu = new JMenuItem("   Quản lý Thương hiệu   ");
-        menuThuocTinh = new JMenuItem("   Quản lý Thuộc tính   ");
+        menuQuanLySP = new JMenuItem("   Danh Sách Sản Phẩm   ");
+        menuDanhMuc = new JMenuItem("   Danh Mục   ");
+        menuThuongHieu = new JMenuItem("   Thương Hiệu   ");
+        menuThuocTinh = new JMenuItem("   Thuộc Tính   ");
 
-        // Style
         Font fontMenu = new Font("Segoe UI", Font.PLAIN, 14);
         styleMenuItem(menuQuanLySP, fontMenu);
         styleMenuItem(menuDanhMuc, fontMenu);
         styleMenuItem(menuThuongHieu, fontMenu);
         styleMenuItem(menuThuocTinh, fontMenu);
 
-        // Thêm vào Popup
         popupSanPham.add(menuQuanLySP);
         popupSanPham.addSeparator(); 
         popupSanPham.add(menuDanhMuc);
@@ -186,61 +199,75 @@ public class MainFrame extends JFrame {
     private void styleMenuItem(JMenuItem item, Font font) {
         item.setFont(font);
         item.setBackground(Color.WHITE);
-        item.setPreferredSize(new Dimension(220, 35));
+        item.setForeground(new Color(113, 128, 150));
+        item.setPreferredSize(new Dimension(220, 40));
         item.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
-    private JButton taoNutMenu(String text, String iconName, boolean isActive) {
-        JButton btn = new JButton(text);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 15));
+    // Custom Button Class to draw rounded background
+    class SidebarButton extends JButton {
+        private boolean isActive = false;
+        
+        public SidebarButton(String text) {
+            super(text);
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+        }
+        
+        public void setActive(boolean a) {
+            this.isActive = a;
+            repaint();
+        }
+        
+        public boolean isActive() { return isActive; }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            if (isActive) {
+                g2.setColor(COLOR_PRIMARY);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+            } else if (getModel().isRollover()) {
+                g2.setColor(new Color(245, 247, 250));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+            }
+            super.paintComponent(g);
+        }
+    }
+
+    private SidebarButton taoNutMenu(String text, boolean isActive) {
+        SidebarButton btn = new SidebarButton(text);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setHorizontalAlignment(SwingConstants.LEFT); 
+        btn.setBorder(new EmptyBorder(12, 20, 12, 20)); 
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setActive(isActive);
         
         if (isActive) {
             btn.setForeground(Color.WHITE);
-            btn.setBackground(new Color(41, 98, 255)); 
         } else {
-            btn.setForeground(new Color(120, 120, 120)); 
-            btn.setBackground(Color.WHITE);
+            btn.setForeground(COLOR_TEXT_MUTED);
         }
         
-        btn.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20)); 
-        btn.setHorizontalAlignment(SwingConstants.LEFT); 
-        btn.setFocusPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        // Add fake icon indicator for styling (Venus style)
         btn.setIconTextGap(15);
-        btn.setMaximumSize(new Dimension(240, 50));
+        JLabel iconSubstitute = new JLabel("✦");
+        iconSubstitute.setForeground(isActive ? Color.WHITE : COLOR_TEXT_MUTED);
         
-        if (!isActive) btn.setBorder(null);
-
-        // Load Icon an toàn
-        try {
-             // Đường dẫn icon (Đảm bảo folder icons nằm đúng chỗ)
-             URL iconURL = getClass().getResource("/ban_dien_thoai_nhiem_vu/icons/" + iconName);
-             if (iconURL != null) {
-                 ImageIcon icon = new ImageIcon(iconURL);
-                 Image img = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                 btn.setIcon(new ImageIcon(img));
-             }
-        } catch (Exception e) {}
-        
-        // Hover Effect
         btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) { 
-                // Chỉ đổi màu khi nút đó KHÔNG phải là nút đang Active (Màu xanh)
-                if (!btn.getBackground().equals(new Color(41, 98, 255))) { 
-                    btn.setBackground(new Color(245, 247, 250));
-                    btn.setForeground(new Color(41, 98, 255));
-                }
+                if (!btn.isActive()) btn.setForeground(COLOR_PRIMARY);
             }
             @Override
             public void mouseExited(MouseEvent evt) { 
-                // Khi chuột rời đi, nếu không phải nút Active thì trả về màu trắng
-                if (!btn.getBackground().equals(new Color(41, 98, 255))) { 
-                    btn.setBackground(Color.WHITE);
-                    btn.setForeground(new Color(120, 120, 120));
-                }
+                if (!btn.isActive()) btn.setForeground(COLOR_TEXT_MUTED);
             }
         });
+        
         return btn;
     }
 
@@ -253,31 +280,29 @@ public class MainFrame extends JFrame {
     }
     
     public void setActiveButton(JButton activeBtn) {
-        resetButton(btnTrangChu); 
-        resetButton(btnBanHang); 
-        resetButton(btnSanPham);
-        resetButton(btnKho); 
-        resetButton(btnKhachHang); 
-        resetButton(btnGiamGia); 
-        resetButton(btnHoaDon);
-        resetButton(btnThongKe); 
-        resetButton(btnHeThong); // Đừng quên nút Hệ thống
+        resetButton((SidebarButton)btnTrangChu); 
+        resetButton((SidebarButton)btnBanHang); 
+        resetButton((SidebarButton)btnSanPham);
+        resetButton((SidebarButton)btnKho); 
+        resetButton((SidebarButton)btnKhachHang); 
+        resetButton((SidebarButton)btnGiamGia); 
+        resetButton((SidebarButton)btnHoaDon);
+        // resetButton((SidebarButton)btnThongKe); 
+        resetButton((SidebarButton)btnHeThong); 
         
-        if (activeBtn != null) {
-            activeBtn.setBackground(new Color(41, 98, 255));
-            activeBtn.setForeground(Color.WHITE);
+        if (activeBtn != null && activeBtn instanceof SidebarButton) {
+            SidebarButton sb = (SidebarButton) activeBtn;
+            sb.setActive(true);
+            sb.setForeground(Color.WHITE);
         }
     }
     
-    private void resetButton(JButton btn) {
-        btn.setBackground(Color.WHITE);
-        btn.setForeground(new Color(100, 100, 100)); 
-        btn.setBorder(null);
+    private void resetButton(SidebarButton btn) {
+        btn.setActive(false);
+        btn.setForeground(COLOR_TEXT_MUTED); 
     }
     
-    // --- GETTERS CHO CONTROLLER (BẮT BUỘC PHẢI CÓ) ---
-    
-    // 1. Buttons
+    // --- GETTERS CHO CONTROLLER ---
     public JButton getBtnTrangChu() { return btnTrangChu; }
     public JButton getBtnBanHang() { return btnBanHang; }
     public JButton getBtnSanPham() { return btnSanPham; }
@@ -288,12 +313,8 @@ public class MainFrame extends JFrame {
     public JButton getBtnThongKe() { return btnThongKe; }
     public JButton getBtnHeThong() { return btnHeThong; }
     public JButton getBtnDangXuat() { return btnDangXuat; }
-    
-    // Lưu ý: Controller có thể hỏi btnNhanVien, nhưng ta để nó trong menu con.
-    // Ta trả về null để Controller không bị lỗi biên dịch, nhưng Controller sẽ dùng getMenuNhanVien()
     public JButton getBtnNhanVien() { return null; } 
 
-    // 2. Menu Items
     public JMenuItem getMenuQuanLySP() { return menuQuanLySP; }
     public JMenuItem getMenuDanhMuc() { return menuDanhMuc; }
     public JMenuItem getMenuThuongHieu() { return menuThuongHieu; }
@@ -301,8 +322,8 @@ public class MainFrame extends JFrame {
     public JMenuItem getMenuNhanVien() { return menuNhanVien; }
     public JMenuItem getMenuTaiKhoan() { return menuTaiKhoan; }
     
-    // 3. User Info
     public void setLblUserInfo(String text) {
-        if (lblUserInfo != null) lblUserInfo.setText(text);
+        // Ignored in new mockup as we use "Welcome to Venus!" style header,
+        // but keeping it safe if controller calls it.
     }
 }
