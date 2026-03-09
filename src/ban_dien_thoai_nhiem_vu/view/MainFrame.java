@@ -46,6 +46,9 @@ public class MainFrame extends JFrame {
     public JLabel lblStatDoanhThu = new JLabel("0 đ");
     public JLabel lblStatKhachHang = new JLabel("0");
 
+    // --- THEME TOGGLE ---
+    private JButton btnThemeToggle;
+    
     // COLORS MATCHING VENUS MOCKUP
     private final Color COLOR_PRIMARY = new Color(74, 38, 235); // #4A26EB Indigo Blue
     private final Color COLOR_BG = new Color(244, 247, 254); // #F4F7FE Light body background
@@ -66,14 +69,14 @@ public class MainFrame extends JFrame {
 
         // 1. SIDEBAR (MENU BÊN TRÁI)
         pnlMenu = new JPanel();
-        pnlMenu.setBackground(Color.WHITE); 
+        pnlMenu.setBackground(UIManager.getColor("window")); 
         pnlMenu.setPreferredSize(new Dimension(280, 0));
         pnlMenu.setLayout(new BorderLayout()); 
-        pnlMenu.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(230, 230, 230))); 
+        pnlMenu.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, UIManager.getColor("Component.borderColor"))); 
 
         // LOGO AREA
         JPanel pnlLogo = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 40));
-        pnlLogo.setBackground(Color.WHITE);
+        pnlLogo.setBackground(UIManager.getColor("window"));
         
         // Vẽ logo tải từ tài nguyên
         JLabel lblIcon = new JLabel();
@@ -92,7 +95,7 @@ public class MainFrame extends JFrame {
 
         JLabel lblLogoText = new JLabel("PNC STORE"); 
         lblLogoText.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblLogoText.setForeground(new Color(43, 54, 116)); 
+        lblLogoText.setForeground(UIManager.getColor("Label.foreground")); 
         
         pnlLogo.add(lblIcon);
         pnlLogo.add(lblLogoText);
@@ -102,7 +105,7 @@ public class MainFrame extends JFrame {
         // MENU BUTTONS CONTAINER
         JPanel pnlMenuBtns = new JPanel();
         pnlMenuBtns.setLayout(new BoxLayout(pnlMenuBtns, BoxLayout.Y_AXIS));
-        pnlMenuBtns.setBackground(Color.WHITE);
+        pnlMenuBtns.setBackground(UIManager.getColor("window"));
         pnlMenuBtns.setBorder(new EmptyBorder(10, 20, 20, 20)); // Padding cho các nút
 
         btnTrangChu  = taoNutMenu("Tổng Quan", true); 
@@ -126,19 +129,31 @@ public class MainFrame extends JFrame {
         addButtonToPanel(pnlMenuBtns, btnHeThong);
         
         pnlMenu.add(pnlMenuBtns, BorderLayout.CENTER);
-        
         // LOGOUT AREA
-        JPanel pnlLogout = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
-        pnlLogout.setBackground(Color.WHITE);
+        JPanel pnlLogout = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 20));
+        pnlLogout.setBackground(UIManager.getColor("window"));
         btnDangXuat = taoNutMenu("Đăng Xuất", false);
+        btnDangXuat.setPreferredSize(new Dimension(150, 45));
+        
+        btnThemeToggle = new JButton("🌙");
+        btnThemeToggle.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20));
+        btnThemeToggle.setFocusPainted(false);
+        btnThemeToggle.setBorder(null);
+        btnThemeToggle.setContentAreaFilled(false);
+        btnThemeToggle.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnThemeToggle.setPreferredSize(new Dimension(50, 45));
+        
+        btnThemeToggle.addActionListener(e -> toggleTheme());
+        
         pnlLogout.add(btnDangXuat);
+        pnlLogout.add(btnThemeToggle);
         pnlMenu.add(pnlLogout, BorderLayout.SOUTH);
 
         add(pnlMenu, BorderLayout.WEST);
 
         // 2. MAIN CONTENT AREA
         pnlContent = new JPanel(new BorderLayout());
-        pnlContent.setBackground(COLOR_BG); 
+        pnlContent.setBackground(UIManager.getColor("Panel.background")); 
         add(pnlContent, BorderLayout.CENTER);
     }
     
@@ -154,8 +169,8 @@ public class MainFrame extends JFrame {
 
     private void taoMenuHeThongDropdown() {
         popupHeThong = new JPopupMenu();
-        popupHeThong.setBackground(Color.WHITE);
-        popupHeThong.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
+        popupHeThong.setBackground(UIManager.getColor("PopupMenu.background"));
+        popupHeThong.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
         
         menuNhanVien = new JMenuItem("   Quản Lý Nhân Sự   ");
         menuTaiKhoan = new JMenuItem("   Thông Tin Tài Khoản   ");
@@ -172,8 +187,8 @@ public class MainFrame extends JFrame {
 
     private void taoMenuSanPhamDropdown() {
         popupSanPham = new JPopupMenu();
-        popupSanPham.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
-        popupSanPham.setBackground(Color.WHITE);
+        popupSanPham.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
+        popupSanPham.setBackground(UIManager.getColor("PopupMenu.background"));
 
         menuQuanLySP = new JMenuItem("   Danh Sách Sản Phẩm   ");
         menuDanhMuc = new JMenuItem("   Danh Mục   ");
@@ -197,8 +212,8 @@ public class MainFrame extends JFrame {
 
     private void styleMenuItem(JMenuItem item, Font font) {
         item.setFont(font);
-        item.setBackground(Color.WHITE);
-        item.setForeground(new Color(113, 128, 150));
+        item.setBackground(UIManager.getColor("PopupMenu.background"));
+        item.setForeground(UIManager.getColor("MenuItem.foreground"));
         item.setPreferredSize(new Dimension(220, 40));
         item.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
@@ -230,7 +245,7 @@ public class MainFrame extends JFrame {
                 g2.setColor(COLOR_PRIMARY);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
             } else if (getModel().isRollover()) {
-                g2.setColor(new Color(245, 247, 250));
+                g2.setColor(new Color(150, 150, 150, 40));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
             }
             super.paintComponent(g);
@@ -324,5 +339,31 @@ public class MainFrame extends JFrame {
     public void setLblUserInfo(String text) {
         // Ignored in new mockup as we use "Welcome to Venus!" style header,
         // but keeping it safe if controller calls it.
+    }
+    
+    // --- THEME SWITCHING LOGIC ---
+    private boolean isDarkMode = false;
+    private void toggleTheme() {
+        try {
+            if (isDarkMode) {
+                // Sáng
+                UIManager.setLookAndFeel(new com.formdev.flatlaf.themes.FlatMacLightLaf());
+                btnThemeToggle.setText("🌙");
+            } else {
+                // Tối
+                UIManager.setLookAndFeel(new com.formdev.flatlaf.themes.FlatMacDarkLaf());
+                btnThemeToggle.setText("☀️");
+            }
+            isDarkMode = !isDarkMode;
+            
+            // Cập nhật lại giao diện ngay lập tức
+            com.formdev.flatlaf.FlatLaf.updateUI();
+            SwingUtilities.updateComponentTreeUI(this);
+            
+            this.repaint();
+            
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize LaF: " + ex.getMessage());
+        }
     }
 }

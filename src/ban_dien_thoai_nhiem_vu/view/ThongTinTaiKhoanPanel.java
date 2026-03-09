@@ -19,22 +19,22 @@ public class ThongTinTaiKhoanPanel extends JPanel {
     private String duongDanAnhMoi = null; 
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public ThongTinTaiKhoanPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         // --- HEADER ---
         JLabel lblTitle = new JLabel("Hồ Sơ Cá Nhân & Bảo Mật");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
         add(lblTitle, BorderLayout.NORTH);
 
@@ -56,7 +56,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
     // =========================================================
     private JPanel taoPanelThongTin() {
         JPanel p = new JPanel(new BorderLayout(0, 20));
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(30, 30, 30, 30)
@@ -64,7 +64,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         
         JLabel lblHeader = new JLabel("Thông Tin Cá Nhân");
         lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblHeader.setForeground(COLOR_TEXT_DARK);
+        // lblHeader.setForeground(COLOR_TEXT_DARK);
         p.add(lblHeader, BorderLayout.NORTH);
         
         JPanel pContent = new JPanel(new GridBagLayout());
@@ -87,7 +87,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         pCenterAvt.setOpaque(false);
         pCenterAvt.add(lblAvatar);
         
-        btnDoiAvatar = createFlatButton("Đổi Ảnh Đại Diện", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnDoiAvatar = createFlatButton("Đổi Ảnh Đại Diện", new Color(240, 240, 240), UIManager.getColor("Label.foreground"));
         btnDoiAvatar.setPreferredSize(new Dimension(160, 38));
         JPanel pCenterBtn = new JPanel(new FlowLayout(FlowLayout.CENTER));
         pCenterBtn.setOpaque(false);
@@ -132,7 +132,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
     // =========================================================
     private JPanel taoPanelDoiMatKhau() {
         JPanel p = new JPanel(new BorderLayout(0, 20));
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(30, 30, 30, 30)
@@ -140,7 +140,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         
         JLabel lblHeader = new JLabel("Bảo Mật & Đăng Nhập");
         lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblHeader.setForeground(COLOR_TEXT_DARK);
+        // lblHeader.setForeground(COLOR_TEXT_DARK);
         p.add(lblHeader, BorderLayout.NORTH);
         
         JPanel pContent = new JPanel(new GridBagLayout());
@@ -156,14 +156,14 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         // Information banner
         g.gridy++; g.insets = new Insets(30, 0, 10, 0);
         JPanel pBanner = new JPanel(new BorderLayout(10, 10));
-        pBanner.setBackground(new Color(232, 244, 253)); // Light blue alert box
+        pBanner.setBackground(UIManager.getColor("Panel.background").brighter()); // Light blue alert box -> adapt to theme
         pBanner.setBorder(new EmptyBorder(15, 15, 15, 15));
         JLabel lblInfoIcon = new JLabel("(i)");
         lblInfoIcon.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblInfoIcon.setForeground(COLOR_PRIMARY);
         JLabel lblInfoText = new JLabel("<html>Nên sử dụng mật khẩu mạnh chứa ít nhất 8 ký tự, <br>bao gồm chữ, số và ký tự đặc biệt để tài khoản an toàn hơn.</html>");
         lblInfoText.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lblInfoText.setForeground(new Color(10, 88, 202));
+        lblInfoText.setForeground(UIManager.getColor("TextField.foreground"));
         pBanner.add(lblInfoIcon, BorderLayout.WEST);
         pBanner.add(lblInfoText, BorderLayout.CENTER);
         pContent.add(pBanner, g);
@@ -221,7 +221,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         p.setOpaque(false);
         JLabel lbl = new JLabel(label);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         p.add(lbl, BorderLayout.NORTH);
         
         JTextField txt = new JTextField();
@@ -234,8 +234,6 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         
         if(!isEditable) {
             txt.setEditable(false);
-            txt.setBackground(new Color(248, 249, 250));
-            txt.setForeground(Color.GRAY);
         }
         
         p.add(txt, BorderLayout.CENTER);
@@ -248,7 +246,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
         p.setOpaque(false);
         JLabel lbl = new JLabel(label);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         p.add(lbl, BorderLayout.NORTH);
         
         JPasswordField txt = new JPasswordField();

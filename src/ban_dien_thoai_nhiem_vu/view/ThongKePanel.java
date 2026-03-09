@@ -10,16 +10,16 @@ public class ThongKePanel extends JPanel {
     private JLabel lblDoanhThu, lblSoDon, lblSanPhamBan;
     private BieuDoPanel pnlBieuDo;
 
-    private final Color COLOR_BG = new Color(245, 247, 250);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
     private final Color COLOR_WARNING = new Color(255, 193, 7);
 
     public ThongKePanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         // 1. HEADER (Title)
@@ -27,7 +27,7 @@ public class ThongKePanel extends JPanel {
         pnlHeader.setOpaque(false);
         JLabel lblTitle = new JLabel("BÁO CÁO & THỐNG KÊ CHI TIẾT");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         pnlHeader.add(lblTitle, BorderLayout.WEST);
         add(pnlHeader, BorderLayout.NORTH);
 
@@ -64,7 +64,7 @@ public class ThongKePanel extends JPanel {
 
         // -- Bottom Side: Chart --
         JPanel chartContainer = new JPanel(new BorderLayout());
-        chartContainer.setBackground(Color.WHITE);
+        chartContainer.setBackground(UIManager.getColor("window"));
         chartContainer.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(222, 226, 230), 1),
                 new EmptyBorder(25, 25, 25, 25)
@@ -80,7 +80,7 @@ public class ThongKePanel extends JPanel {
 
     private JPanel createModernCard(String title, String value, Color accentColor) {
         JPanel card = new JPanel(new BorderLayout());
-        card.setBackground(Color.WHITE);
+        card.setBackground(UIManager.getColor("window"));
         card.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         // Tạo thiết kế phẳng dạng phẳng (Flat Design) có đường viền Top accent (cạnh viền màu nổi phía trên)
@@ -97,11 +97,11 @@ public class ThongKePanel extends JPanel {
 
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblTitle.setForeground(COLOR_TEXT_MUTED);
+        // lblTitle.setForeground(COLOR_TEXT_MUTED);
 
         JLabel lblValue = new JLabel(value);
         lblValue.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        lblValue.setForeground(COLOR_TEXT_DARK);
+        // lblValue.setForeground(COLOR_TEXT_DARK);
 
         pText.add(lblTitle);
         pText.add(lblValue);

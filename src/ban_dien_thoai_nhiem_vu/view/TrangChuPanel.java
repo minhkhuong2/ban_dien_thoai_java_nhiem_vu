@@ -24,8 +24,6 @@ public class TrangChuPanel extends JPanel {
     // Components to receive dynamic data
     private JPanel pnlProfStats;
     private JPanel pnlTasks;
-
-    private final Color COLOR_BG = new Color(244, 247, 254);
     private final Color COLOR_PRIMARY = new Color(74, 38, 235);
     private final Color COLOR_TEXT_DARK = new Color(43, 54, 116);
     private final Color COLOR_TEXT_MUTED = new Color(163, 174, 208);
@@ -36,7 +34,7 @@ public class TrangChuPanel extends JPanel {
         this.lblCustomers = lblCust;
         
         setLayout(new BorderLayout());
-        setBackground(COLOR_BG); 
+        // setBackground(UIManager.getColor("Panel.background")); // FlatLaf handles it automatically
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         add(createHeader(), BorderLayout.NORTH);
@@ -54,7 +52,7 @@ public class TrangChuPanel extends JPanel {
 
         JScrollPane scroll = new JScrollPane(pnlBody);
         scroll.setBorder(null);
-        scroll.getViewport().setBackground(COLOR_BG);
+        // scroll.getViewport().setBackground(UIManager.getColor("Panel.background"));
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         add(scroll, BorderLayout.CENTER);
     }
@@ -189,13 +187,13 @@ public class TrangChuPanel extends JPanel {
         JPanel pTopRow = new JPanel(new BorderLayout(20, 0));
         pTopRow.setOpaque(false);
 
-        RoundedPanel cardChart = new RoundedPanel(20, Color.WHITE);
+        RoundedPanel cardChart = new RoundedPanel(20, UIManager.getColor("window"));
         cardChart.setLayout(new BorderLayout());
         cardChart.setBorder(new EmptyBorder(25, 25, 25, 25));
         
         JLabel lblChartTitle = new JLabel("Tổng Doanh Thu");
         lblChartTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblChartTitle.setForeground(COLOR_TEXT_DARK);
+        // lblChartTitle.setForeground(COLOR_TEXT_DARK);
         cardChart.add(lblChartTitle, BorderLayout.NORTH);
 
         pnlChartContainer = new JPanel(new BorderLayout());
@@ -209,7 +207,7 @@ public class TrangChuPanel extends JPanel {
         pnlChartContainer.add(lblPlaceholder, BorderLayout.CENTER);
         cardChart.add(pnlChartContainer, BorderLayout.CENTER);
 
-        RoundedPanel cardProfile = new RoundedPanel(20, Color.WHITE);
+        RoundedPanel cardProfile = new RoundedPanel(20, UIManager.getColor("window"));
         cardProfile.setLayout(new BorderLayout());
         cardProfile.setPreferredSize(new Dimension(300, 0)); 
         
@@ -221,7 +219,7 @@ public class TrangChuPanel extends JPanel {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
                 int w = getWidth();
-                g2.setColor(new Color(244, 247, 254));
+                g2.setColor(UIManager.getColor("Panel.background"));
                 g2.fillOval(w/2 - 40, 10, 80, 80);
                 
                 g2.setColor(COLOR_PRIMARY);
@@ -236,7 +234,7 @@ public class TrangChuPanel extends JPanel {
         
         JLabel lblProfName = new JLabel("PNC Store HCM", SwingConstants.CENTER);
         lblProfName.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblProfName.setForeground(COLOR_TEXT_DARK);
+        // lblProfName.setForeground(COLOR_TEXT_DARK);
         cardProfile.add(lblProfName, BorderLayout.CENTER);
 
         pnlProfStats = new JPanel(new GridLayout(1, 3));
@@ -256,13 +254,13 @@ public class TrangChuPanel extends JPanel {
         pBotRow.setOpaque(false);
         pBotRow.setPreferredSize(new Dimension(100, 350));
 
-        RoundedPanel cardTrans = new RoundedPanel(20, Color.WHITE);
+        RoundedPanel cardTrans = new RoundedPanel(20, UIManager.getColor("window"));
         cardTrans.setLayout(new BorderLayout());
         cardTrans.setBorder(new EmptyBorder(25, 25, 25, 25));
 
         JLabel lblTransTitle = new JLabel("Giao Dịch Gần Đây");
         lblTransTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblTransTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTransTitle.setForeground(COLOR_TEXT_DARK);
         lblTransTitle.setBorder(new EmptyBorder(0, 0, 15, 0));
         cardTrans.add(lblTransTitle, BorderLayout.NORTH);
 
@@ -273,26 +271,26 @@ public class TrangChuPanel extends JPanel {
         tblRecentOrders.setShowGrid(false);
         tblRecentOrders.setIntercellSpacing(new Dimension(0, 0));
         tblRecentOrders.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tblRecentOrders.setForeground(COLOR_TEXT_DARK);
+        // tblRecentOrders.setForeground(COLOR_TEXT_DARK);
         
         tblRecentOrders.getTableHeader().setOpaque(false);
-        tblRecentOrders.getTableHeader().setBackground(Color.WHITE);
+        // tblRecentOrders.getTableHeader().setBackground(Color.WHITE);
         tblRecentOrders.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
-        tblRecentOrders.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblRecentOrders.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblRecentOrders.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(230,230,230)));
         
         JScrollPane sc = new JScrollPane(tblRecentOrders);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         sc.setBorder(null);
         cardTrans.add(sc, BorderLayout.CENTER);
 
-        RoundedPanel cardExtra = new RoundedPanel(20, Color.WHITE);
+        RoundedPanel cardExtra = new RoundedPanel(20, UIManager.getColor("window"));
         cardExtra.setLayout(new BorderLayout());
         cardExtra.setBorder(new EmptyBorder(25, 25, 25, 25));
         
         JLabel lblExtraTitle = new JLabel("Lịch Trình Hôm Nay");
         lblExtraTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblExtraTitle.setForeground(COLOR_TEXT_DARK);
+        // lblExtraTitle.setForeground(COLOR_TEXT_DARK);
         cardExtra.add(lblExtraTitle, BorderLayout.NORTH);
         
         pnlTasks = new JPanel(new GridLayout(3, 1, 0, 10));
@@ -316,10 +314,10 @@ public class TrangChuPanel extends JPanel {
         p.setOpaque(false);
         JLabel lTitle = new JLabel(title, SwingConstants.CENTER);
         lTitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lTitle.setForeground(COLOR_TEXT_MUTED);
+        // lTitle.setForeground(COLOR_TEXT_MUTED);
         JLabel lVal = new JLabel(val, SwingConstants.CENTER);
         lVal.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lVal.setForeground(COLOR_TEXT_DARK);
+        // lVal.setForeground(COLOR_TEXT_DARK);
         p.add(lTitle); p.add(lVal);
         return p;
     }
@@ -337,11 +335,11 @@ public class TrangChuPanel extends JPanel {
         pText.setOpaque(false);
         JLabel lblTask = new JLabel(title);
         lblTask.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblTask.setForeground(COLOR_TEXT_DARK);
+        // lblTask.setForeground(COLOR_TEXT_DARK);
         
         JLabel lblTime = new JLabel(time);
         lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblTime.setForeground(COLOR_TEXT_MUTED);
+        // lblTime.setForeground(COLOR_TEXT_MUTED);
         
         pText.add(lblTask);
         pText.add(lblTime);

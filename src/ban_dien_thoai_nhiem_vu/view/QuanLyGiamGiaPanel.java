@@ -22,12 +22,12 @@ public class QuanLyGiamGiaPanel extends JPanel {
     private JButton btnLuu, btnLamMoi;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
     private final Color COLOR_DANGER = new Color(220, 53, 69);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyGiamGiaPanel() {
@@ -36,12 +36,12 @@ public class QuanLyGiamGiaPanel extends JPanel {
 
     private void thietKeGiaoDien() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG); 
+        // setBackground(COLOR_BG); 
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         // 1. FORM NHẬP (TOP)
         JPanel pnlInput = new JPanel(new BorderLayout());
-        pnlInput.setBackground(Color.WHITE);
+        pnlInput.setBackground(UIManager.getColor("window"));
         pnlInput.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -49,12 +49,12 @@ public class QuanLyGiamGiaPanel extends JPanel {
         
         JLabel lblHeader = new JLabel("Chương Trình Khuyến Mãi (Voucher)");
         lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblHeader.setForeground(COLOR_TEXT_DARK);
+        // lblHeader.setForeground(COLOR_TEXT_DARK);
         lblHeader.setBorder(new EmptyBorder(0, 0, 20, 0));
         pnlInput.add(lblHeader, BorderLayout.NORTH);
 
         JPanel pnlFields = new JPanel(new GridLayout(2, 3, 20, 20));
-        pnlFields.setBackground(Color.WHITE);
+        pnlFields.setOpaque(false);
 
         pnlFields.add(createInputPanel("Mã Voucher (*):", txtCode = new JTextField()));
         pnlFields.add(createInputPanel("Tên Chương Trình:", txtTenCT = new JTextField()));
@@ -67,13 +67,13 @@ public class QuanLyGiamGiaPanel extends JPanel {
         
         // Buttons
         JPanel pnlBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
-        pnlBtn.setBackground(Color.WHITE);
+        pnlBtn.setOpaque(false);
         pnlBtn.setBorder(new EmptyBorder(20, 0, 0, 0));
         
         btnLamMoi = new JButton("Xóa Form");
         btnLamMoi.setPreferredSize(new Dimension(120, 42));
         btnLamMoi.setBackground(new Color(240, 240, 240));
-        btnLamMoi.setForeground(COLOR_TEXT_DARK);
+        btnLamMoi.setForeground(UIManager.getColor("Label.foreground"));
         btnLamMoi.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnLamMoi.setBorder(null);
         btnLamMoi.setFocusPainted(false);
@@ -96,7 +96,7 @@ public class QuanLyGiamGiaPanel extends JPanel {
 
         // 2. BẢNG DANH SÁCH (CENTER)
         JPanel pnlTable = new JPanel(new BorderLayout());
-        pnlTable.setBackground(Color.WHITE);
+        pnlTable.setBackground(UIManager.getColor("window"));
         pnlTable.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -104,7 +104,7 @@ public class QuanLyGiamGiaPanel extends JPanel {
         
         JLabel lblListTitle = new JLabel("Danh Sách Voucher Hiện Hành");
         lblListTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblListTitle.setForeground(COLOR_TEXT_DARK);
+        // lblListTitle.setForeground(COLOR_TEXT_DARK);
         lblListTitle.setBorder(new EmptyBorder(0, 0, 15, 0));
         pnlTable.add(lblListTitle, BorderLayout.NORTH);
 
@@ -116,20 +116,20 @@ public class QuanLyGiamGiaPanel extends JPanel {
         tblGiamGia.setRowHeight(45);
         tblGiamGia.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblGiamGia.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblGiamGia.getTableHeader().setBackground(Color.WHITE);
-        tblGiamGia.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblGiamGia.getTableHeader().setBackground(Color.WHITE);
+        // tblGiamGia.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblGiamGia.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblGiamGia.setShowGrid(false);
         tblGiamGia.setIntercellSpacing(new Dimension(0, 0));
-        tblGiamGia.setSelectionBackground(new Color(240, 244, 255));
-        tblGiamGia.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblGiamGia.setSelectionBackground(new Color(240, 244, 255));
+        // tblGiamGia.setSelectionForeground(COLOR_TEXT_DARK);
         
         // Custom Render/Editor cho cột Hành Động
         tblGiamGia.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRender());
         tblGiamGia.getColumnModel().getColumn(5).setPreferredWidth(100);
 
         JScrollPane sc = new JScrollPane(tblGiamGia);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         sc.setBorder(null);
         
         pnlTable.add(sc, BorderLayout.CENTER);
@@ -139,10 +139,10 @@ public class QuanLyGiamGiaPanel extends JPanel {
     
     private JPanel createInputPanel(String title, JTextField txt) {
         JPanel p = new JPanel(new BorderLayout(5, 8));
-        p.setBackground(Color.WHITE);
+        p.setOpaque(false);
         JLabel lbl = new JLabel(title);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         
         txt.setPreferredSize(new Dimension(200, 42));
         txt.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -161,7 +161,7 @@ public class QuanLyGiamGiaPanel extends JPanel {
         public JButton cmdEdit, cmdDelete;
         public PanelAction() {
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-            setBackground(Color.WHITE);
+            setOpaque(true);
             cmdEdit = createBtn("edit.png", new Color(13, 202, 240)); // Info Cyan
             cmdDelete = createBtn("delete.png", COLOR_DANGER);
             add(cmdEdit); add(cmdDelete);
@@ -183,7 +183,7 @@ public class QuanLyGiamGiaPanel extends JPanel {
     public class TableActionCellRender extends DefaultTableCellRenderer {
         @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             PanelAction action = new PanelAction();
-            action.setBackground(isSelected ? table.getSelectionBackground() : Color.WHITE);
+            action.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             return action;
         }
     }

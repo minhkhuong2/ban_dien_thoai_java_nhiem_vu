@@ -43,13 +43,13 @@ public class QuanLySanPhamFrame extends JFrame {
     private DefaultTableModel tableModel;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
     private final Color COLOR_WARNING = new Color(255, 193, 7);
     private final Color COLOR_DANGER = new Color(220, 53, 69);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public interface TableActionEvent {
@@ -66,7 +66,7 @@ public class QuanLySanPhamFrame extends JFrame {
         setSize(1350, 850);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(COLOR_BG);
+        // getContentPane().setBackground(COLOR_BG);
         
         cardLayout = new CardLayout();
         pnlMainContainer = new JPanel(cardLayout);
@@ -92,7 +92,7 @@ public class QuanLySanPhamFrame extends JFrame {
         
         JLabel lblTitle = new JLabel("Danh Sách Sản Phẩm");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         pnlButtons.setOpaque(false);
@@ -112,7 +112,7 @@ public class QuanLySanPhamFrame extends JFrame {
         
         // Bảng
         JPanel pnlTableWrapper = new JPanel(new BorderLayout());
-        pnlTableWrapper.setBackground(Color.WHITE);
+        pnlTableWrapper.setBackground(UIManager.getColor("window"));
         pnlTableWrapper.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(20, 20, 20, 20)
@@ -127,13 +127,13 @@ public class QuanLySanPhamFrame extends JFrame {
         tblSanPham.setRowHeight(55); 
         tblSanPham.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblSanPham.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblSanPham.getTableHeader().setBackground(Color.WHITE);
-        tblSanPham.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblSanPham.getTableHeader().setBackground(Color.WHITE);
+        // tblSanPham.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblSanPham.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblSanPham.setShowGrid(false);
         tblSanPham.setIntercellSpacing(new Dimension(0, 0));
-        tblSanPham.setSelectionBackground(new Color(240, 244, 255));
-        tblSanPham.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblSanPham.setSelectionBackground(new Color(240, 244, 255));
+        // tblSanPham.setSelectionForeground(COLOR_TEXT_DARK);
         
         tblSanPham.getColumnModel().getColumn(5).setMinWidth(0);
         tblSanPham.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -142,7 +142,7 @@ public class QuanLySanPhamFrame extends JFrame {
 
         JScrollPane sc = new JScrollPane(tblSanPham);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         pnlTableWrapper.add(sc, BorderLayout.CENTER);
 
         pnlDanhSach.add(pnlTableWrapper, BorderLayout.CENTER);
@@ -159,7 +159,7 @@ public class QuanLySanPhamFrame extends JFrame {
         
         JLabel lblTitle = new JLabel("Thông Tin Chi Tiết Sản Phẩm");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         pnlHeader.add(lblTitle, BorderLayout.WEST);
         pnlFormNhap.add(pnlHeader, BorderLayout.NORTH);
         
@@ -184,7 +184,7 @@ public class QuanLySanPhamFrame extends JFrame {
         pnlFooter.setOpaque(false);
         pnlFooter.setBorder(new EmptyBorder(25, 0, 0, 0));
         
-        btnHuy = createFlatButton("Hủy & Quay lại", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnHuy = createFlatButton("Hủy & Quay lại", new Color(240, 240, 240), UIManager.getColor("Label.foreground"));
         btnHuy.setPreferredSize(new Dimension(150, 45));
         btnHuy.addActionListener(e -> cardLayout.show(pnlMainContainer, "DANH_SACH"));
         
@@ -198,7 +198,7 @@ public class QuanLySanPhamFrame extends JFrame {
     
     private JPanel taoPanelThongTinChung() {
         JPanel pnlWrapper = new JPanel(new BorderLayout());
-        pnlWrapper.setBackground(Color.WHITE);
+        pnlWrapper.setBackground(UIManager.getColor("window"));
         pnlWrapper.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
@@ -259,10 +259,10 @@ public class QuanLySanPhamFrame extends JFrame {
         lblHinhAnh = new JLabel("Chưa có ảnh", SwingConstants.CENTER);
         lblHinhAnh.setPreferredSize(new Dimension(200, 200));
         lblHinhAnh.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lblHinhAnh.setForeground(COLOR_TEXT_MUTED);
+        // lblHinhAnh.setForeground(COLOR_TEXT_MUTED);
         lblHinhAnh.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1));
         
-        btnChonAnh = createFlatButton("Tải Ảnh Lên...", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnChonAnh = createFlatButton("Tải Ảnh Lên...", new Color(240, 240, 240), UIManager.getColor("Label.foreground"));
         btnChonAnh.setPreferredSize(new Dimension(0, 40));
         
         pnlAnh.add(lblAnhTitle, BorderLayout.NORTH);
@@ -276,7 +276,7 @@ public class QuanLySanPhamFrame extends JFrame {
     
     private JPanel taoPanelThongSoKyThuat() {
         JPanel pnlWrapper = new JPanel(new BorderLayout());
-        pnlWrapper.setBackground(Color.WHITE);
+        pnlWrapper.setBackground(UIManager.getColor("window"));
         pnlWrapper.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
@@ -304,11 +304,11 @@ public class QuanLySanPhamFrame extends JFrame {
         pnlDongWrapper.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createMatteBorder(1, 0, 0, 0, COLOR_TABLE_BORDER),
             " Cấu hình tùy biến (Ví dụ: RAM, Màu sắc...) ", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP,
-            new Font("Segoe UI", Font.BOLD, 14), COLOR_TEXT_MUTED
+            new Font("Segoe UI", Font.BOLD, 14), UIManager.getColor("Label.foreground")
         ));
         
         pnlThuocTinhDong = new JPanel(new GridLayout(0, 3, 20, 20));
-        pnlThuocTinhDong.setBackground(Color.WHITE);
+        pnlThuocTinhDong.setBackground(UIManager.getColor("window"));
         pnlThuocTinhDong.setBorder(new EmptyBorder(15, 0, 0, 0));
         
         pnlDongWrapper.add(pnlThuocTinhDong, BorderLayout.CENTER);
@@ -322,7 +322,7 @@ public class QuanLySanPhamFrame extends JFrame {
     private JLabel createLabel(String text) {
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         return lbl;
     }
     
@@ -413,7 +413,7 @@ public class QuanLySanPhamFrame extends JFrame {
         public JButton cmdEdit, cmdDelete;
         public PanelAction() {
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10)); 
-            setBackground(Color.WHITE);
+            setOpaque(false);
             cmdEdit = new JButton();
             cmdEdit.setPreferredSize(new Dimension(34, 34));
             cmdEdit.setBackground(new Color(13, 202, 240));

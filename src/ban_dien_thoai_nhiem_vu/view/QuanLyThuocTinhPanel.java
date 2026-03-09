@@ -20,14 +20,14 @@ public class QuanLyThuocTinhPanel extends JPanel {
     private ThuocTinhListener listener;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyThuocTinhPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
         
         // --- HEADER ---
@@ -37,7 +37,7 @@ public class QuanLyThuocTinhPanel extends JPanel {
         
         JLabel lblTitle = new JLabel("Thuộc Tính & Biến Thể");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         
         btnThemNhom = new JButton("+ Thêm Nhóm Mới");
         btnThemNhom.setBackground(COLOR_PRIMARY);
@@ -81,7 +81,7 @@ public class QuanLyThuocTinhPanel extends JPanel {
         cardWrapper.setOpaque(false);
 
         JPanel card = new JPanel(new BorderLayout(0, 20));
-        card.setBackground(Color.WHITE);
+        card.setBackground(UIManager.getColor("window"));
         card.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -90,7 +90,7 @@ public class QuanLyThuocTinhPanel extends JPanel {
         // 1. Tiêu đề nhóm
         JLabel lblTitle = new JLabel(groupName);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(240, 240, 240)));
         
         // 2. Khu vực chứa Tags
@@ -103,12 +103,13 @@ public class QuanLyThuocTinhPanel extends JPanel {
             
             // Tag xám nhạt hiện đại
             JPanel tag = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
-            tag.setBackground(new Color(248, 249, 250)); // Light BG
+            // tag.setBackground(new Color(248, 249, 250)); // Light BG
+            tag.setOpaque(false);
             tag.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1));
             
             JLabel lblVal = new JLabel(text);
             lblVal.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            lblVal.setForeground(COLOR_TEXT_DARK);
+            // lblVal.setForeground(COLOR_TEXT_DARK);
             
             JButton btnDel = new JButton("×");
             btnDel.setFont(new Font("Arial", Font.BOLD, 14));

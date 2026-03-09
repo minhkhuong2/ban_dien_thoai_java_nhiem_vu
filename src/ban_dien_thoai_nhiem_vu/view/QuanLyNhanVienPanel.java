@@ -17,24 +17,24 @@ public class QuanLyNhanVienPanel extends JPanel {
     private DefaultTableModel model;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
     private final Color COLOR_WARNING = new Color(255, 193, 7);
     private final Color COLOR_DANGER = new Color(220, 53, 69);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyNhanVienPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
         
         // --- HEADER ---
         JLabel lblTitle = new JLabel("Danh Sách Nhân Sự");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
         add(lblTitle, BorderLayout.NORTH);
 
@@ -53,7 +53,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 0, 0, 10)); // Khoảng cách với Form
         
         JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -61,7 +61,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         
         JLabel lblListTitle = new JLabel("Thống kê danh sách");
         lblListTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblListTitle.setForeground(COLOR_TEXT_DARK);
+        // lblListTitle.setForeground(COLOR_TEXT_DARK);
         lblListTitle.setBorder(new EmptyBorder(0, 0, 15, 0));
 
         String[] cols = {"Mã NV", "Họ Tên", "Tài Khoản", "Vai Trò", "Trạng Thái"};
@@ -72,17 +72,17 @@ public class QuanLyNhanVienPanel extends JPanel {
         tblNhanVien.setRowHeight(40);
         tblNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblNhanVien.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblNhanVien.getTableHeader().setBackground(Color.WHITE);
-        tblNhanVien.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblNhanVien.getTableHeader().setBackground(Color.WHITE);
+        // tblNhanVien.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblNhanVien.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblNhanVien.setShowGrid(false);
         tblNhanVien.setIntercellSpacing(new Dimension(0, 0));
-        tblNhanVien.setSelectionBackground(new Color(240, 244, 255));
-        tblNhanVien.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblNhanVien.setSelectionBackground(new Color(240, 244, 255));
+        // tblNhanVien.setSelectionForeground(COLOR_TEXT_DARK);
 
         JScrollPane sc = new JScrollPane(tblNhanVien);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
 
         p.add(lblListTitle, BorderLayout.NORTH);
         p.add(sc, BorderLayout.CENTER);
@@ -97,7 +97,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 10, 0, 0)); // Padding trái
         
         JPanel p = new JPanel(new BorderLayout(0, 15));
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -105,7 +105,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         
         JLabel lblFormTitle = new JLabel("Hồ Sơ Nhân Viên");
         lblFormTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblFormTitle.setForeground(COLOR_TEXT_DARK);
+        // lblFormTitle.setForeground(COLOR_TEXT_DARK);
         p.add(lblFormTitle, BorderLayout.NORTH);
         
         JPanel pInput = new JPanel(new GridBagLayout());
@@ -125,7 +125,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         g.gridy = gridy++ * 2;
         JLabel lblVaiTro = new JLabel("Vai Trò:");
         lblVaiTro.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblVaiTro.setForeground(COLOR_TEXT_MUTED);
+        // lblVaiTro.setForeground(COLOR_TEXT_MUTED);
         pInput.add(lblVaiTro, g);
         
         g.gridy++; 
@@ -156,7 +156,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         btnThem = createFlatButton("Lưu Thêm", COLOR_SUCCESS, Color.WHITE);
         btnSua = createFlatButton("Cập Nhật", COLOR_WARNING, Color.BLACK);
         btnXoa = createFlatButton("Xóa NV", COLOR_DANGER, Color.WHITE);
-        btnLamMoi = createFlatButton("Làm Mới Form", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnLamMoi = createFlatButton("Làm Mới Form", new Color(240, 240, 240), UIManager.getColor("Label.foreground"));
         
         pBtn.add(btnThem); pBtn.add(btnSua);
         pBtn.add(btnXoa); pBtn.add(btnLamMoi);
@@ -177,7 +177,7 @@ public class QuanLyNhanVienPanel extends JPanel {
         g.gridy = row * 2;
         JLabel lbl = new JLabel(label);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         parent.add(lbl, g);
         
         g.gridy = row * 2 + 1;

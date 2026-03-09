@@ -20,15 +20,15 @@ public class QuanLyHoaDonPanel extends JPanel {
     private JLabel lblMaHD, lblNgayLap, lblNguoiBan, lblKhachHang, lblTongTien;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyHoaDonPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, taoPanelDanhSach(), taoPanelChiTiet());
@@ -47,7 +47,7 @@ public class QuanLyHoaDonPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 0, 0, 10)); // Right padding to separate from details
 
         JPanel pnl = new JPanel(new BorderLayout(0, 15));
-        pnl.setBackground(Color.WHITE);
+        pnl.setBackground(UIManager.getColor("window"));
         pnl.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(20, 20, 20, 20)
@@ -56,43 +56,30 @@ public class QuanLyHoaDonPanel extends JPanel {
         // Header Text
         JLabel lblListTitle = new JLabel("Lịch Sử Hóa Đơn");
         lblListTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblListTitle.setForeground(COLOR_TEXT_DARK);
+        // lblListTitle.setForeground(COLOR_TEXT_DARK);
 
         // Search Block
         JPanel pSearch = new JPanel(new BorderLayout(15, 0));
-        pSearch.setBackground(Color.WHITE);
+        pSearch.setOpaque(false);
         pSearch.setBorder(new EmptyBorder(10, 0, 10, 0));
         
-        txtTimKiem = new JTextField("Nhập mã HĐ hoặc tên khách...");
+        txtTimKiem = new JTextField("");
         txtTimKiem.setPreferredSize(new Dimension(200, 40));
         txtTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtTimKiem.setForeground(COLOR_TEXT_MUTED);
+        txtTimKiem.putClientProperty("JTextField.placeholderText", "Nhập mã HĐ hoặc tên khách...");
+        // txtTimKiem.setForeground(COLOR_TEXT_MUTED);
         txtTimKiem.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(5, 10, 5, 10)
         ));
-        txtTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (txtTimKiem.getText().equals("Nhập mã HĐ hoặc tên khách...")) {
-                    txtTimKiem.setText("");
-                    txtTimKiem.setForeground(COLOR_TEXT_DARK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (txtTimKiem.getText().isEmpty()) {
-                    txtTimKiem.setForeground(COLOR_TEXT_MUTED);
-                    txtTimKiem.setText("Nhập mã HĐ hoặc tên khách...");
-                }
-            }
-        });
         
         btnTim = createFlatButton("Tìm Kiếm", COLOR_PRIMARY, Color.WHITE);
-        btnLamMoi = createFlatButton("Tải Lại", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnLamMoi = createFlatButton("Tải Lại", new Color(240, 240, 240), UIManager.getColor("Label.foreground"));
         btnIn = createFlatButton("In Báo Cáo", new Color(25, 135, 84), Color.WHITE);
 
         
         JPanel pBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        pBtn.setBackground(Color.WHITE);
+        pBtn.setOpaque(false);
         pBtn.add(btnTim); 
         pBtn.add(btnLamMoi);
         pBtn.add(btnIn);
@@ -101,7 +88,7 @@ public class QuanLyHoaDonPanel extends JPanel {
         pSearch.add(pBtn, BorderLayout.EAST);
 
         JPanel pnlHeaderGroup = new JPanel(new BorderLayout());
-        pnlHeaderGroup.setBackground(Color.WHITE);
+        pnlHeaderGroup.setOpaque(false);
         pnlHeaderGroup.add(lblListTitle, BorderLayout.NORTH);
         pnlHeaderGroup.add(pSearch, BorderLayout.CENTER);
 
@@ -123,7 +110,7 @@ public class QuanLyHoaDonPanel extends JPanel {
 
         JScrollPane sc = new JScrollPane(tblHoaDon);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
 
         pnl.add(pnlHeaderGroup, BorderLayout.NORTH);
         pnl.add(sc, BorderLayout.CENTER);
@@ -138,7 +125,7 @@ public class QuanLyHoaDonPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 10, 0, 0)); // Left padding to separate from list
 
         JPanel pnl = new JPanel(new BorderLayout(0, 20));
-        pnl.setBackground(Color.WHITE);
+        pnl.setBackground(UIManager.getColor("window"));
         pnl.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -146,11 +133,11 @@ public class QuanLyHoaDonPanel extends JPanel {
         
         // Info Panel - Invoice Detail Header Like a Receipt
         JPanel pInfo = new JPanel(new GridLayout(6, 1, 0, 10)); // Thu hẹp gap một chút để đủ chỗ
-        pInfo.setBackground(Color.WHITE);
+        pInfo.setOpaque(false);
         
         JLabel lblTitle = new JLabel("Chi Tiết Hóa Đơn");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         pInfo.add(lblTitle);
@@ -160,7 +147,7 @@ public class QuanLyHoaDonPanel extends JPanel {
         pInfo.add(lblKhachHang = createDetailLabel("Khách hàng: --"));
         
         JPanel pnlTotal = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 10));
-        pnlTotal.setBackground(Color.WHITE);
+        pnlTotal.setOpaque(false);
         pnlTotal.add(lblTongTien = new JLabel("TỔNG TIẾN: 0 đ")); 
         lblTongTien.setForeground(new Color(220, 53, 69)); 
         lblTongTien.setFont(new Font("Segoe UI", Font.BOLD, 22));
@@ -168,17 +155,17 @@ public class QuanLyHoaDonPanel extends JPanel {
         
         // --- STATUS UPDATE BLOCK ---
         JPanel pnlStatus = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
-        pnlStatus.setBackground(Color.WHITE);
+        pnlStatus.setOpaque(false);
         pnlStatus.setBorder(new EmptyBorder(5, 0, 10, 0));
         
         JLabel lblStatusTag = new JLabel("Trạng thái đơn hàng:");
         lblStatusTag.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblStatusTag.setForeground(COLOR_TEXT_DARK);
+        // lblStatusTag.setForeground(COLOR_TEXT_DARK);
         
         String[] trangThaiList = {"Chờ xử lý", "Đang giao", "Hoàn thành", "Đã hủy"};
         cboTrangThai = new JComboBox<>(trangThaiList);
         cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        cboTrangThai.setBackground(Color.WHITE);
+        // cboTrangThai.setBackground(Color.WHITE);
         cboTrangThai.setPreferredSize(new Dimension(140, 35));
         
         btnCapNhatTrangThai = createFlatButton("Cập Nhật", new Color(13, 202, 240), Color.BLACK);
@@ -203,11 +190,11 @@ public class QuanLyHoaDonPanel extends JPanel {
 
         JScrollPane sc = new JScrollPane(tblChiTiet);
         sc.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1));
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
 
         // Add 3 main blocks: Info (Top), Status Action (Middle), Table (Bottom)
         JPanel pnlTopBlocks = new JPanel(new BorderLayout());
-        pnlTopBlocks.setBackground(Color.WHITE);
+        pnlTopBlocks.setOpaque(false);
         pnlTopBlocks.add(pInfo, BorderLayout.NORTH);
         pnlTopBlocks.add(pnlStatus, BorderLayout.SOUTH);
 
@@ -222,7 +209,7 @@ public class QuanLyHoaDonPanel extends JPanel {
     private JLabel createDetailLabel(String text) {
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lbl.setForeground(COLOR_TEXT_DARK);
+        // lbl.setForeground(COLOR_TEXT_DARK);
         return lbl;
     }
 
@@ -242,13 +229,13 @@ public class QuanLyHoaDonPanel extends JPanel {
         tbl.setRowHeight(40);
         tbl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         tbl.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tbl.getTableHeader().setBackground(Color.WHITE);
-        tbl.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tbl.getTableHeader().setBackground(Color.WHITE);
+        // tbl.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tbl.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tbl.setShowGrid(false);
         tbl.setIntercellSpacing(new Dimension(0, 0));
-        tbl.setSelectionBackground(new Color(240, 244, 255));
-        tbl.setSelectionForeground(COLOR_TEXT_DARK);
+        // tbl.setSelectionBackground(new Color(240, 244, 255));
+        // tbl.setSelectionForeground(COLOR_TEXT_DARK);
     }
     
     // Getters & Listeners

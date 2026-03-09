@@ -16,10 +16,10 @@ public class QuanLyKhoFrame extends JFrame {
     private JButton btnTim;
     
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyKhoFrame() {
@@ -33,7 +33,7 @@ public class QuanLyKhoFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         pnlMain = new JPanel(new BorderLayout(20, 20));
-        pnlMain.setBackground(COLOR_BG);
+        // pnlMain.setBackground(COLOR_BG);
         pnlMain.setBorder(new EmptyBorder(30, 30, 30, 30));
 
         // --- 1. HEADER (Tiêu đề + Tìm kiếm + Nút Nhập) ---
@@ -43,7 +43,7 @@ public class QuanLyKhoFrame extends JFrame {
 
         JLabel lblTitle = new JLabel("Kho Hàng & Tồn Kho");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
 
         JPanel pnlRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         pnlRight.setOpaque(false);
@@ -58,9 +58,9 @@ public class QuanLyKhoFrame extends JFrame {
 
         btnTim = new JButton("Tìm Kiếm");
         btnTim.setPreferredSize(new Dimension(100, 42));
-        btnTim.setBackground(Color.WHITE);
+        btnTim.setOpaque(false);
         btnTim.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnTim.setForeground(COLOR_TEXT_DARK);
+        // btnTim.setForeground(COLOR_TEXT_DARK);
         btnTim.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1));
         btnTim.setFocusPainted(false);
         btnTim.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -83,7 +83,7 @@ public class QuanLyKhoFrame extends JFrame {
 
         // --- 2. TABLE HIỂN THỊ TỒN KHO ---
         JPanel pnlTableContainer = new JPanel(new BorderLayout());
-        pnlTableContainer.setBackground(Color.WHITE);
+        pnlTableContainer.setBackground(UIManager.getColor("window"));
         pnlTableContainer.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(10, 10, 10, 10)
@@ -101,13 +101,13 @@ public class QuanLyKhoFrame extends JFrame {
         tblKho.setRowHeight(45);
         tblKho.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblKho.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblKho.getTableHeader().setBackground(Color.WHITE);
-        tblKho.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblKho.getTableHeader().setBackground(Color.WHITE);
+        // tblKho.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblKho.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblKho.setShowGrid(false);
         tblKho.setIntercellSpacing(new Dimension(0, 0));
-        tblKho.setSelectionBackground(new Color(240, 244, 255));
-        tblKho.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblKho.setSelectionBackground(new Color(240, 244, 255));
+        // tblKho.setSelectionForeground(COLOR_TEXT_DARK);
         
         tblKho.getColumnModel().getColumn(4).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
             @Override
@@ -122,7 +122,7 @@ public class QuanLyKhoFrame extends JFrame {
 
         JScrollPane sc = new JScrollPane(tblKho);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         
         pnlTableContainer.add(sc, BorderLayout.CENTER);
 

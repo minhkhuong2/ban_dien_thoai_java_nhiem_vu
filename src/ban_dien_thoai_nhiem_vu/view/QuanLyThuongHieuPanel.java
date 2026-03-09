@@ -14,17 +14,16 @@ public class QuanLyThuongHieuPanel extends JPanel {
     private JButton btnSua;
     private JButton btnXoa; 
 
-    // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_DANGER = new Color(220, 53, 69);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyThuongHieuPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
         
         // Header
@@ -34,7 +33,7 @@ public class QuanLyThuongHieuPanel extends JPanel {
         
         JLabel lblTitle = new JLabel("Thương Hiệu & Hãng Sản Xuất");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         
         JPanel pButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         pButtons.setOpaque(false);
@@ -58,7 +57,7 @@ public class QuanLyThuongHieuPanel extends JPanel {
         
         // Table Wrapper
         JPanel pTable = new JPanel(new BorderLayout());
-        pTable.setBackground(Color.WHITE);
+        pTable.setBackground(UIManager.getColor("window"));
         pTable.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(20, 20, 20, 20)
@@ -76,13 +75,13 @@ public class QuanLyThuongHieuPanel extends JPanel {
         tblThuongHieu.setRowHeight(80); // Tăng chiều cao để hiện được Logo to
         tblThuongHieu.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblThuongHieu.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblThuongHieu.getTableHeader().setBackground(Color.WHITE);
-        tblThuongHieu.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblThuongHieu.getTableHeader().setBackground(Color.WHITE);
+        // tblThuongHieu.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblThuongHieu.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblThuongHieu.setShowGrid(false);
         tblThuongHieu.setIntercellSpacing(new Dimension(0, 0));
-        tblThuongHieu.setSelectionBackground(new Color(240, 244, 255));
-        tblThuongHieu.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblThuongHieu.setSelectionBackground(new Color(240, 244, 255));
+        // tblThuongHieu.setSelectionForeground(COLOR_TEXT_DARK);
         
         // Resize ID Cột
         tblThuongHieu.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -90,7 +89,7 @@ public class QuanLyThuongHieuPanel extends JPanel {
         
         JScrollPane sc = new JScrollPane(tblThuongHieu);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         
         pTable.add(sc, BorderLayout.CENTER);
         add(pTable, BorderLayout.CENTER);

@@ -37,12 +37,12 @@ public class BanHangPanel extends JPanel {
     private ButtonGroup grpGiaoHang, grpThanhToan;
     
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
     private final Color COLOR_DANGER = new Color(220, 53, 69);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
     
     public interface ProductListener {
@@ -52,7 +52,7 @@ public class BanHangPanel extends JPanel {
 
     public BanHangPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(25, 25, 25, 25));
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, taoPanelTrai(), taoPanelPhai());
@@ -71,7 +71,7 @@ public class BanHangPanel extends JPanel {
         
         // Search Banner
         JPanel pnlSearch = new JPanel(new BorderLayout(15, 0));
-        pnlSearch.setBackground(Color.WHITE);
+        pnlSearch.setBackground(UIManager.getColor("window"));
         pnlSearch.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(15, 20, 15, 20)
@@ -107,7 +107,7 @@ public class BanHangPanel extends JPanel {
 
     private JPanel taoPanelPhai() {
         JPanel pnl = new JPanel(new BorderLayout());
-        pnl.setBackground(Color.WHITE);
+        pnl.setBackground(UIManager.getColor("window"));
         pnl.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(20, 20, 20, 20)
@@ -115,8 +115,8 @@ public class BanHangPanel extends JPanel {
         
         JLabel lblTitle = new JLabel("Đơn Hàng Mới");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
-        lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(240, 240, 240)));
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
+        lblTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         pnl.add(lblTitle, BorderLayout.NORTH);
         
         // TABLE GIỎ HÀNG
@@ -128,7 +128,7 @@ public class BanHangPanel extends JPanel {
         tblGioHang.setRowHeight(40);
         tblGioHang.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         tblGioHang.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
-        tblGioHang.getTableHeader().setBackground(Color.WHITE);
+        // tblGioHang.getTableHeader().setBackground(Color.WHITE);
         tblGioHang.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblGioHang.setShowGrid(false);
         tblGioHang.setIntercellSpacing(new Dimension(0, 0));
@@ -144,7 +144,7 @@ public class BanHangPanel extends JPanel {
 
         JScrollPane sc = new JScrollPane(tblGioHang);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         
         JPanel pTableWrap = new JPanel(new BorderLayout());
         pTableWrap.setOpaque(false);
@@ -153,7 +153,7 @@ public class BanHangPanel extends JPanel {
         
         // FOOTER TÍNH TIỀN (POS STYLE)
         JPanel pnlFooter = new JPanel(new GridBagLayout());
-        pnlFooter.setBackground(Color.WHITE);
+        pnlFooter.setOpaque(false);
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(8, 0, 8, 0);
         g.fill = GridBagConstraints.HORIZONTAL;
@@ -169,10 +169,10 @@ public class BanHangPanel extends JPanel {
         
         // Khách hàng & Voucher Input Form
         JPanel pnlCustomer = new JPanel(new BorderLayout(10, 5));
-        pnlCustomer.setBackground(Color.WHITE);
+        pnlCustomer.setOpaque(false);
         JLabel lblSDT = new JLabel("SĐT Khách Hàng / Quẹt thẻ thành viên:");
         lblSDT.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblSDT.setForeground(COLOR_TEXT_MUTED);
+        // lblSDT.setForeground(COLOR_TEXT_MUTED);
         txtTenKhach = new JTextField(); 
         styleInputField(txtTenKhach);
         pnlCustomer.add(lblSDT, BorderLayout.NORTH);
@@ -180,10 +180,10 @@ public class BanHangPanel extends JPanel {
         pnlFooter.add(pnlCustomer, g);
         
         JPanel pnlVoucher = new JPanel(new BorderLayout(10, 5));
-        pnlVoucher.setBackground(Color.WHITE);
+        pnlVoucher.setOpaque(false);
         JLabel lblVoucher = new JLabel("Khuyến mãi (Quét mã vạch thẻ Voucher):");
         lblVoucher.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblVoucher.setForeground(COLOR_TEXT_MUTED);
+        // lblVoucher.setForeground(COLOR_TEXT_MUTED);
         
         txtMaVoucher = new JTextField();
         styleInputField(txtMaVoucher);
@@ -200,21 +200,21 @@ public class BanHangPanel extends JPanel {
         pnlFooter.add(pnlVoucher, g);
         // --- 1. SHIPPING OPTIONS ---
         JPanel pnlShipping = new JPanel(new GridLayout(2, 1, 5, 5));
-        pnlShipping.setBackground(Color.WHITE);
+        pnlShipping.setOpaque(false);
         pnlShipping.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER), 
             "   Vận chuyển ", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, 
-            new Font("Segoe UI", Font.BOLD, 13), COLOR_TEXT_DARK
+            new Font("Segoe UI", Font.BOLD, 13), UIManager.getColor("Label.foreground")
         ));
         
         radGiaoTieuChuan = new JRadioButton("Giao hàng tiêu chuẩn (3-5 ngày)");
         radGiaoTieuChuan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        radGiaoTieuChuan.setBackground(Color.WHITE);
+        radGiaoTieuChuan.setOpaque(false);
         radGiaoTieuChuan.setSelected(true);
         
         radGiaoHoaToc = new JRadioButton("Giao hàng nhanh hỏa tốc (1-2 ngày) - 30.000 đ");
         radGiaoHoaToc.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        radGiaoHoaToc.setBackground(Color.WHITE);
+        radGiaoHoaToc.setOpaque(false);
         
         grpGiaoHang = new ButtonGroup();
         grpGiaoHang.add(radGiaoTieuChuan);
@@ -227,21 +227,21 @@ public class BanHangPanel extends JPanel {
 
         // --- 2. PAYMENT METHODS ---
         JPanel pnlPayment = new JPanel(new GridLayout(2, 1, 5, 5));
-        pnlPayment.setBackground(Color.WHITE);
+        pnlPayment.setOpaque(false);
         pnlPayment.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER), 
             "   Thanh toán ", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, 
-            new Font("Segoe UI", Font.BOLD, 13), COLOR_TEXT_DARK
+            new Font("Segoe UI", Font.BOLD, 13), UIManager.getColor("Label.foreground")
         ));
         
         radThanhToanCOD = new JRadioButton(" Thanh toán khi nhận hàng (COD)");
         radThanhToanCOD.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        radThanhToanCOD.setBackground(Color.WHITE);
+        radThanhToanCOD.setOpaque(false);
         radThanhToanCOD.setSelected(true);
         
         radChuyenKhoan = new JRadioButton(" Chuyển khoản ngân hàng (Quét mã QR)");
         radChuyenKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        radChuyenKhoan.setBackground(Color.WHITE);
+        radChuyenKhoan.setOpaque(false);
         
         grpThanhToan = new ButtonGroup();
         grpThanhToan.add(radThanhToanCOD);
@@ -260,7 +260,7 @@ public class BanHangPanel extends JPanel {
         
         // Tính tiền block
         g.insets = new Insets(5, 0, 5, 0);
-        lblTongTien = createLabelTotal("TỔNG TIỀN HÀNG:", "0 đ", COLOR_TEXT_DARK, 15);
+        lblTongTien = createLabelTotal("TỔNG TIỀN HÀNG:", "0 đ", UIManager.getColor("Label.foreground"), 15);
         pnlFooter.add(lblTongTien, g);
         
         lblGiamGia = createLabelTotal("CHIẾT KHẤU:", "- 0 đ", COLOR_SUCCESS, 15);
@@ -281,7 +281,7 @@ public class BanHangPanel extends JPanel {
         
         JScrollPane scrollFooter = new JScrollPane(pnlFooter);
         scrollFooter.setBorder(null);
-        scrollFooter.getViewport().setBackground(Color.WHITE);
+        // scrollFooter.getViewport().setBackground(Color.WHITE);
         scrollFooter.getVerticalScrollBar().setUnitIncrement(16);
         
         JSplitPane splitRight = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pTableWrap, scrollFooter);
@@ -339,7 +339,7 @@ public class BanHangPanel extends JPanel {
         DecimalFormat df = new DecimalFormat("#,### đ");
         for (SanPham sp : list) {
             JPanel pItem = new JPanel(new BorderLayout(0, 0));
-            pItem.setBackground(Color.WHITE);
+            pItem.setBackground(UIManager.getColor("Panel.background").brighter());
             // Border radius effect not possible with line border, but we can do rounded line borders
             pItem.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1, true)); 
             pItem.setPreferredSize(new Dimension(160, 220));
@@ -363,14 +363,14 @@ public class BanHangPanel extends JPanel {
             
             JLabel lblName = new JLabel(sp.getTenSP());
             lblName.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            lblName.setForeground(COLOR_TEXT_DARK);
+            // lblName.setForeground(COLOR_TEXT_DARK);
             
             JLabel lblPrice = new JLabel(df.format(sp.getGiaBan()));
             lblPrice.setForeground(COLOR_DANGER); // Giá màu đỏ
             lblPrice.setFont(new Font("Segoe UI", Font.BOLD, 14));
             
             JLabel lblStock = new JLabel("Kho h.tại: " + sp.getTonKho());
-            lblStock.setForeground(COLOR_TEXT_MUTED);
+            // lblStock.setForeground(COLOR_TEXT_MUTED);
             lblStock.setFont(new Font("Segoe UI", Font.PLAIN, 12));
             
             pInfo.add(lblName);
@@ -437,11 +437,11 @@ public class BanHangPanel extends JPanel {
     }
     
     public void setHienThiTien(String tong, String giam, String phaiTra) {
-        lblTongTien.setText(createLabelTotal("TỔNG TIỀN HÀNG:", tong, COLOR_TEXT_DARK, 15).getText());
+        lblTongTien.setText(createLabelTotal("TỔNG TIỀN HÀNG:", tong, UIManager.getColor("Label.foreground"), 15).getText());
         lblGiamGia.setText(createLabelTotal("CHIẾT KHẤU:", "- " + giam, COLOR_SUCCESS, 15).getText());
         
         if (getPhiVanChuyen() > 0) {
-            lblVanChuyen.setText(createLabelTotal("PHÍ VẬN CHUYỂN:", "+ 30,000 đ", COLOR_TEXT_DARK, 15).getText());
+            lblVanChuyen.setText(createLabelTotal("PHÍ VẬN CHUYỂN:", "+ 30,000 đ", UIManager.getColor("Label.foreground"), 15).getText());
         } else {
             lblVanChuyen.setText(createLabelTotal("PHÍ VẬN CHUYỂN:", "Miễn phí", COLOR_SUCCESS, 15).getText());
         }

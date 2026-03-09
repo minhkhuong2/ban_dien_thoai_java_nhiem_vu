@@ -20,24 +20,24 @@ public class QuanLyKhachHangPanel extends JPanel {
     private DefaultTableModel model;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
     private final Color COLOR_WARNING = new Color(255, 193, 7);
     private final Color COLOR_DANGER = new Color(220, 53, 69);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyKhachHangPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
         
         // --- HEADER ---
         JLabel lblTitle = new JLabel("Hồ Sơ Khách Hàng");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(new EmptyBorder(0, 0, 10, 0));
         add(lblTitle, BorderLayout.NORTH);
         
@@ -57,7 +57,7 @@ public class QuanLyKhachHangPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 0, 0, 10)); // Khoảng cách với List
         
         JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -65,12 +65,12 @@ public class QuanLyKhachHangPanel extends JPanel {
         
         JLabel lblFormTitle = new JLabel("Thông Tin Liên Hệ");
         lblFormTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblFormTitle.setForeground(COLOR_TEXT_DARK);
+        // lblFormTitle.setForeground(COLOR_TEXT_DARK);
         lblFormTitle.setBorder(new EmptyBorder(0, 0, 20, 0));
         p.add(lblFormTitle, BorderLayout.NORTH);
         
         JPanel pInput = new JPanel(new GridBagLayout());
-        pInput.setBackground(Color.WHITE);
+        pInput.setOpaque(false);
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(10, 0, 10, 0);
         g.fill = GridBagConstraints.HORIZONTAL;
@@ -85,7 +85,7 @@ public class QuanLyKhachHangPanel extends JPanel {
         g.gridy = gridy * 2;
         JLabel lblDiaChi = new JLabel("Địa Chỉ Liên Hệ:");
         lblDiaChi.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblDiaChi.setForeground(COLOR_TEXT_MUTED);
+        // lblDiaChi.setForeground(COLOR_TEXT_MUTED);
         pInput.add(lblDiaChi, g);
         
         g.gridy = gridy * 2 + 1; gridy++;
@@ -99,13 +99,13 @@ public class QuanLyKhachHangPanel extends JPanel {
         
         // Buttons
         JPanel pBtn = new JPanel(new GridLayout(2, 2, 10, 10));
-        pBtn.setBackground(Color.WHITE);
+        pBtn.setOpaque(false);
         pBtn.setBorder(new EmptyBorder(25, 0, 0, 0));
         
         btnThem = createFlatButton("Thêm Mới", COLOR_SUCCESS, Color.WHITE);
         btnSua = createFlatButton("Cập Nhật", COLOR_WARNING, Color.BLACK);
         btnXoa = createFlatButton("Xóa", COLOR_DANGER, Color.WHITE);
-        btnLamMoi = createFlatButton("Làm Mới", new Color(240, 240, 240), COLOR_TEXT_DARK);
+        btnLamMoi = createFlatButton("Làm Mới", new Color(240, 240, 240), UIManager.getColor("Label.foreground"));
         
         pBtn.add(btnThem); 
         pBtn.add(btnSua); 
@@ -128,7 +128,7 @@ public class QuanLyKhachHangPanel extends JPanel {
         g.gridy = row * 2;
         JLabel lbl = new JLabel(label);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         parent.add(lbl, g);
         
         g.gridy = row * 2 + 1;
@@ -140,7 +140,7 @@ public class QuanLyKhachHangPanel extends JPanel {
             new EmptyBorder(5, 10, 5, 10)
         ));
         txt.setEditable(editable);
-        if(!editable) txt.setBackground(new Color(245, 245, 245));
+        // if(!editable) txt.setBackground(new Color(245, 245, 245));
         parent.add(txt, g);
         return txt;
     }
@@ -151,7 +151,7 @@ public class QuanLyKhachHangPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 10, 0, 0)); // Padding trái
         
         JPanel p = new JPanel(new BorderLayout(0, 20));
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -159,35 +159,22 @@ public class QuanLyKhachHangPanel extends JPanel {
         
         JLabel lblListTitle = new JLabel("Danh Sách Điện Thoại & Khách Hàng");
         lblListTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblListTitle.setForeground(COLOR_TEXT_DARK);
+        // lblListTitle.setForeground(COLOR_TEXT_DARK);
         
         // Search
         JPanel pSearch = new JPanel(new BorderLayout(10, 0));
-        pSearch.setBackground(Color.WHITE);
+        pSearch.setOpaque(false);
         pSearch.setBorder(new EmptyBorder(10, 0, 10, 0));
         
-        txtTimKiem = new JTextField("Tìm SĐT hoặc Tên khách hàng...");
+        txtTimKiem = new JTextField("");
         txtTimKiem.setPreferredSize(new Dimension(300, 40));
         txtTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtTimKiem.setForeground(COLOR_TEXT_MUTED);
+        txtTimKiem.putClientProperty("JTextField.placeholderText", "Tìm SĐT hoặc Tên khách hàng...");
+        // txtTimKiem.setForeground(COLOR_TEXT_MUTED);
         txtTimKiem.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(5, 10, 5, 10)
         ));
-        txtTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (txtTimKiem.getText().equals("Tìm SĐT hoặc Tên khách hàng...")) {
-                    txtTimKiem.setText("");
-                    txtTimKiem.setForeground(COLOR_TEXT_DARK);
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (txtTimKiem.getText().isEmpty()) {
-                    txtTimKiem.setForeground(COLOR_TEXT_MUTED);
-                    txtTimKiem.setText("Tìm SĐT hoặc Tên khách hàng...");
-                }
-            }
-        });
         
         btnTim = createFlatButton("Tìm Kiếm", COLOR_PRIMARY, Color.WHITE);
         btnTim.setPreferredSize(new Dimension(130, 40));
@@ -196,7 +183,7 @@ public class QuanLyKhachHangPanel extends JPanel {
         pSearch.add(btnTim, BorderLayout.EAST);
         
         JPanel pnlHeaderGroup = new JPanel(new BorderLayout());
-        pnlHeaderGroup.setBackground(Color.WHITE);
+        pnlHeaderGroup.setOpaque(false);
         pnlHeaderGroup.add(lblListTitle, BorderLayout.NORTH);
         pnlHeaderGroup.add(pSearch, BorderLayout.CENTER);
 
@@ -209,17 +196,17 @@ public class QuanLyKhachHangPanel extends JPanel {
         tblKhachHang.setRowHeight(40);
         tblKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         tblKhachHang.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblKhachHang.getTableHeader().setBackground(Color.WHITE);
-        tblKhachHang.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblKhachHang.getTableHeader().setBackground(Color.WHITE);
+        // tblKhachHang.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblKhachHang.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblKhachHang.setShowGrid(false);
         tblKhachHang.setIntercellSpacing(new Dimension(0, 0));
-        tblKhachHang.setSelectionBackground(new Color(240, 244, 255));
-        tblKhachHang.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblKhachHang.setSelectionBackground(new Color(240, 244, 255));
+        // tblKhachHang.setSelectionForeground(COLOR_TEXT_DARK);
         
         JScrollPane sc = new JScrollPane(tblKhachHang);
         sc.setBorder(null);
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         
         p.add(pnlHeaderGroup, BorderLayout.NORTH);
         p.add(sc, BorderLayout.CENTER);

@@ -15,21 +15,21 @@ public class QuanLyDanhMucPanel extends JPanel {
     private DefaultTableModel model;
 
     // UI Constants
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    // private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(13, 110, 253);
     private final Color COLOR_SUCCESS = new Color(25, 135, 84);
-    private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
+    // private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    // private final Color COLOR_TEXT_MUTED = new Color(108, 117, 125);
     private final Color COLOR_TABLE_BORDER = new Color(222, 226, 230);
 
     public QuanLyDanhMucPanel() {
         setLayout(new BorderLayout(20, 20));
-        setBackground(COLOR_BG);
+        // setBackground(COLOR_BG);
         setBorder(new EmptyBorder(30, 30, 30, 30));
         
         JLabel lblTitle = new JLabel("Danh Mục Sản Phẩm");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(COLOR_TEXT_DARK);
+        // lblTitle.setForeground(COLOR_TEXT_DARK);
         lblTitle.setBorder(new EmptyBorder(0, 0, 15, 0));
         add(lblTitle, BorderLayout.NORTH);
         
@@ -48,7 +48,7 @@ public class QuanLyDanhMucPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 0, 0, 10)); // Khoảng cách với List
         
         JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -56,7 +56,7 @@ public class QuanLyDanhMucPanel extends JPanel {
         
         JLabel lblHeader = new JLabel("Thêm Danh Mục Mới");
         lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblHeader.setForeground(COLOR_TEXT_DARK);
+        // lblHeader.setForeground(COLOR_TEXT_DARK);
         lblHeader.setBorder(new EmptyBorder(0, 0, 20, 0));
         
         JPanel pInput = new JPanel(new BorderLayout(0, 10));
@@ -64,7 +64,7 @@ public class QuanLyDanhMucPanel extends JPanel {
         
         JLabel lbl = new JLabel("Tên danh mục mới:");
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lbl.setForeground(COLOR_TEXT_MUTED);
+        // lbl.setForeground(COLOR_TEXT_MUTED);
         
         txtTenDM = new JTextField();
         txtTenDM.setPreferredSize(new Dimension(200, 42));
@@ -107,7 +107,7 @@ public class QuanLyDanhMucPanel extends JPanel {
         pnlWrapper.setBorder(new EmptyBorder(0, 10, 0, 0)); // Trái pad
         
         JPanel p = new JPanel(new BorderLayout(0, 20));
-        p.setBackground(Color.WHITE);
+        p.setBackground(UIManager.getColor("window"));
         p.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1),
             new EmptyBorder(25, 25, 25, 25)
@@ -115,7 +115,7 @@ public class QuanLyDanhMucPanel extends JPanel {
         
         JLabel lblHeader = new JLabel("Danh Sách Hiện Có");
         lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblHeader.setForeground(COLOR_TEXT_DARK);
+        // lblHeader.setForeground(COLOR_TEXT_DARK);
         
         String[] cols = {"ID", "TÊN DANH MỤC"};
         model = new DefaultTableModel(cols, 0) {
@@ -125,13 +125,13 @@ public class QuanLyDanhMucPanel extends JPanel {
         tblDanhMuc.setRowHeight(45);
         tblDanhMuc.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblDanhMuc.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tblDanhMuc.getTableHeader().setBackground(Color.WHITE);
-        tblDanhMuc.getTableHeader().setForeground(COLOR_TEXT_MUTED);
+        // tblDanhMuc.getTableHeader().setBackground(Color.WHITE);
+        // tblDanhMuc.getTableHeader().setForeground(COLOR_TEXT_MUTED);
         tblDanhMuc.getTableHeader().setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_TABLE_BORDER));
         tblDanhMuc.setShowGrid(false);
         tblDanhMuc.setIntercellSpacing(new Dimension(0, 0));
-        tblDanhMuc.setSelectionBackground(new Color(240, 244, 255));
-        tblDanhMuc.setSelectionForeground(COLOR_TEXT_DARK);
+        // tblDanhMuc.setSelectionBackground(new Color(240, 244, 255));
+        // tblDanhMuc.setSelectionForeground(COLOR_TEXT_DARK);
         
         // Chỉnh độ rông cột ID
         tblDanhMuc.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -139,7 +139,7 @@ public class QuanLyDanhMucPanel extends JPanel {
 
         JScrollPane sc = new JScrollPane(tblDanhMuc);
         sc.setBorder(BorderFactory.createLineBorder(COLOR_TABLE_BORDER, 1)); // Vẽ 1 line border bao quanh bảng
-        sc.getViewport().setBackground(Color.WHITE);
+        // sc.getViewport().setBackground(Color.WHITE);
         
         p.add(lblHeader, BorderLayout.NORTH);
         p.add(sc, BorderLayout.CENTER);
