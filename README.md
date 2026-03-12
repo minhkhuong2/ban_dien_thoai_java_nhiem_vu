@@ -70,7 +70,7 @@ String password = "";
 - Click **chuột phải** vào file đó -> Chọn **Run File** (hoặc nhấn phím tắt `Shift + F6` trên NetBeans).
 - Khi thanh màn hình nhảy lên, bạn dùng **Tài khoản đăng nhập mặc định**:
   > **Tên đăng nhập:** `admin` (hoặc email nhân viên bạn xem trong bảng NhanVien của Database).  
-  > **Mật khẩu:** `123` (hoặc theo Database).
+  > **Mật khẩu:** `123456` (hoặc theo Database).
 
 ---
 
