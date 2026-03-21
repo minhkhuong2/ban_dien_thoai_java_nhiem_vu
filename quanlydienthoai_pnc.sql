@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 09, 2026 lúc 02:35 AM
+-- Thời gian đã tạo: Th3 21, 2026 lúc 11:27 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -94,7 +94,10 @@ INSERT INTO `chitiethoadon` (`id`, `maHD`, `maSP`, `soLuong`, `donGia`, `thanhTi
 (51, 'HD1772860054656', 'SP02', 1, 30990000, 30990000),
 (52, 'HD1772862975117', 'SP04', 1, 22990000, 22990000),
 (53, 'HD1772862975117', 'SP05', 2, 14500000, 29000000),
-(54, 'HD1772863542862', 'SP05', 1, 14500000, 14500000);
+(54, 'HD1772863542862', 'SP05', 1, 14500000, 14500000),
+(55, 'HD1773106448873', 'SP11', 2, 12000, 24000),
+(56, 'HD1773106448873', '123', 1, 120000, 120000),
+(57, 'HD1773125147597', 'SP11', 2, 12000, 24000);
 
 -- --------------------------------------------------------
 
@@ -115,12 +118,36 @@ INSERT INTO `chitietthuoctinh` (`maSP`, `thuocTinhID`) VALUES
 ('123', 1),
 ('123', 5),
 ('123', 6),
+('SP01', 1),
+('SP01', 5),
+('SP01', 6),
 ('SP02', 1),
 ('SP02', 5),
 ('SP02', 6),
 ('SP03', 1),
 ('SP03', 5),
 ('SP03', 6),
+('SP04', 1),
+('SP04', 5),
+('SP04', 6),
+('SP05', 1),
+('SP05', 5),
+('SP05', 6),
+('SP06', 1),
+('SP06', 5),
+('SP06', 6),
+('SP07', 1),
+('SP07', 5),
+('SP07', 6),
+('SP08', 1),
+('SP08', 5),
+('SP08', 6),
+('SP09', 1),
+('SP09', 5),
+('SP09', 6),
+('SP10', 1),
+('SP10', 5),
+('SP10', 6),
 ('SP11', 7),
 ('SP11', 12),
 ('SP11', 13);
@@ -224,7 +251,9 @@ INSERT INTO `hoadon` (`maHD`, `ngayLap`, `maNV`, `tenKhachHang`, `tongTien`, `ma
 ('HD1772859962475', '2026-03-07 12:06:02', 'NV01', 'Son', 69550000, 5, 'Đang giao'),
 ('HD1772860054656', '2026-03-07 12:07:34', 'NV01', 'Phong', 30990000, 9, 'Chờ xử lý'),
 ('HD1772862975117', '2026-03-07 12:56:33', 'NV01', 'Khách vãng lai', 52020000, NULL, 'Đã hủy'),
-('HD1772863542862', '2026-03-07 13:06:42', 'NV01', 'Nguyễn Sơn Trường', 14500000, 3, 'Chờ xử lý');
+('HD1772863542862', '2026-03-07 13:06:42', 'NV01', 'Nguyễn Sơn Trường', 14500000, 3, 'Hoàn thành'),
+('HD1773106448873', '2026-03-10 08:34:10', 'NV01', 'Nguyễn Sơn Trường', 144000, 3, 'Chờ xử lý'),
+('HD1773125147597', '2026-03-10 13:46:08', 'NV01', 'Nguyễn Sơn Trường', 54000, 3, 'Đang giao');
 
 -- --------------------------------------------------------
 
@@ -277,7 +306,8 @@ CREATE TABLE `nhanvien` (
 
 INSERT INTO `nhanvien` (`maNV`, `hoTen`, `ngaySinh`, `sdt`, `email`, `taiKhoan`, `matKhau`, `vaiTro`, `trangThai`, `hinhAnh`) VALUES
 ('NV01', 'Admin Quản Trị', '2002-04-21', '0909123456', 'admin@gmail.com', 'admin', '123456', 'QuanLy', 1, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\logo\\Inviting School Logo for \'Student Central\'.png'),
-('NV02', 'Nhân Viên 1', '2002-03-22', '02344445667', 'user1@gmail.com', 'staff', '123', 'NhanVien', 1, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\Avatar\\man-with-beard-avatar-character-isolated-icon-free-vector.jpg');
+('NV02', 'Nhân Viên 1', '2002-03-22', '02344445667', 'user1@gmail.com', 'staff', '123', 'NhanVien', 1, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\Avatar\\man-with-beard-avatar-character-isolated-icon-free-vector.jpg'),
+('NV6281', 'su', NULL, '0477838282', 'su@gmail.com', 'sumen', '123456', 'NhanVien', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -312,18 +342,18 @@ CREATE TABLE `sanpham` (
 --
 
 INSERT INTO `sanpham` (`maSP`, `tenSP`, `hangSanXuat`, `giaNhap`, `giaBan`, `soLuongTon`, `hinhAnh`, `moTa`, `danhMuc`, `manHinh`, `heDieuHanh`, `cameraSau`, `cameraTruoc`, `chip`, `ram`, `rom`, `pin`, `maDM`, `maTH`) VALUES
-('123', '132', 'Apple', 100000, 120000, 97, '', '12123', NULL, '', '', '', '', '', '', '', '', 1, 1),
-('SP01', 'iPhone 15 Pro Max', 'Apple', 28000000, 33990000, 34, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\d5e7cc4b98db118548ca.jpg', 'Titan tự nhiên, chip A17 Pro siêu mạnh.', NULL, '6.7 inch OLED', 'iOS 17', '48MP + 12MP + 12MP', '12MP', 'Apple A17 Pro', '8GB', '256GB', '4422 mAh', NULL, NULL),
-('SP02', 'Samsung Galaxy S24 Ultra', 'Apple', 26000000, 30990000, 36, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\Ảnh bán điện thoại\\samsung s23 FE\\images\\images_2.jpg', 'Quyền năng Galaxy AI, bút S-Pen thần thánh.', NULL, '6.8 inch Dynamic AMOLED 2X', 'Android 14', '200MP + 50MP + 12MP + 10MP', '12MP', 'Snapdragon 8 Gen 3', '12GB', '512GB', '5000 mAh', 1, 1),
-('SP03', 'Xiaomi 14', 'Apple', 18000000, 21990000, 26, '', 'Thấu kính Leica huyền thoại, nhỏ gọn.', 'Cao cấp', '6.36 inch OLED', 'Android 14 (HyperOS)', '50MP + 50MP + 50MP', '32MP', 'Snapdragon 8 Gen 3', '12GB', '256GB', '4610 mAh', 1, 1),
-('SP04', 'OPPO Find N3 Flip', 'OPPO', 19000000, 22990000, 5, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\070943236593edcdb482.jpg', 'Gập mở sành điệu, camera Hasselblad.', NULL, 'Chính 6.8 inch, Phụ 3.26 inch', 'Android 13', '50MP + 48MP + 32MP', '32MP', 'Dimensity 9200', '12GB', '256GB', '4300 mAh', NULL, NULL),
-('SP05', 'iPhone 13', 'Apple', 12000000, 14500000, 82, '', 'Thiết kế vuông vức, hiệu năng vẫn rất ngon.', 'Tầm trung', '6.1 inch OLED', 'iOS 16', '12MP + 12MP', '12MP', 'Apple A15 Bionic', '4GB', '128GB', '3240 mAh', NULL, NULL),
-('SP06', 'Samsung Galaxy A55 5G', 'Samsung', 8500000, 9990000, 59, '', 'Thiết kế Key Island độc đáo, kháng nước IP67.', 'Tầm trung', '6.6 inch Super AMOLED', 'Android 14', '50MP + 12MP + 5MP', '32MP', 'Exynos 1480', '8GB', '128GB', '5000 mAh', NULL, NULL),
-('SP07', 'Realme C67', 'Realme', 4500000, 5290000, 12, '', 'Camera 108MP zoom 3x, sạc nhanh 33W.', 'Giá rẻ', '6.72 inch IPS LCD', 'Android 14', '108MP + 2MP', '8MP', 'Snapdragon 685', '8GB', '128GB', '5000 mAh', NULL, NULL),
-('SP08', 'Vivo V29e', 'Vivo', 7500000, 8990000, 36, '', 'Vòng sáng Aura 2.0, chụp đêm siêu đỉnh.', 'Tầm trung', '6.67 inch AMOLED 120Hz', 'Android 13', '64MP + 8MP', '50MP', 'Snapdragon 695', '8GB', '256GB', '4800 mAh', NULL, NULL),
-('SP09', 'iPhone 11', 'Apple', 9000000, 10990000, 15, '', 'Huyền thoại giữ giá, vẫn mượt mà.', 'Giá rẻ', '6.1 inch IPS LCD', 'iOS 15', '12MP + 12MP', '12MP', 'Apple A13 Bionic', '4GB', '64GB', '3110 mAh', NULL, NULL),
-('SP10', 'Samsung Galaxy Z Fold5', 'Samsung', 35000000, 40990000, 9, '', 'Mở ra thế giới mới, đa nhiệm cực đỉnh.', 'Flagship', 'Chính 7.6 inch, Phụ 6.2 inch', 'Android 13', '50MP + 12MP + 10MP', '10MP', 'Snapdragon 8 Gen 2', '12GB', '512GB', '4400 mAh', NULL, NULL),
-('SP11', '0k', 'Samsung', 10000, 12000, 8, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\Nền máy tính.png', '', NULL, '', '', '', '', '', NULL, NULL, '', 2, 2);
+('123', '132', 'Apple', 100000, 120000, 96, '', '12123', NULL, '', '', '', '', '', '', '', '', 1, 1),
+('SP01', 'iPhone 15 Pro Max', 'Apple', 28000000, 33990000, 46, 'tải xuống.jpg', 'Titan tự nhiên, chip A17 Pro siêu mạnh.', NULL, '6.7 inch OLED', 'iOS 17', '48MP + 12MP + 12MP', '12MP', 'Apple A17 Pro', '8GB', '256GB', '4422 mAh', 1, 1),
+('SP02', 'Samsung Galaxy S24 Ultra', 'Samsung', 26000000, 30990000, 36, 'tải xuống (1).jpg', 'Quyền năng Galaxy AI, bút S-Pen thần thánh.', NULL, '6.8 inch Dynamic AMOLED 2X', 'Android 14', '200MP + 50MP + 12MP + 10MP', '12MP', 'Snapdragon 8 Gen 3', '12GB', '512GB', '5000 mAh', 1, 2),
+('SP03', 'Xiaomi 14', 'Xiaomi', 18000000, 21990000, 26, 'xiaomi-14-ra-mat-1280x720.png', 'Thấu kính Leica huyền thoại, nhỏ gọn.', 'Cao cấp', '6.36 inch OLED', 'Android 14 (HyperOS)', '50MP + 50MP + 50MP', '32MP', 'Snapdragon 8 Gen 3', '12GB', '256GB', '4610 mAh', 1, 3),
+('SP04', 'OPPO Find N3 Flip', 'OPPO', 19000000, 22990000, 5, 'oppo-find-n3-flip638334082327916372.jpg', 'Gập mở sành điệu, camera Hasselblad.', NULL, 'Chính 6.8 inch, Phụ 3.26 inch', 'Android 13', '50MP + 48MP + 32MP', '32MP', 'Dimensity 9200', '12GB', '256GB', '4300 mAh', 1, 4),
+('SP05', 'iPhone 13', 'Apple', 12000000, 14500000, 82, 'RV-iphone-13-1020x570.jpg', 'Thiết kế vuông vức, hiệu năng vẫn rất ngon.', 'Tầm trung', '6.1 inch OLED', 'iOS 16', '12MP + 12MP', '12MP', 'Apple A15 Bionic', '4GB', '128GB', '3240 mAh', 1, 1),
+('SP06', 'Samsung Galaxy A55 5G', 'Samsung', 8500000, 9990000, 59, 'samsung-galaxy-a55-5g-xanh-1-1-750x500.jpg', 'Thiết kế Key Island độc đáo, kháng nước IP67.', 'Tầm trung', '6.6 inch Super AMOLED', 'Android 14', '50MP + 12MP + 5MP', '32MP', 'Exynos 1480', '8GB', '128GB', '5000 mAh', 1, 2),
+('SP07', 'Realme C67', 'Realme', 4500000, 5290000, 12, 'realme-c67-xanh-thumb-600x600.jpg', 'Camera 108MP zoom 3x, sạc nhanh 33W.', 'Giá rẻ', '6.72 inch IPS LCD', 'Android 14', '108MP + 2MP', '8MP', 'Snapdragon 685', '8GB', '128GB', '5000 mAh', 1, 5),
+('SP08', 'Vivo V29e', 'Vivo', 7500000, 8990000, 36, 'h2-231023-155026-800-resize.jpg', 'Vòng sáng Aura 2.0, chụp đêm siêu đỉnh.', 'Tầm trung', '6.67 inch AMOLED 120Hz', 'Android 13', '64MP + 8MP', '50MP', 'Snapdragon 695', '8GB', '256GB', '4800 mAh', 1, 6),
+('SP09', 'iPhone 11', 'Apple', 9000000, 10990000, 15, 'iphone-11_800x449.jpg', 'Huyền thoại giữ giá, vẫn mượt mà.', 'Giá rẻ', '6.1 inch IPS LCD', 'iOS 15', '12MP + 12MP', '12MP', 'Apple A13 Bionic', '4GB', '64GB', '3110 mAh', 1, 1),
+('SP10', 'Samsung Galaxy Z Fold5', 'Samsung', 35000000, 40990000, 9, '8478.png', 'Mở ra thế giới mới, đa nhiệm cực đỉnh.', 'Flagship', 'Chính 7.6 inch, Phụ 6.2 inch', 'Android 13', '50MP + 12MP + 10MP', '10MP', 'Snapdragon 8 Gen 2', '12GB', '512GB', '4400 mAh', 1, 2),
+('SP11', '0k', 'Samsung', 10000, 12000, 24, 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\Nền máy tính.png', '', NULL, '', '', '', '', '', NULL, NULL, '', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -375,7 +405,9 @@ INSERT INTO `thuonghieu` (`maTH`, `tenTH`, `logo`) VALUES
 (1, 'Apple', 'C:\\xampp\\htdocs\\ban-dien-thoai-mvc\\public\\images\\brands\\apple.png'),
 (2, 'Samsung', 'C:\\Users\\ADMIN\\OneDrive\\Pictures\\Ảnh bán điện thoại\\phu\\Samsung-Logo.png'),
 (3, 'Xiaomi', 'C:\\xampp\\htdocs\\ban-dien-thoai-mvc\\public\\images\\brands\\xiaomi.png'),
-(4, 'OPPO', 'C:\\xampp\\htdocs\\ban-dien-thoai-mvc\\public\\images\\brands\\oppo.png');
+(4, 'OPPO', 'C:\\xampp\\htdocs\\ban-dien-thoai-mvc\\public\\images\\brands\\oppo.png'),
+(5, 'Realme', 'C:\\xampp\\htdocs\\ban-dien-thoai-mvc\\public\\images\\brands\\realme.png'),
+(6, 'Vivo', 'C:\\xampp\\htdocs\\ban-dien-thoai-mvc\\public\\images\\brands\\vivo.png');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -458,7 +490,7 @@ ALTER TABLE `thuonghieu`
 -- AUTO_INCREMENT cho bảng `chitiethoadon`
 --
 ALTER TABLE `chitiethoadon`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT cho bảng `danhmuc`
@@ -482,7 +514,7 @@ ALTER TABLE `thuoctinh`
 -- AUTO_INCREMENT cho bảng `thuonghieu`
 --
 ALTER TABLE `thuonghieu`
-  MODIFY `maTH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `maTH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Ràng buộc đối với các bảng kết xuất
