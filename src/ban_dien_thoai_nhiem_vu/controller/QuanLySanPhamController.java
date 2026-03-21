@@ -7,6 +7,11 @@ import ban_dien_thoai_nhiem_vu.view.QuanLySanPhamFrame;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -332,15 +337,33 @@ public class QuanLySanPhamController {
         }
     }
     
-    // [QUAN TRỌNG] Sửa lại hàm chọn ảnh để lấy đường dẫn tuyệt đối
+    // [QUAN TRỌNG] Hàm chọn ảnh: copy ảnh vào thư mục images/ trong project, lưu tên file tương đối
     private void xuLyChonAnh() { 
         JFileChooser fc = new JFileChooser(); 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png", "jpeg");
         fc.setFileFilter(filter);
-        if(fc.showOpenDialog(view)==JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            duongDanAnh = file.getAbsolutePath(); // Lấy đường dẫn tuyệt đối (VD: C:\Anh\iphone.jpg)
-            view.hienThiAnh(duongDanAnh); 
+        if (fc.showOpenDialog(view) == JFileChooser.APPROVE_OPTION) {
+            File filGoc = fc.getSelectedFile(); // File ảnh gốc người dùng chọn
+            
+            try {
+                // Tạo thư mục images/ nếu chưa tồn tại (nằm cùng chỗ chạy chương trình)
+                File thuMucAnh = new File("images");
+                if (!thuMucAnh.exists()) thuMucAnh.mkdirs();
+                
+                // Copy file ảnh vào thư mục images/ với tên gốc
+                Path nguon = filGoc.toPath();
+                Path dich = Paths.get("images", filGoc.getName());
+                Files.copy(nguon, dich, StandardCopyOption.REPLACE_EXISTING);
+                
+                // Chỉ lưu tên file (tương đối), ví dụ: "samsung_a55.jpg"
+                duongDanAnh = filGoc.getName();
+                
+                // Hiển thị ảnh từ đường dẫn đầy đủ (để preview ngay)
+                view.hienThiAnh(dich.toAbsolutePath().toString());
+                
+            } catch (IOException e) {
+                view.showMessage("Lỗi khi copy ảnh: " + e.getMessage());
+            }
         }
     }
 }

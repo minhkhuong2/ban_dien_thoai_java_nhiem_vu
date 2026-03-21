@@ -386,10 +386,22 @@ public class QuanLySanPhamFrame extends JFrame {
             return; 
         }
         try {
-            ImageIcon icon = new ImageIcon(path);
-            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-            lblHinhAnh.setIcon(new ImageIcon(img)); 
-            lblHinhAnh.setText("");
+            // Nếu là đường dẫn tuyệt đối (preview ngay sau khi chọn) → dùng trực tiếp
+            // Nếu chỉ là tên file (lấy từ DB) → tìm trong thư mục images/
+            java.io.File filAnh = new java.io.File(path);
+            if (!filAnh.isAbsolute()) {
+                filAnh = new java.io.File("images", path);
+            }
+            
+            if (filAnh.exists()) {
+                ImageIcon icon = new ImageIcon(filAnh.getAbsolutePath());
+                Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                lblHinhAnh.setIcon(new ImageIcon(img)); 
+                lblHinhAnh.setText("");
+            } else {
+                lblHinhAnh.setIcon(null);
+                lblHinhAnh.setText("Không tìm thấy ảnh");
+            }
         } catch (Exception e) { 
             lblHinhAnh.setText("Lỗi Ảnh"); 
         }
