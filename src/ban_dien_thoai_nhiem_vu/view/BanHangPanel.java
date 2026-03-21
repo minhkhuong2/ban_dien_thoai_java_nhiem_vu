@@ -313,17 +313,27 @@ public class BanHangPanel extends JPanel {
         return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
     }
     
-    // --- HÀM LOAD ẢNH THÔNG MINH (Chữa lỗi ảnh trắng xóa) ---
+    // --- HÀM LOAD ẢNH THÔNG MINH (Tìm ảnh theo thứ tự ưu tiên) ---
     private ImageIcon loadSmartImage(String path, int w, int h) {
         if (path == null || path.trim().isEmpty()) {
             return null; 
         }
         try {
+            // Bước 1: Thử dùng path trực tiếp (đường dẫn tuyệt đối cũ hoặc đầy đủ)
             File f = new File(path);
             if (f.exists()) {
-                ImageIcon icon = new ImageIcon(path);
+                ImageIcon icon = new ImageIcon(f.getAbsolutePath());
                 return new ImageIcon(icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
             }
+            
+            // Bước 2: Thử tìm trong thư mục images/ (cách lưu mới - chỉ lưu tên file)
+            File fInImages = new File("images", path);
+            if (fInImages.exists()) {
+                ImageIcon icon = new ImageIcon(fInImages.getAbsolutePath());
+                return new ImageIcon(icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            }
+            
+            // Bước 3: Thử trong classpath /icons/ (fallback)
             java.net.URL url = getClass().getResource("/ban_dien_thoai_nhiem_vu/icons/" + path);
             if (url != null) {
                 ImageIcon icon = new ImageIcon(url);
